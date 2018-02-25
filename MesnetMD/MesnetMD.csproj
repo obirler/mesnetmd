@@ -13,6 +13,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,8 +36,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="MoreLinq">
+      <HintPath>..\..\..\..\..\Desktop\Mesnet\mesnet\Mesnet\bin\Debug\MoreLinq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.107.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.107.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.107.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -48,12 +71,150 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ZoomAndPan, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\Mesnet\mesnet\Mesnet\bin\Debug\ZoomAndPan.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\IO\Manifest\BeamManifest.cs" />
+    <Compile Include="Classes\IO\Manifest\LeftFixedSupportManifest.cs" />
+    <Compile Include="Classes\IO\Manifest\Member.cs" />
+    <Compile Include="Classes\IO\Manifest\RightFixedSupportManifest.cs" />
+    <Compile Include="Classes\IO\Manifest\RightFixedSupportReader.cs" />
+    <Compile Include="Classes\IO\Manifest\SupportManifest.cs" />
+    <Compile Include="Classes\IO\Xml\BasicSupportReader.cs" />
+    <Compile Include="Classes\IO\Xml\BasicSupportWriter.cs" />
+    <Compile Include="Classes\IO\Xml\BeamReader.cs" />
+    <Compile Include="Classes\IO\Xml\BeamWriter.cs" />
+    <Compile Include="Classes\IO\Xml\LeftFixedSupportReader.cs" />
+    <Compile Include="Classes\IO\Xml\LeftFixedSupportWriter.cs" />
+    <Compile Include="Classes\IO\Xml\MesnetIO.cs" />
+    <Compile Include="Classes\IO\Xml\RightFixedSupportWriter.cs" />
+    <Compile Include="Classes\IO\Xml\SlidingSupportReader.cs" />
+    <Compile Include="Classes\IO\Xml\SlidingSupportWriter.cs" />
+    <Compile Include="Classes\Tools\Member.cs" />
+    <Compile Include="Classes\Tools\MyDebug.cs" />
+    <Compile Include="Classes\Tools\TestCases.cs" />
+    <Compile Include="Classes\Ui\Base\SomItem.cs" />
+    <Compile Include="Classes\Ui\Graphics\ConcentratedLoad.cs" />
+    <Compile Include="Classes\Ui\Graphics\DistributedLoad.cs" />
+    <Compile Include="Classes\Ui\Graphics\Force.cs" />
+    <Compile Include="Classes\Ui\Base\GraphicItem.cs" />
+    <Compile Include="Classes\Ui\Graphics\Inertia.cs" />
+    <Compile Include="Classes\Interfaces.cs" />
+    <Compile Include="Classes\Ui\Graphics\Moment.cs" />
+    <Compile Include="Classes\Ui\Graphics\Stress.cs" />
+    <Compile Include="Classes\Ui\MouseHandlingMode.cs" />
+    <Compile Include="Classes\Ui\ScaleToPercentConverter.cs" />
+    <Compile Include="Classes\Ui\Base\SupportItem.cs" />
+    <Compile Include="Classes\Ui\TreeHandler.cs" />
+    <Compile Include="Classes\Ui\TreeViewBeamItem.cs" />
+    <Compile Include="Classes\Ui\TreeViewSupportItem.cs" />
+    <Compile Include="Classes\Ui\UpToolBar.cs" />
+    <Compile Include="Xaml\Pages\AboutWindowEn.xaml.cs">
+      <DependentUpon>AboutWindowEn.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\AboutWindowTr.xaml.cs">
+      <DependentUpon>AboutWindowTr.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\BeamPrompt.xaml.cs">
+      <DependentUpon>BeamPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\ConcentratedLoadPrompt.xaml.cs">
+      <DependentUpon>ConcentratedLoadPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\CrossSolve.xaml.cs">
+      <DependentUpon>CrossSolve.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\DistributedLoadPrompt.xaml.cs">
+      <DependentUpon>DistributedLoadPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\MessagePrompt.xaml.cs">
+      <DependentUpon>MessagePrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\Pages\SettingsPrompt.xaml.cs">
+      <DependentUpon>SettingsPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\BasicSupportItem.xaml.cs">
+      <DependentUpon>BasicSupportItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\BeamItem.xaml.cs">
+      <DependentUpon>BeamItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\BeamSupportItem.xaml.cs">
+      <DependentUpon>BeamSupportItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ButtonItem.xaml.cs">
+      <DependentUpon>ButtonItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ConcentratedLoadFunction.xaml.cs">
+      <DependentUpon>ConcentratedLoadFunction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ConcentratedLoadItem.xaml.cs">
+      <DependentUpon>ConcentratedLoadItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\DistributedLoadItem.xaml.cs">
+      <DependentUpon>DistributedLoadItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ElasticityItem.xaml.cs">
+      <DependentUpon>ElasticityItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ForceExplorer.xaml.cs">
+      <DependentUpon>ForceExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\ForceItem.xaml.cs">
+      <DependentUpon>ForceItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\InertiaFunction.xaml.cs">
+      <DependentUpon>InertiaFunction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\InertiaItem.xaml.cs">
+      <DependentUpon>InertiaItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\Information.xaml.cs">
+      <DependentUpon>Information.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\LeftFixedSupportItem.xaml.cs">
+      <DependentUpon>LeftFixedSupportItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\LengthItem.xaml.cs">
+      <DependentUpon>LengthItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\LoadFunction.xaml.cs">
+      <DependentUpon>LoadFunction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\LoadItem.xaml.cs">
+      <DependentUpon>LoadItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\MomentExplorer.xaml.cs">
+      <DependentUpon>MomentExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\MomentItem.xaml.cs">
+      <DependentUpon>MomentItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\RightFixedSupportItem.xaml.cs">
+      <DependentUpon>RightFixedSupportItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\SlidingSupportItem.xaml.cs">
+      <DependentUpon>SlidingSupportItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\StressExplorer.xaml.cs">
+      <DependentUpon>StressExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\StressItem.xaml.cs">
+      <DependentUpon>StressItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\SupportBeamItem.xaml.cs">
+      <DependentUpon>SupportBeamItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\User Controls\Text.xaml.cs">
+      <DependentUpon>Text.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,12 +223,180 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Global.cs" />
+    <Compile Include="Classes\IO\DatabaseLogger.cs" />
+    <Compile Include="Classes\IO\Logger.cs" />
+    <Compile Include="Classes\IO\MesnetSettings.cs" />
+    <Compile Include="Classes\Math\Algebra.cs" />
+    <Compile Include="Classes\Math\ConjugatePoly.cs" />
+    <Compile Include="Classes\Math\ConjugateTerm.cs" />
+    <Compile Include="Classes\Math\ConjugateTermCollection.cs" />
+    <Compile Include="Classes\Math\dijkstras.cs" />
+    <Compile Include="Classes\Math\Geometry.cs" />
+    <Compile Include="Classes\Math\KeyValueCollection.cs" />
+    <Compile Include="Classes\Math\PiecewiseConjugatePoly.cs" />
+    <Compile Include="Classes\Math\PiecewisePoly.cs" />
+    <Compile Include="Classes\Math\Poly.cs" />
+    <Compile Include="Classes\Math\SimpsonIntegrator.cs" />
+    <Compile Include="Classes\Math\Term.cs" />
+    <Compile Include="Classes\Math\TermCollection.cs" />
+    <Compile Include="Classes\Math\TPolygon.cs" />
+    <Compile Include="Classes\Math\TransformGeometry.cs" />
+    <Compile Include="Classes\Math\TrapezeIntegrator.cs" />
+    <Compile Include="Classes\Math\Triangle.cs" />
+    <Compile Include="Classes\Ui\CardinalSplineShape.cs" />
+    <Compile Include="Classes\Ui\Som\BasicSupport.cs" />
+    <Compile Include="Classes\Ui\Som\Beam.cs" />
+    <Compile Include="Classes\Ui\Som\LeftFixedSupport.cs" />
+    <Compile Include="Classes\Ui\Som\RightFixedSupport.cs" />
+    <Compile Include="Classes\Ui\Som\SlidingSupport.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Xaml\Pages\AboutWindowEn.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\AboutWindowTr.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\BeamPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\ConcentratedLoadPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\CrossSolve.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\DistributedLoadPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\MessagePrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Pages\SettingsPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\Resources\LanguageEn.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Xaml\Resources\LanguageTr.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Xaml\User Controls\BasicSupportItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\BeamItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\BeamSupportItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ButtonItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ConcentratedLoadFunction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ConcentratedLoadItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\DistributedLoadItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ElasticityItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ForceExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\ForceItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\InertiaFunction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\InertiaItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\Information.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\LeftFixedSupportItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\LengthItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\LoadFunction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\LoadItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\MomentExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\MomentItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\RightFixedSupportItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\SlidingSupportItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\StressExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\StressItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\SupportBeamItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xaml\User Controls\Text.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Ui\Base\UiItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -85,6 +414,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,5 +423,27 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\applogo.ico" />
+    <Resource Include="Assets\fileassc.ico" />
+    <Resource Include="Assets\itulogo.png" />
+    <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\moment.png" />
+    <Resource Include="Assets\No-Symbol.png" />
+    <Resource Include="Assets\rotate.ico" />
+    <Resource Include="Assets\settingsicon.ico" />
+    <Resource Include="Assets\solve.ico" />
+    <Resource Include="Assets\warning.png" />
+    <Content Include="x64\SQLite.Interop.dll" />
+    <Content Include="x86\SQLite.Interop.dll" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
 </Project>
