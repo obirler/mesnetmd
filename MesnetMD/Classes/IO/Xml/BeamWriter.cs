@@ -187,7 +187,7 @@ namespace MesnetMD.Classes.IO.Xml
             {
                 _writer.WriteStartElement("LeftSide");
 
-                switch (Global.GetObjectType(_beam.LeftSide))
+                switch (_beam.LeftSide.Type)
                 {
                     case Global.ObjectType.BasicSupport:
                         var bs = _beam.LeftSide as BasicSupport;
@@ -218,7 +218,7 @@ namespace MesnetMD.Classes.IO.Xml
             {
                 _writer.WriteStartElement("RightSide");
 
-                switch (Global.GetObjectType(_beam.RightSide))
+                switch (_beam.RightSide.Type)
                 {
                     case Global.ObjectType.BasicSupport:
                         var bs = _beam.RightSide as BasicSupport;

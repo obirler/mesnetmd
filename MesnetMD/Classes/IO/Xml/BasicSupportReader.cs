@@ -31,13 +31,11 @@ namespace MesnetMD.Classes.IO.Xml
         public BasicSupportReader(System.Xml.Linq.XElement supportelement)
         {
             _supportelement = supportelement;
-            _support = new SupportManifest();
+            _support = new BasicSupportManifest();
         }
 
-        public SupportManifest Read()
+        public BasicSupportManifest Read()
         {
-            _support.Type = "BasicSupport";
-
             readproperties();
 
             readmembers();
@@ -121,6 +119,6 @@ namespace MesnetMD.Classes.IO.Xml
 
         System.Xml.Linq.XElement _supportelement;
 
-        SupportManifest _support;
+        BasicSupportManifest _support;
     }
 }

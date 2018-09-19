@@ -11,19 +11,23 @@ namespace MesnetMD.Classes.Ui.Som
 {
     public class BasicSupport : SupportItem, ISomItem, ISupportItem, IFreeSupportItem
     {
-        public BasicSupport()
+        public BasicSupport() : base(ObjectType.BasicSupport)
         {
             InitializeComponent();
             Members = new List<Member>();
             Name = "Basic Support " + SupportId;
+            var rdof = new DOF(Global.DOFType.Rotational);
+            DegreeOfFreedoms.Add(rdof);
         }
 
-        public BasicSupport(Canvas canvas)
+        public BasicSupport(Canvas canvas) : base(ObjectType.BasicSupport)
         {
             InitializeComponent();
             Members = new List<Member>();
             Name = "Basic Support " + SupportId;
-            canvas.Children.Add(this);
+            var rdof = new DOF(Global.DOFType.Rotational);
+            DegreeOfFreedoms.Add(rdof);
+            canvas.Children.Add(this);           
             AddObject(this);
             BindEvents();
         }
@@ -32,8 +36,11 @@ namespace MesnetMD.Classes.Ui.Som
         {
             Width = 26;
             Height = 16;
-            rotateTransform = new RotateTransform(13, 0, 0);
-            LayoutTransform = rotateTransform;
+            rotateTransform = new RotateTransform();
+            rotateTransform.CenterX = Width/2;
+            rotateTransform.CenterY = Height;
+            rotateTransform.Angle = 0;
+            RenderTransform = rotateTransform;
             createtriangle();
             createcore();
         }
@@ -44,28 +51,29 @@ namespace MesnetMD.Classes.Ui.Som
         private void createtriangle()
         {
             _triangle = new Polygon();
-            _triangle.Points.Add(new Point(13, 0));
-            _triangle.Points.Add(new Point(4, 16));
-            _triangle.Points.Add(new Point(22, 16));
-            _triangle.Points.Add(new Point(13, 0));
-            _triangle.Points.Add(new Point(6.5, 14.5));
-            _triangle.Points.Add(new Point(19.5, 14.5));
-            _triangle.Points.Add(new Point(13, 3));
+            _triangle.Points.Add(new Point(13, 16));
+            _triangle.Points.Add(new Point(4, 0));
+            _triangle.Points.Add(new Point(22, 0));
+            _triangle.Points.Add(new Point(13, 16));
+            _triangle.Points.Add(new Point(13, 13));
+            _triangle.Points.Add(new Point(6.5, 1.5));
+            _triangle.Points.Add(new Point(19.5, 1.5));
+            _triangle.Points.Add(new Point(13, 13));
             _triangle.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_triangle);
         }
 
         /// <summary>
-        /// Creates the core which is the invisble portion that is used to collect click event.
+        /// Creates the core which is the invisible portion that is used to collect click event.
         /// </summary>
         private void createcore()
         { 
             _core = new Polygon();
-            _core.Points.Add(new Point(13, 3));
-            _core.Points.Add(new Point(6.5, 14.5));
-            _core.Points.Add(new Point(19.5, 14.5));
-            _core.Points.Add(new Point(13, 3));
-            _core.Points.Add(new Point(6.5, 14.5));
+            _core.Points.Add(new Point(13, 13));
+            _core.Points.Add(new Point(6.5, 1.5));
+            _core.Points.Add(new Point(19.5, 1.5));
+            _core.Points.Add(new Point(13, 13));
+            _core.Points.Add(new Point(6.5, 1.5));
             _core.Fill = new SolidColorBrush(Colors.Transparent);
             Children.Add(_core);
         }
@@ -87,57 +95,278 @@ namespace MesnetMD.Classes.Ui.Som
 
         public void Select()
         {
-            throw new NotImplementedException();
+            _triangle.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _selected = true;
         }
 
         public void UnSelect()
         {
-            throw new NotImplementedException();
+            _triangle.Fill = new SolidColorBrush(Colors.Black);
+            _selected = false;
         }
 
         public void ResetSolution()
         {
-            throw new NotImplementedException();
+            //todo: implement reset mechanism
         }
 
         public void Add(Canvas canvas, double leftpos, double toppos)
         {
-            throw new NotImplementedException();
+            canvas.Children.Add(this);
+
+            Canvas.SetLeft(this, leftpos);
+
+            Canvas.SetTop(this, toppos);
         }
 
+        /// <summary>
+        /// Updates the position of the support according to the beam that is bounded.
+        /// </summary>
+        /// <param name="beam">The reference beam.</param>
         public void UpdatePosition(Beam beam)
         {
-            throw new NotImplementedException();
+            foreach (Member member in Members)
+            {
+                if (member.Beam == beam)
+                {
+                    switch (member.Direction)
+                    {
+                        case Direction.Left:
+
+                            Canvas.SetLeft(this, beam.LeftPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.LeftPoint.Y - Height);
+
+                            beam.LeftSide = this;
+
+                            break;
+
+                        case Direction.Right:
+
+                            Canvas.SetLeft(this, beam.RightPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.RightPoint.Y - Height);
+
+                            beam.RightSide = this;
+
+                            break;
+                    }
+                    SetAngle(beam.Angle);
+                }
+            }
         }
 
+        /// <summary>
+        /// Sets the position in the canvas based on the center point of the element.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
         public void SetPosition(double x, double y)
         {
-            throw new NotImplementedException();
+            var left = x - Width / 2;
+            var right = y - Height / 2;
+
+            Canvas.SetLeft(this, left);
+
+            Canvas.SetTop(this, right);
+
+            MyDebug.WriteInformation("Position has been set : " + left + " : " + right);
         }
 
+        /// <summary>
+        /// Sets the position in the canvas based on the center point of the element.
+        /// </summary>
+        /// <param name="point">The point.</param>
         public void SetPosition(Point point)
         {
-            throw new NotImplementedException();
+            var left = point.X - Width / 2;
+            var right = point.Y - Height / 2;
+
+            Canvas.SetLeft(this, left);
+
+            Canvas.SetTop(this, right);
+
+            MyDebug.WriteWarning("Position has been set : " + left + " : " + right);
         }
 
         public void SetAngle(double angle)
         {
-            throw new NotImplementedException();
+            rotateTransform.Angle = angle;
+            _angle = angle;
         }
 
         public void AddBeam(Beam beam, Global.Direction direction)
         {
-            throw new NotImplementedException();
+            var member = new Member(beam, direction);
+            if (!Members.Contains(member))
+            {
+                Members.Add(member);
+
+                if (Members.Count == 1)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            Canvas.SetLeft(this, beam.LeftPoint.X - Width/2);
+
+                            Canvas.SetTop(this, beam.LeftPoint.Y - Height);
+
+                            beam.LeftSide = this;
+
+                            //Add rotational dof member
+                            var ldofmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(ldofmember);
+
+                            //beam.IsBound = true;
+
+                            break;
+
+                        case Direction.Right:
+
+                            Canvas.SetLeft(this, beam.RightPoint.X - Width/2);
+
+                            Canvas.SetTop(this, beam.RightPoint.Y - Height);
+
+                            beam.RightSide = this;
+
+                            var rdofmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(rdofmember);
+
+                            //beam.IsBound = true;
+
+                            break;
+                    }
+
+                    SetAngle(beam.Angle);
+                }
+                else
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            beam.IsBound = true;
+
+                            //Add rotational dof member
+                            var ldofmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(ldofmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            beam.IsBound = true;
+
+                            var rdofmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(rdofmember);
+
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                MyDebug.WriteWarning("the beam is already added!");
+            }
         }
 
         public void RemoveBeam(Beam beam)
         {
-            throw new NotImplementedException();
+            Member remove = new Member();
+            foreach (var member in Members)
+            {
+                if (member.Beam.Equals(beam))
+                {
+                    remove = member;
+                    break;
+                }
+            }
+            
+            foreach (var dofmember in DegreeOfFreedoms[0].Members)
+            {
+                if (Equals(dofmember.Beam, remove.Beam))
+                {
+                    DegreeOfFreedoms[0].Members.Remove(dofmember);
+                }
+            }
+            Members.Remove(remove);
         }
 
         public void SetBeam(Beam beam, Global.Direction direction)
         {
-            throw new NotImplementedException();
+            var member = new Member(beam, direction);
+            if (!Members.Contains(member))
+            {
+                Members.Add(member);
+
+                if (Members.Count == 1)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            var ldofmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(ldofmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            var rdofmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(rdofmember);
+
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            beam.IsBound = true;
+
+                            var ldofmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(ldofmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            beam.IsBound = true;
+
+                            var rdofmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[0].Members.Add(rdofmember);
+
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                MyDebug.WriteWarning("the beam is already added!");
+            }
         }
     }
 }

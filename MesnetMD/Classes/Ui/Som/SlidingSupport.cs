@@ -11,18 +11,26 @@ namespace MesnetMD.Classes.Ui.Som
 {
     public class SlidingSupport : SupportItem, ISomItem, ISupportItem, IFreeSupportItem
     {
-        public SlidingSupport()
+        public SlidingSupport() : base(ObjectType.SlidingSupport)
         {
             InitializeComponent();
             Members = new List<Member>();
             Name = "Sliding Support " + SupportId;
+            var hdof = new DOF(Global.DOFType.Horizontal);
+            var rdof = new DOF(Global.DOFType.Rotational);
+            DegreeOfFreedoms.Add(hdof);
+            DegreeOfFreedoms.Add(rdof);
         }
 
-        public SlidingSupport(Canvas canvas)
+        public SlidingSupport(Canvas canvas) : base(ObjectType.SlidingSupport)
         {
             InitializeComponent();
             Members = new List<Member>();
             Name = "Sliding Support " + SupportId;
+            var hdof = new DOF(Global.DOFType.Horizontal);
+            var rdof = new DOF(Global.DOFType.Rotational);
+            DegreeOfFreedoms.Add(hdof);
+            DegreeOfFreedoms.Add(rdof);
             canvas.Children.Add(this);
             AddObject(this);
         }
@@ -31,8 +39,11 @@ namespace MesnetMD.Classes.Ui.Som
         {
             Width = 26;
             Height = 16;
-            rotateTransform = new RotateTransform(13, 0, 0);
-            LayoutTransform = rotateTransform;
+            rotateTransform = new RotateTransform();
+            rotateTransform.CenterX = Width / 2;
+            rotateTransform.CenterY = Height;
+            rotateTransform.Angle = 0;
+            RenderTransform = rotateTransform;
             createtriangle();
             createellipses();
             createcore();
@@ -44,13 +55,14 @@ namespace MesnetMD.Classes.Ui.Som
         private void createtriangle()
         {
             _triangle = new Polygon();
-            _triangle.Points.Add(new Point(13, 0));
-            _triangle.Points.Add(new Point(4, 16));
-            _triangle.Points.Add(new Point(22, 16));
-            _triangle.Points.Add(new Point(13, 0));
-            _triangle.Points.Add(new Point(6.5, 14.5));
-            _triangle.Points.Add(new Point(19.5, 14.5));
-            _triangle.Points.Add(new Point(13, 3));
+            _triangle.Points.Add(new Point(13, 16));
+            _triangle.Points.Add(new Point(4, 0));
+            _triangle.Points.Add(new Point(22, 0));
+            _triangle.Points.Add(new Point(13, 16));
+            _triangle.Points.Add(new Point(13, 13));
+            _triangle.Points.Add(new Point(6.5, 1.5));
+            _triangle.Points.Add(new Point(19.5, 1.5));
+            _triangle.Points.Add(new Point(13, 13));
             _triangle.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_triangle);
         }
@@ -80,11 +92,11 @@ namespace MesnetMD.Classes.Ui.Som
         private void createcore()
         {
             _core = new Polygon();
-            _core.Points.Add(new Point(13, 3));
-            _core.Points.Add(new Point(6.5, 14.5));
-            _core.Points.Add(new Point(19.5, 14.5));
-            _core.Points.Add(new Point(13, 3));
-            _core.Points.Add(new Point(6.5, 14.5));
+            _core.Points.Add(new Point(13, 13));
+            _core.Points.Add(new Point(6.5, 1.5));
+            _core.Points.Add(new Point(19.5, 1.5));
+            _core.Points.Add(new Point(13, 13));
+            _core.Points.Add(new Point(6.5, 1.5));
             _core.Fill = new SolidColorBrush(Colors.Transparent);
             Children.Add(_core);
         }
@@ -110,57 +122,303 @@ namespace MesnetMD.Classes.Ui.Som
 
         public void Select()
         {
-            throw new NotImplementedException();
+            _triangle.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _e1.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _e2.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _selected = true;
         }
 
         public void UnSelect()
         {
-            throw new NotImplementedException();
+            _triangle.Fill = new SolidColorBrush(Colors.Black);
+            _e1.Fill = new SolidColorBrush(Colors.Black);
+            _e2.Fill = new SolidColorBrush(Colors.Black);
+            _selected = false;
         }
 
         public void ResetSolution()
         {
-            throw new NotImplementedException();
+            //todo: implement reset mechanism
         }
 
         public void Add(Canvas canvas, double leftpos, double toppos)
         {
-            throw new NotImplementedException();
+            canvas.Children.Add(this);
+
+            Canvas.SetLeft(this, leftpos);
+
+            Canvas.SetTop(this, toppos);
         }
 
         public void UpdatePosition(Beam beam)
         {
-            throw new NotImplementedException();
+            foreach (Member member in Members)
+            {
+                if (member.Beam == beam)
+                {
+                    switch (member.Direction)
+                    {
+                        case Direction.Left:
+
+                            Canvas.SetLeft(this, beam.LeftPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.LeftPoint.Y - Height);
+
+                            beam.LeftSide = this;
+
+                            break;
+
+                        case Direction.Right:
+
+                            Canvas.SetLeft(this, beam.RightPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.RightPoint.Y - Height);
+
+                            beam.RightSide = this;
+
+                            break;
+                    }
+                    SetAngle(beam.Angle);
+                }
+            }
         }
 
         public void SetPosition(double x, double y)
         {
-            throw new NotImplementedException();
+            var left = x - Width / 2;
+            var right = y - Height / 2;
+
+            Canvas.SetLeft(this, left);
+
+            Canvas.SetTop(this, right);
+
+            MyDebug.WriteInformation("Position has been set : " + left + " : " + right);
         }
 
         public void SetPosition(Point point)
         {
-            throw new NotImplementedException();
+            var left = point.X - Width / 2;
+            var right = point.Y - Height / 2;
+
+            Canvas.SetLeft(this, left);
+
+            Canvas.SetTop(this, right);
+
+            MyDebug.WriteWarning("Position has been set : " + left + " : " + right);
         }
 
         public void SetAngle(double angle)
         {
-            throw new NotImplementedException();
+            rotateTransform.Angle = angle;
+            _angle = angle;
         }
 
         public void AddBeam(Beam beam, Global.Direction direction)
         {
-            throw new NotImplementedException();
+            var member = new Member(beam, direction);
+            if (!Members.Contains(member))
+            {
+                Members.Add(member);
+
+                if (Members.Count == 1)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            Canvas.SetLeft(this, beam.LeftPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.LeftPoint.Y - Height);
+
+                            beam.LeftSide = this;
+
+                            var lhdmember = new DOFMember(beam, DOFLocation.LeftHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(lhdmember);
+
+                            var lrdmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(lrdmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            Canvas.SetLeft(this, beam.RightPoint.X - Width / 2);
+
+                            Canvas.SetTop(this, beam.RightPoint.Y - Height);
+
+                            beam.RightSide = this;
+
+                            var rhdmember = new DOFMember(beam, DOFLocation.RightHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(rhdmember);
+
+                            var rrdmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(rrdmember);
+
+                            break;
+                    }
+
+                    SetAngle(beam.Angle);
+                }
+                else
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            beam.IsBound = true;
+
+                            var lhdmember = new DOFMember(beam, DOFLocation.LeftHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(lhdmember);
+
+                            var lrdmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(lrdmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            beam.IsBound = true;
+
+                            var rhdmember = new DOFMember(beam, DOFLocation.RightHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(rhdmember);
+
+                            var rrdmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(rrdmember);
+
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                MyDebug.WriteWarning("the beam is already added!");
+            }
         }
 
         public void RemoveBeam(Beam beam)
         {
-            throw new NotImplementedException();
+            Member remove = new Member();
+            foreach (var member in Members)
+            {
+                if (member.Beam.Equals(beam))
+                {
+                    remove = member;
+                    break;
+                }
+            }
+
+            foreach (var dofmember in DegreeOfFreedoms[0].Members)
+            {
+                if (Equals(dofmember.Beam, remove.Beam))
+                {
+                    DegreeOfFreedoms[0].Members.Remove(dofmember);
+                }
+            }
+
+            foreach (var dofmember in DegreeOfFreedoms[1].Members)
+            {
+                if (Equals(dofmember.Beam, remove.Beam))
+                {
+                    DegreeOfFreedoms[1].Members.Remove(dofmember);
+                }
+            }
+            Members.Remove(remove);
         }
 
         public void SetBeam(Beam beam, Global.Direction direction)
         {
-            throw new NotImplementedException();
+            var member = new Member(beam, direction);
+            if (!Members.Contains(member))
+            {
+                Members.Add(member);
+
+                if (Members.Count == 1)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            var lhdmember = new DOFMember(beam, DOFLocation.LeftHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(lhdmember);
+
+                            var lrdmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(lrdmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            var rhdmember = new DOFMember(beam, DOFLocation.RightHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(rhdmember);
+
+                            var rrdmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(rrdmember);
+
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+
+                            beam.LeftSide = this;
+
+                            beam.IsBound = true;
+
+                            var lhdmember = new DOFMember(beam, DOFLocation.LeftHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(lhdmember);
+
+                            var lrdmember = new DOFMember(beam, DOFLocation.LeftRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(lrdmember);
+
+                            break;
+
+                        case Direction.Right:
+
+                            beam.RightSide = this;
+
+                            beam.IsBound = true;
+
+                            var rhdmember = new DOFMember(beam, DOFLocation.RightHorizontal);
+
+                            DegreeOfFreedoms[0].Members.Add(rhdmember);
+
+                            var rrdmember = new DOFMember(beam, DOFLocation.RightRotational);
+
+                            DegreeOfFreedoms[1].Members.Add(rrdmember);
+
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                MyDebug.WriteWarning("the beam is already added!");
+            }
         }
     }
 }

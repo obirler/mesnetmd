@@ -4,14 +4,14 @@ namespace MesnetMD.Classes.Ui
 {
     public class TreeViewSupportItem:TreeViewItem
     {
-        public TreeViewSupportItem(object support)
+        public TreeViewSupportItem(SupportItem support)
         {
             _support = support;
         }
 
-        private object _support;
+        private SupportItem _support;
 
-        public object Support
+        public SupportItem Support
         {
             get { return _support; }
         }

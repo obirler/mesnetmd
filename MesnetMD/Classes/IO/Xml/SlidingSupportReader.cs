@@ -31,13 +31,11 @@ namespace MesnetMD.Classes.IO.Xml
         public SlidingSupportReader(System.Xml.Linq.XElement supportelement)
         {
             _supportelement = supportelement;
-            _support = new SupportManifest();
+            _support = new SlidingSupportManifest();
         }
 
-        public SupportManifest Read()
+        public SlidingSupportManifest Read()
         {
-            _support.Type = "SlidingSupport";
-
             readproperties();
 
             readmembers();
@@ -121,6 +119,6 @@ namespace MesnetMD.Classes.IO.Xml
 
         System.Xml.Linq.XElement _supportelement;
 
-        SupportManifest _support;
+        SlidingSupportManifest _support;
     }
 }

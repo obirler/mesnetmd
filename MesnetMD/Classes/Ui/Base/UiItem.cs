@@ -4,8 +4,13 @@ namespace MesnetMD.Classes.Ui.Base
 {
     public abstract class UiItem : Canvas
     {
-        public UiItem()
-        {           
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UiItem"/> class.
+        /// UiItem is a base class for ui elements that can be in the canvas.
+        /// Beams and all supports and graphics items are derived from this class.
+        /// </summary>
+        protected UiItem()
+        {
         }
 
         private double _leftpos;

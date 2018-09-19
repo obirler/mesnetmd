@@ -131,6 +131,13 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Margin="0,0,5,0" Click="DebugClick"  Style="{DynamicResource RoundCorner}" Height="45" MinWidth="55">
+                <Button.Content>
+                    <TextBlock FontSize="14">Debug</TextBlock>
+                </Button.Content>
+            </Button>
+
             <Button Margin="0,0,5,0" Click="delete_All_Click" Style="{DynamicResource RoundCorner}" Height="45" MinWidth="55">
                 <Button.ToolTip>
                     <ToolTip>
@@ -215,7 +222,7 @@
 
                     </Button>
 
-                    <Button x:Name="slidingsupportbtn" IsEnabled="False" Height="30" Width="30" Visibility="Collapsed" Margin="5,5,5,3" Click="slidingsupportbtn_Click">
+                    <Button x:Name="slidingsupportbtn" IsEnabled="False" Height="30" Width="30" Margin="5,5,5,3" Click="slidingsupportbtn_Click">
 
                         <Button.ToolTip>
                             <ToolTip>
@@ -388,7 +395,11 @@
                             Cursor="Cross"
                             Grid.RowSpan="2">
                             <Viewbox x:Name="viewbox" Canvas.Left="0" Canvas.Top="0" Stretch="Uniform" Height="20">
-                                <TextBlock x:Name="tooltip" Text="" Background="White" Visibility="Collapsed"></TextBlock>
+                                <TextBlock x:Name="tooltip" Text="" Background="White" Visibility="Collapsed">
+                                    <TextBlock.LayoutTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="-1" CenterX="0.5" CenterY="0.5"/>
+                                    </TextBlock.LayoutTransform>
+                                </TextBlock>
                             </Viewbox>
                             <Rectangle x:Name="horizontalrect" Height="1" Fill="Red" Width="50" Canvas.Top="9999.5" Canvas.Left="9975"></Rectangle>
                             <Rectangle x:Name="verticalrect" Height="50" Fill="Red" Width="1" Canvas.Top="9975" Canvas.Left="9999.5"></Rectangle>

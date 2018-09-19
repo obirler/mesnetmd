@@ -43,7 +43,7 @@
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="MoreLinq">
-      <HintPath>..\..\..\..\..\Desktop\Mesnet\mesnet\Mesnet\bin\Debug\MoreLinq.dll</HintPath>
+      <HintPath>..\..\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -71,9 +71,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ZoomAndPan, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\Mesnet\mesnet\Mesnet\bin\Debug\ZoomAndPan.dll</HintPath>
+    <Reference Include="ZoomAndPan">
+      <HintPath>..\..\ZoomAndPan.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -81,12 +80,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Config.cs" />
+    <Compile Include="Classes\IO\Manifest\BasicSupportManifest.cs" />
     <Compile Include="Classes\IO\Manifest\BeamManifest.cs" />
     <Compile Include="Classes\IO\Manifest\LeftFixedSupportManifest.cs" />
+    <Compile Include="Classes\IO\Manifest\ManifestBase.cs" />
     <Compile Include="Classes\IO\Manifest\Member.cs" />
     <Compile Include="Classes\IO\Manifest\RightFixedSupportManifest.cs" />
     <Compile Include="Classes\IO\Manifest\RightFixedSupportReader.cs" />
-    <Compile Include="Classes\IO\Manifest\SupportManifest.cs" />
+    <Compile Include="Classes\IO\Manifest\SlidingSupportManifest.cs" />
     <Compile Include="Classes\IO\Xml\BasicSupportReader.cs" />
     <Compile Include="Classes\IO\Xml\BasicSupportWriter.cs" />
     <Compile Include="Classes\IO\Xml\BeamReader.cs" />
@@ -97,6 +99,8 @@
     <Compile Include="Classes\IO\Xml\RightFixedSupportWriter.cs" />
     <Compile Include="Classes\IO\Xml\SlidingSupportReader.cs" />
     <Compile Include="Classes\IO\Xml\SlidingSupportWriter.cs" />
+    <Compile Include="Classes\Tools\DOF.cs" />
+    <Compile Include="Classes\Tools\GlobalStiffnessMatrix.cs" />
     <Compile Include="Classes\Tools\Member.cs" />
     <Compile Include="Classes\Tools\MyDebug.cs" />
     <Compile Include="Classes\Tools\TestCases.cs" />
@@ -112,6 +116,7 @@
     <Compile Include="Classes\Ui\MouseHandlingMode.cs" />
     <Compile Include="Classes\Ui\ScaleToPercentConverter.cs" />
     <Compile Include="Classes\Ui\Base\SupportItem.cs" />
+    <Compile Include="Classes\Ui\Som\FictionalSupport.cs" />
     <Compile Include="Classes\Ui\TreeHandler.cs" />
     <Compile Include="Classes\Ui\TreeViewBeamItem.cs" />
     <Compile Include="Classes\Ui\TreeViewSupportItem.cs" />

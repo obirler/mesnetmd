@@ -347,6 +347,25 @@ namespace MesnetMD.Classes.Math
             }
         }
 
+        public double PreciseMin
+        {
+            get
+            {
+                double result = Double.MaxValue;
+                double polymax = 0;
+
+                foreach (Poly poly in List)
+                {
+                    polymax = poly.Minimum(poly.StartPoint, poly.EndPoint, 15);
+                    if (polymax < result)
+                    {
+                        result = polymax;
+                    }
+                }
+                return result;
+            }
+        }
+
         public double MinLocation
         {
             get

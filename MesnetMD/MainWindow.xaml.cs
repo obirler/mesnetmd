@@ -34,6 +34,7 @@ using MesnetMD.Classes.IO.Xml;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui;
+using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Graphics;
 using MesnetMD.Classes.Ui.Som;
 using MesnetMD.Properties;
@@ -109,7 +110,7 @@ namespace MesnetMD
 
         private Beam assemblybeam;
 
-        public object selectesupport;
+        public SupportItem selectesupport;
 
         private int beamcount = 0;
 
@@ -393,6 +394,7 @@ namespace MesnetMD
                 Canvas.SetLeft(verticalrect, 10000 - verticalrect.Width / 2);
             }
         }
+
         /// <summary>
         /// Event raised by rotating the mouse wheel
         /// </summary>
@@ -678,9 +680,7 @@ namespace MesnetMD
             if (mouseuppoint.Equals(mousedownpoint))
             {
                 MyDebug.WriteInformation("beam core clicked");
-                var grid1 = core.Parent as Grid;
-                var grid2 = grid1.Parent as Grid;
-                var beam = grid2.Parent as Beam;
+                var beam = core.Parent as Beam;
                 if (beam.IsSelected())
                 {
                     MyDebug.WriteInformation("beam is already selected");
@@ -743,13 +743,18 @@ namespace MesnetMD
 
             origContentMouseDownPoint = curContentPoint;
 
-            foreach (object item in Global.Objects)
+            foreach (var item in Global.Objects)
             {
-                switch (item.GetType().Name)
+                if (item.Value is SomItem)
+                {
+                    var somitem = item.Value as SomItem;
+                    somitem.Move(DragVector);
+                }
+                /*switch (Global.GetObjectType(item))
                 {
                     case "Beam":
 
-                        var beam = item as Beam;
+                        var beam = item.Value as Beam;
 
                         beam.Move(DragVector);
 
@@ -757,12 +762,12 @@ namespace MesnetMD
 
                     default:
 
-                        var uielement = item as UIElement;
-                        Canvas.SetLeft(uielement, Canvas.GetLeft(uielement) + DragVector.X);
-                        Canvas.SetTop(uielement, Canvas.GetTop(uielement) + DragVector.Y);
+                        var support = item.Value as SupportItem;
+                        Canvas.SetLeft(support, Canvas.GetLeft(support) + DragVector.X);
+                        Canvas.SetTop(support, Canvas.GetTop(support) + DragVector.Y);
                         break;
 
-                }
+                }*/
             }
 
             e.Handled = true;
@@ -771,8 +776,7 @@ namespace MesnetMD
         public void StartCircleMouseDown(object sender, MouseButtonEventArgs e)
         {
             var ellipse = sender as Ellipse;
-            var grid = ellipse.Parent as Grid;
-            var beam = grid.Parent as Beam;
+            var beam = ellipse.Parent as Beam;
 
             MyDebug.WriteInformation("Left circle selected");
 
@@ -791,8 +795,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.LeftSide != null && beam.LeftSide != null)
                                     {
-                                        if (Global.GetObjectType(assemblybeam.LeftSide) != Global.ObjectType.LeftFixedSupport &&
-                                            Global.GetObjectType(beam.LeftSide) != Global.ObjectType.LeftFixedSupport)
+                                        if (assemblybeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport &&
+                                            beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                                         {
                                             SetMouseHandlingMode("StartCircle_MouseDown",
                                                 MouseHandlingMode.CircularBeamConnection);
@@ -853,8 +857,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.RightSide != null && beam.LeftSide != null)
                                     {
-                                        if (Global.GetObjectType(assemblybeam.RightSide) != Global.ObjectType.RightFixedSupport &&
-                                            Global.GetObjectType(beam.LeftSide) != Global.ObjectType.LeftFixedSupport)
+                                        if (assemblybeam.RightSide.Type != Global.ObjectType.RightFixedSupport &&
+                                            beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                                         {
                                             SetMouseHandlingMode("StartCircle_MouseDown",
                                                 MouseHandlingMode.CircularBeamConnection);
@@ -924,7 +928,7 @@ namespace MesnetMD
                 {
                     //check if there is a fixed support bonded to beam's selected side. If there is, the user should not put any support or beam to selected side, 
                     //so disable the fixed support button
-                    switch (Global.GetObjectType(beam.LeftSide))
+                    switch (beam.LeftSide.Type)
                     {
                         case Global.ObjectType.LeftFixedSupport:
                             btnonlybeammode();
@@ -953,14 +957,13 @@ namespace MesnetMD
 
                 selectedbeam = beam;
             }
-            //e.Handled = true;
+            e.Handled = true;
         }
 
         public void EndCircleMouseDown(object sender, MouseButtonEventArgs e)
         {
             var ellipse = sender as Ellipse;
-            var grid = ellipse.Parent as Grid;
-            var beam = grid.Parent as Beam;
+            var beam = ellipse.Parent as Beam;
 
             MyDebug.WriteInformation("Right circle selected");
 
@@ -979,8 +982,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.LeftSide != null && beam.RightSide != null)
                                     {
-                                        if (Global.GetObjectType(assemblybeam.LeftSide) != Global.ObjectType.LeftFixedSupport &&
-                                            Global.GetObjectType(beam.RightSide) != Global.ObjectType.RightFixedSupport)
+                                        if (assemblybeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport &&
+                                            beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
                                         {
                                             //Both beam is bound. This will be a circular beam system, so the user want to add beam between 
                                             //two selected beam instead of connecting them
@@ -1040,8 +1043,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.RightSide != null && beam.RightSide != null)
                                     {
-                                        if (Global.GetObjectType(assemblybeam.RightSide) != Global.ObjectType.RightFixedSupport &&
-                                            Global.GetObjectType(beam.RightSide) != Global.ObjectType.RightFixedSupport)
+                                        if (assemblybeam.RightSide.Type != Global.ObjectType.RightFixedSupport &&
+                                            beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
                                         {
                                             //Both beam is bound. This will be a circular beam system, so the user want to add beam between 
                                             //two selected beam instead of connecting them
@@ -1111,7 +1114,7 @@ namespace MesnetMD
                 {
                     //check if there is a fixed support bonded to beam's selected side. If there is the user should not put any support selected side, 
                     //so disable the fixed support button
-                    switch (Global.GetObjectType(beam.RightSide))
+                    switch (beam.RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
                             btnonlybeammode();
@@ -1250,7 +1253,7 @@ namespace MesnetMD
         private void beambtn_Click(object sender, RoutedEventArgs e)
         {
             //Check if there are any beam in the canvas
-            if (Global.Objects.Any(x => Global.GetObjectType(x.Value) == Global.ObjectType.Beam))
+            if (Global.Objects.Any(x => x.Value.Type is Global.ObjectType.Beam))
             {
                 var beamdialog = new BeamPrompt();
                 beamdialog.maxstresstbx.Text = _maxstress.ToString();
@@ -1269,7 +1272,7 @@ namespace MesnetMD
 
                                 if (selectedbeam.LeftSide != null)
                                 {
-                                    if (Global.GetObjectType(selectedbeam.LeftSide) != Global.ObjectType.LeftFixedSupport)
+                                    if (selectedbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                                     {
                                         beam.AddElasticity(beamdialog.beamelasticitymodulus);
                                         beam.AddInertia(beamdialog.inertiappoly);
@@ -1305,7 +1308,7 @@ namespace MesnetMD
 
                                 if (selectedbeam.RightSide != null)
                                 {
-                                    if (Global.GetObjectType(selectedbeam.RightSide) != Global.ObjectType.RightFixedSupport)
+                                    if (selectedbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
                                     {
                                         beam.AddElasticity(beamdialog.beamelasticitymodulus);
                                         beam.AddInertia(beamdialog.inertiappoly);
@@ -1821,7 +1824,7 @@ namespace MesnetMD
 
             if (beam.LeftSide != null)
             {
-                switch (Global.GetObjectType(beam.LeftSide))
+                switch (beam.LeftSide.Type)
                 {
                     case Global.ObjectType.BasicSupport:
 
@@ -1851,7 +1854,7 @@ namespace MesnetMD
 
             if (beam.RightSide != null)
             {
-                switch (Global.GetObjectType(beam.RightSide))
+                switch (beam.RightSide.Type)
                 {
                     case Global.ObjectType.BasicSupport:
 
@@ -1902,7 +1905,7 @@ namespace MesnetMD
                     bool handled = false;
                     if (beam.RightSide != null)
                     {
-                        switch (Global.GetObjectType(beam.RightSide))
+                        switch (beam.RightSide.Type)
                         {
                             case Global.ObjectType.BasicSupport:
                                 {
@@ -1948,7 +1951,7 @@ namespace MesnetMD
                     {
                         if (beam.LeftSide != null)
                         {
-                            switch (Global.GetObjectType(beam.LeftSide))
+                            switch (beam.LeftSide.Type)
                             {
                                 case Global.ObjectType.BasicSupport:
                                     {
@@ -2080,7 +2083,7 @@ namespace MesnetMD
                 {
                     if (selectedbeam.RightSide != null)
                     {
-                        switch (Global.GetObjectType(selectedbeam.RightSide))
+                        switch (selectedbeam.RightSide.Type)
                         {
                             case Global.ObjectType.BasicSupport:
                                 var bsr = selectedbeam.RightSide as BasicSupport;
@@ -2119,7 +2122,7 @@ namespace MesnetMD
 
                     if (selectedbeam.LeftSide != null)
                     {
-                        switch (Global.GetObjectType(selectedbeam.LeftSide))
+                        switch (selectedbeam.LeftSide.Type)
                         {
                             case Global.ObjectType.BasicSupport:
                                 var bsl = selectedbeam.LeftSide as BasicSupport;
@@ -2171,7 +2174,7 @@ namespace MesnetMD
         {
             if (selectesupport != null)
             {
-                switch (Global.GetObjectType(selectesupport))
+                switch (selectesupport.Type)
                 {
                     case Global.ObjectType.BasicSupport:
                         var bs = selectesupport as BasicSupport;
@@ -2457,12 +2460,13 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
-                        Beam beam = (Beam)item.Value;
+                        Beam beam = item.Value as Beam;
                         beam.UnSelect();
+
                         break;
 
                     case Global.ObjectType.SlidingSupport:
@@ -2642,9 +2646,8 @@ namespace MesnetMD
 
         public void distloadmousemove(object sender, MouseEventArgs e)
         {
-            Canvas loadcanvas = (sender as CardinalSplineShape).Parent as Canvas;
-            DistributedLoad load = loadcanvas.Parent as DistributedLoad;
-            var mousepoint = e.GetPosition(loadcanvas);
+            DistributedLoad load = (sender as CardinalSplineShape).Parent as DistributedLoad;
+            var mousepoint = e.GetPosition(load);
             var globalmousepoint = e.GetPosition(canvas);
             Canvas.SetTop(viewbox, globalmousepoint.Y + 12 / Global.Scale);
             Canvas.SetLeft(viewbox, globalmousepoint.X + 12 / Global.Scale);
@@ -2654,9 +2657,8 @@ namespace MesnetMD
 
         public void inertiamousemove(object sender, MouseEventArgs e)
         {
-            Canvas inertiacanvas = (sender as CardinalSplineShape).Parent as Canvas;
-            Inertia inertia = inertiacanvas.Parent as Inertia;
-            var mousepoint = e.GetPosition(inertiacanvas);
+            Inertia inertia = (sender as CardinalSplineShape).Parent as Inertia;
+            var mousepoint = e.GetPosition(inertia);
             var globalmousepoint = e.GetPosition(canvas);
             Canvas.SetTop(viewbox, globalmousepoint.Y + 12 / Global.Scale);
             Canvas.SetLeft(viewbox, globalmousepoint.X + 12 / Global.Scale);
@@ -2666,9 +2668,8 @@ namespace MesnetMD
 
         public void momentmousemove(object sender, MouseEventArgs e)
         {
-            Canvas momentcanvas = (sender as CardinalSplineShape).Parent as Canvas;
-            Moment moment = momentcanvas.Parent as Moment;
-            var mousepoint = e.GetPosition(momentcanvas);
+            Moment moment = (sender as CardinalSplineShape).Parent as Moment;
+            var mousepoint = e.GetPosition(moment);
             var globalmousepoint = e.GetPosition(canvas);
             Canvas.SetTop(viewbox, globalmousepoint.Y + 12 / Global.Scale);
             Canvas.SetLeft(viewbox, globalmousepoint.X + 12 / Global.Scale);
@@ -2678,9 +2679,8 @@ namespace MesnetMD
 
         public void forcemousemove(object sender, MouseEventArgs e)
         {
-            Canvas forcecanvas = (sender as CardinalSplineShape).Parent as Canvas;
-            Force force = forcecanvas.Parent as Force;
-            var mousepoint = e.GetPosition(forcecanvas);
+            Force force = (sender as CardinalSplineShape).Parent as Force;
+            var mousepoint = e.GetPosition(force);
             var globalmousepoint = e.GetPosition(canvas);
             Canvas.SetTop(viewbox, globalmousepoint.Y + 12 / Global.Scale);
             Canvas.SetLeft(viewbox, globalmousepoint.X + 12 / Global.Scale);
@@ -2927,7 +2927,7 @@ namespace MesnetMD
             System.Threading.Tasks.Parallel.ForEach(Global.Objects, (item) =>
             {
                 Global.SetDecimalSeperator();
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -2950,7 +2950,7 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -3650,10 +3650,10 @@ namespace MesnetMD
         /// </summary>
         /// <param name="support">The support.</param>
         /// <returns>The name of the support.</returns>
-        private string SupportName(object support)
+        private string SupportName(SupportItem support)
         {
             string name = null;
-            switch (Global.GetObjectType(support))
+            switch (support.Type)
             {
                 case Global.ObjectType.LeftFixedSupport:
 
@@ -3921,16 +3921,18 @@ namespace MesnetMD
                 {
                     if (openxmlio.ReadXml(canvas, path, this))
                     {
-                        foreach (var item in Global.Objects)
+#if (DEBUG)
+                        /*foreach (var item in Global.Objects)
                         {
-                            if (Global.GetObjectType(item) == Global.ObjectType.Beam)
+                            if (item.Value.Type is Global.ObjectType.Beam)
                             {
                                 var beam = item.Value as Beam;
-#if (DEBUG)
-                                //beam.ShowCorners(5, 5);
-#endif
+
+                                beam.ShowCorners(5, 5);
+
                             }
-                        }
+                        }*/
+#endif
                         _treehandler.UpdateAllBeamTree();
                         _treehandler.UpdateAllSupportTree();
                         MyDebug.WriteInformation("xml file has been read from " + path);
@@ -4167,9 +4169,9 @@ namespace MesnetMD
 
         private void clearcanvas()
         {
-            foreach (object item in Global.Objects)
+            foreach (KeyValuePair<int, SomItem> item in Global.Objects)
             {
-                canvas.Children.Remove(item as UIElement);
+                canvas.Children.Remove(item.Value);
             }
         }
 
@@ -4198,7 +4200,7 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                if (Global.GetObjectType(item) == Global.ObjectType.Beam)
+                if (item.Value.Type is Global.ObjectType.Beam)
                 {
                     var beam = item.Value as Beam;
                     beam.ShowCorners(5, 5);
@@ -4222,7 +4224,7 @@ namespace MesnetMD
             //check if there are any beam whose one of end is not bounded
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -4247,7 +4249,7 @@ namespace MesnetMD
             var loaded = false;
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -4307,7 +4309,7 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -4372,9 +4374,10 @@ namespace MesnetMD
             _uptoolbar.CollapseForce();
             _uptoolbar.CollapseMoment();
             _uptoolbar.CollapseStress();
+
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -4414,6 +4417,11 @@ namespace MesnetMD
             }
 
             MyDebug.WriteInformation("Solution reset");
+        }
+
+        private void DebugClick(object sender, RoutedEventArgs e)
+        {
+            GlobalStiffnessMatrix.Calculate();
         }
     }
 }

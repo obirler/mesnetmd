@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="{DynamicResource message}" Height="140" Width="302" Icon="/Assets/applogo.ico" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" KeyDown="Window_KeyDown">
+        Title="{DynamicResource message}" Height="150" Width="312" Icon="/Assets/applogo.ico" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" KeyDown="Window_KeyDown">
     <StackPanel>
         <Grid Height="50" Margin="10">
             <TextBlock x:Name="Message" TextAlignment="Center" Text="Hello, world!" VerticalAlignment="Center" TextWrapping="Wrap" Width="276"/>

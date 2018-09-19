@@ -35,8 +35,6 @@ namespace MesnetMD.Classes
 {
     public static class Global
     {
-        public static string VERSION_NUMBER = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
         public static Dictionary<int, SomItem> Objects = new Dictionary<int, SomItem>();
 
         public static void UpdateMaxInertia()
@@ -471,7 +469,7 @@ namespace MesnetMD.Classes
             return null;
         }
 
-        public static object GetObject(int id)
+        public static SomItem GetObject(int id)
         {
             return Objects[id];
         }
@@ -506,7 +504,8 @@ namespace MesnetMD.Classes
             BasicSupoort,
             SlidingSupport,
             LeftFixedSupport,
-            RightFixedSupport
+            RightFixedSupport,
+            FictionalSupport
         }
 
         public enum CalculationType
@@ -522,6 +521,7 @@ namespace MesnetMD.Classes
             RightFixedSupport,
             BasicSupport,
             SlidingSupport,
+            FictionalSupport,
             None
         }
 
@@ -549,31 +549,30 @@ namespace MesnetMD.Classes
             GraphicItem
         }
 
-        public static ObjectType GetObjectType(object obj)
+        public enum ManifestType
         {
-            var pair = obj is KeyValuePair<int, UiItem> ? (KeyValuePair<int, UiItem>) obj : new KeyValuePair<int, UiItem>();
+            BeamManifest,
+            BasicSupportManifest,
+            SlidingSupportManifest,
+            LeftFixedSupportManifest,
+            RightFixedSupportManifest
+        }
 
-            if (pair.Value is Beam)
-            {
-                return ObjectType.Beam;
-            }
-            if (pair.Value is BasicSupport)
-            {
-                return ObjectType.BasicSupport;
-            }
-            if (pair.Value is LeftFixedSupport)
-            {
-                return ObjectType.LeftFixedSupport;
-            }
-            if (pair.Value is RightFixedSupport)
-            {
-                return ObjectType.RightFixedSupport;
-            }
-            if (pair.Value is SlidingSupport)
-            {
-                return ObjectType.SlidingSupport;
-            }
-            return ObjectType.None;
+        public enum DOFType
+        {
+            Horizontal,
+            Vertical,
+            Rotational
+        }
+
+        public enum DOFLocation
+        {
+            LeftHorizontal=1,
+            LeftVertical=2,
+            LeftRotational=3,
+            RightHorizontal=4,
+            RightVertical=5,
+            RightRotational=6
         }
 
         public static void WritePPolytoConsole(string message, PiecewisePoly ppoly)
@@ -588,10 +587,6 @@ namespace MesnetMD.Classes
 
         public static int SupportCount = 0;
 
-        public static double SimpsonStep = 0.0001;
-
-        public static double CrossLoopTreshold = 0.00001;
-
         public struct Func
         {
             public int id;
@@ -601,7 +596,6 @@ namespace MesnetMD.Classes
 
         public static List<string> LogList = new List<string>();
 
-        public static CalculationType Calculation = CalculationType.SingleThreaded;
 
         #region Definitions
 
@@ -620,20 +614,6 @@ namespace MesnetMD.Classes
         public static double MaxDistLoad = Double.MinValue;
 
         public static double MaxConcLoad = Double.MinValue;
-
-        public static SolidColorBrush InertiaColor = new SolidColorBrush(Colors.Indigo);
-
-        public static SolidColorBrush ConcentratedLoadColor = new SolidColorBrush(Colors.Black);
-
-        public static SolidColorBrush DistributedLoadColor = new SolidColorBrush(Colors.Black);
-
-        public static SolidColorBrush ForceColor = new SolidColorBrush(Colors.Blue);
-
-        public static SolidColorBrush MomentColor = new SolidColorBrush(Colors.Red);
-
-        public static SolidColorBrush StressUnderColor = new SolidColorBrush(Colors.Green);
-
-        public static SolidColorBrush StressOverColor = new SolidColorBrush(Colors.Red);
 
         #endregion
     }

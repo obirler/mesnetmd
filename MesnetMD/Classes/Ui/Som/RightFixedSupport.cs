@@ -10,13 +10,13 @@ namespace MesnetMD.Classes.Ui.Som
 {
     public class RightFixedSupport : SupportItem, ISomItem, ISupportItem, IFixedSupportItem
     {
-        public RightFixedSupport()
+        public RightFixedSupport() : base(ObjectType.RightFixedSupport)
         {
             InitializeComponent();
             Name = "Right Fixed Support " + SupportId;
         }
 
-        public RightFixedSupport(Canvas canvas)
+        public RightFixedSupport(Canvas canvas) : base(ObjectType.RightFixedSupport)
         {
             InitializeComponent();
             canvas.Children.Add(this);
@@ -29,8 +29,11 @@ namespace MesnetMD.Classes.Ui.Som
         {
             Width = 7;
             Height = 27;
-            rotateTransform = new RotateTransform(7, 13, 0);
-            LayoutTransform = rotateTransform;
+            rotateTransform = new RotateTransform();
+            rotateTransform.CenterX = 0;
+            rotateTransform.CenterY = Height / 2;
+            rotateTransform.Angle = 0;
+            RenderTransform = rotateTransform;
             createpolygons();
             createcore();
         }
@@ -38,50 +41,50 @@ namespace MesnetMD.Classes.Ui.Som
         private void createpolygons()
         {
             _p1 = new Polygon();
-            _p1.Points.Add(new Point(0, 0));
             _p1.Points.Add(new Point(0, 27));
-            _p1.Points.Add(new Point(2, 27));
+            _p1.Points.Add(new Point(0, 0));
             _p1.Points.Add(new Point(2, 0));
+            _p1.Points.Add(new Point(2, 27));
             _p1.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p1);
 
             _p2 = new Polygon();
-            _p2.Points.Add(new Point(1, 0));
-            _p2.Points.Add(new Point(7, 6));
-            _p2.Points.Add(new Point(6, 7));
-            _p2.Points.Add(new Point(1, 2.2));
+            _p2.Points.Add(new Point(1, 27));
+            _p2.Points.Add(new Point(7, 21));
+            _p2.Points.Add(new Point(6, 20));
+            _p2.Points.Add(new Point(1, 24.8));
             _p2.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p2);
 
             _p3 = new Polygon();
-            _p3.Points.Add(new Point(1, 5));
-            _p3.Points.Add(new Point(7, 11));
-            _p3.Points.Add(new Point(6, 12));
-            _p3.Points.Add(new Point(1, 7.2));
+            _p3.Points.Add(new Point(1, 22));
+            _p3.Points.Add(new Point(7, 16));
+            _p3.Points.Add(new Point(6, 15));
+            _p3.Points.Add(new Point(1, 19.8));
             _p3.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p3);
 
             _p4 = new Polygon();
-            _p4.Points.Add(new Point(1, 10));
-            _p4.Points.Add(new Point(7, 16));
-            _p4.Points.Add(new Point(6, 17));
-            _p4.Points.Add(new Point(1, 12.2));
+            _p4.Points.Add(new Point(1, 17));
+            _p4.Points.Add(new Point(7, 11));
+            _p4.Points.Add(new Point(6, 10));
+            _p4.Points.Add(new Point(1, 14.8));
             _p4.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p4);
 
             _p5 = new Polygon();
-            _p5.Points.Add(new Point(1, 15));
-            _p5.Points.Add(new Point(7, 21));
-            _p5.Points.Add(new Point(6, 22));
-            _p5.Points.Add(new Point(1, 17.2));
+            _p5.Points.Add(new Point(1, 12));
+            _p5.Points.Add(new Point(7, 6));
+            _p5.Points.Add(new Point(6, 5));
+            _p5.Points.Add(new Point(1, 9.8));
             _p5.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p5);
 
             _p6 = new Polygon();
-            _p6.Points.Add(new Point(1, 20));
-            _p6.Points.Add(new Point(7, 26));
-            _p6.Points.Add(new Point(6, 27));
-            _p6.Points.Add(new Point(1, 22.2));
+            _p6.Points.Add(new Point(1, 7));
+            _p6.Points.Add(new Point(7, 1));
+            _p6.Points.Add(new Point(6, 0));
+            _p6.Points.Add(new Point(1, 4.8));
             _p6.Fill = new SolidColorBrush(Colors.Black);
             Children.Add(_p6);
         }
@@ -89,11 +92,11 @@ namespace MesnetMD.Classes.Ui.Som
         private void createcore()
         {
             _core = new Polygon();
-            _core.Points.Add(new Point(1, 0));
-            _core.Points.Add(new Point(7, 0));
-            _core.Points.Add(new Point(7, 27));
             _core.Points.Add(new Point(1, 27));
+            _core.Points.Add(new Point(7, 27));
+            _core.Points.Add(new Point(7, 0));
             _core.Points.Add(new Point(1, 0));
+            _core.Points.Add(new Point(1, 27));
             _core.Fill = new SolidColorBrush(Colors.Transparent);
             Children.Add(_core);
         }
@@ -125,47 +128,83 @@ namespace MesnetMD.Classes.Ui.Som
 
         public void Select()
         {
-            throw new NotImplementedException();
+            _p1.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _p2.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _p3.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _p4.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _p5.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _p6.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
+            _selected = true;
         }
 
         public void UnSelect()
         {
-            throw new NotImplementedException();
+            _p1.Fill = new SolidColorBrush(Colors.Black);
+            _p2.Fill = new SolidColorBrush(Colors.Black);
+            _p3.Fill = new SolidColorBrush(Colors.Black);
+            _p4.Fill = new SolidColorBrush(Colors.Black);
+            _p5.Fill = new SolidColorBrush(Colors.Black);
+            _p6.Fill = new SolidColorBrush(Colors.Black);
+            _selected = false;
         }
 
         public void ResetSolution()
         {
-            throw new NotImplementedException();
+            //todo: implement reset mechanism
         }
 
         public void Add(Canvas canvas, double leftpos, double toppos)
         {
-            throw new NotImplementedException();
+            canvas.Children.Add(this);
+
+            Canvas.SetLeft(this, leftpos);
+
+            Canvas.SetTop(this, toppos);
         }
 
         public void UpdatePosition(Beam beam)
         {
-            throw new NotImplementedException();
+            Canvas.SetLeft(this, beam.RightPoint.X);
+
+            Canvas.SetTop(this, beam.RightPoint.Y - Height / 2);
+
+            SetAngle(beam.Angle);
         }
 
         public void SetPosition(double x, double y)
         {
-            throw new NotImplementedException();
+            var left = x - Width / 2;
+            var right = y - Height / 2;
+
+            Canvas.SetLeft(this, left);
+
+            Canvas.SetTop(this, right);
+
+            MyDebug.WriteInformation("Position has been set : " + left + " : " + right);
         }
 
         public void SetPosition(Point point)
         {
-            throw new NotImplementedException();
+            SetPosition(point.X, point.Y);
         }
 
         public void SetAngle(double angle)
         {
-            throw new NotImplementedException();
+            rotateTransform.Angle = angle;
+            _angle = angle;
         }
 
         public void AddBeam(Beam beam)
         {
-            throw new NotImplementedException();
+            Canvas.SetLeft(this, beam.RightPoint.X);
+
+            Canvas.SetTop(this, beam.RightPoint.Y - Height/2);
+
+            Member = new Member(beam, Direction.Right);
+
+            beam.RightSide = this;
+
+            SetAngle(beam.Angle);
         }
     }
 }

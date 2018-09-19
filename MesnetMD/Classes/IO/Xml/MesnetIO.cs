@@ -26,6 +26,8 @@ using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
 using MesnetMD.Classes.IO.Manifest;
+using MesnetMD.Classes.Ui;
+using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.IO.Xml
@@ -49,13 +51,13 @@ namespace MesnetMD.Classes.IO.Xml
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Objects");
 
-                foreach (object item in Global.Objects)
+                foreach (KeyValuePair<int, SomItem> item in Global.Objects)
                 {
-                    switch (Global.GetObjectType(item))
+                    switch (item.Value.Type)
                     {
                         case Global.ObjectType.Beam:
 
-                            var beam = item as Beam;
+                            var beam = item.Value as Beam;
 
                             var beamwriter = new BeamWriter(writer, beam);
 
@@ -65,7 +67,7 @@ namespace MesnetMD.Classes.IO.Xml
 
                         case Global.ObjectType.BasicSupport:
 
-                            var bs = item as BasicSupport;
+                            var bs = item.Value as BasicSupport;
 
                             var bswriter = new BasicSupportWriter(writer, bs);
 
@@ -75,7 +77,7 @@ namespace MesnetMD.Classes.IO.Xml
 
                         case Global.ObjectType.SlidingSupport:
 
-                            var ss = item as SlidingSupport;
+                            var ss = item.Value as SlidingSupport;
 
                             var sswriter = new SlidingSupportWriter(writer, ss);
 
@@ -85,7 +87,7 @@ namespace MesnetMD.Classes.IO.Xml
 
                         case Global.ObjectType.LeftFixedSupport:
 
-                            var ls = item as LeftFixedSupport;
+                            var ls = item.Value as LeftFixedSupport;
 
                             var lswiter = new LeftFixedSupportWriter(writer, ls);
 
@@ -95,7 +97,7 @@ namespace MesnetMD.Classes.IO.Xml
 
                         case Global.ObjectType.RightFixedSupport:
 
-                            var rs = item as RightFixedSupport;
+                            var rs = item.Value as RightFixedSupport;
 
                             var rswriter = new RightFixedSupportWriter(writer, rs);
 
@@ -114,7 +116,7 @@ namespace MesnetMD.Classes.IO.Xml
         {
             _mw = mw;
             _canvas = canvas;
-            manifestlist = new List<object>();
+            manifestlist = new List<ManifestBase>();
 
             XDocument doc;
             try
@@ -170,24 +172,44 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void addtocanvas()
         {
-            foreach(object item in manifestlist)
+            foreach(ManifestBase item in manifestlist)
             {
-                if (item is BeamManifest beammanifest)
+                switch (item.Type)
                 {
-                    addbeam(beammanifest);
+                    case Global.ManifestType.BeamManifest:
+
+                        var beammanifest = item as BeamManifest;
+                        addbeam(beammanifest);
+
+                        break;
+
+                    case Global.ManifestType.BasicSupportManifest:
+
+                        var bsmanifest = item as BasicSupportManifest;
+                        addbasicsupport(bsmanifest);
+
+                        break;
+
+                    case Global.ManifestType.SlidingSupportManifest:
+
+                        var ssmanifest = item as SlidingSupportManifest;
+                        addslidingsupport(ssmanifest);
+
+                        break;
+
+                    case Global.ManifestType.LeftFixedSupportManifest:
+
+                        var lsmanifest = item as LeftFixedSupportManifest;
+                        addleftfixedsupport(lsmanifest);
+                        break;
+
+                    case Global.ManifestType.RightFixedSupportManifest:
+
+                        var rsmanifest = item as RightFixedSupportManifest;
+                        addrightfixedsupport(rsmanifest);
+                        break;
                 }
-                else if(item is SupportManifest bsupportmanifest)
-                {
-                    addsupport(bsupportmanifest);
-                }
-                else if(item is LeftFixedSupportManifest lssupportmanifest)
-                {
-                    addleftfixedsupport(lssupportmanifest);
-                }
-                else if (item is RightFixedSupportManifest rssupportmanifest)
-                {
-                    addrightfixedsupport(rssupportmanifest);
-                }
+
             }
             _canvas.UpdateLayout();
         }
@@ -244,34 +266,26 @@ namespace MesnetMD.Classes.IO.Xml
             Global.AddObject(beam);
         }
 
-        private void addsupport(SupportManifest supportmanifest)
+        private void addbasicsupport(BasicSupportManifest supportmanifest)
         {
-            switch(supportmanifest.Type)
-            {
-                case "BasicSupport":
+            var bs = new BasicSupport();
+            bs.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
+            bs.Id = supportmanifest.Id;
+            bs.SupportId = supportmanifest.SupportId;
+            bs.Name = supportmanifest.Name;
+            bs.SetAngle(supportmanifest.Angle);
+            Global.AddObject(bs);
+        }
 
-                    var bs = new BasicSupport();
-                    bs.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-                    bs.Id = supportmanifest.Id;
-                    bs.SupportId = supportmanifest.SupportId;
-                    bs.Name = supportmanifest.Name;
-                    bs.SetAngle(supportmanifest.Angle);
-                    Global.AddObject(bs);
-
-                    break;
-
-                case "SlidingSupport":
-
-                    var ss = new SlidingSupport();
-                    ss.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-                    ss.Id = supportmanifest.Id;
-                    ss.SupportId = supportmanifest.SupportId;
-                    ss.Name = supportmanifest.Name;
-                    ss.SetAngle(supportmanifest.Angle);
-                    Global.AddObject(ss);
-
-                    break;
-            }
+        private void addslidingsupport(SlidingSupportManifest supportmanifest)
+        {
+            var ss = new SlidingSupport();
+            ss.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
+            ss.Id = supportmanifest.Id;
+            ss.SupportId = supportmanifest.SupportId;
+            ss.Name = supportmanifest.Name;
+            ss.SetAngle(supportmanifest.Angle);
+            Global.AddObject(ss);
         }
 
         private void addleftfixedsupport(LeftFixedSupportManifest supportmanifest)
@@ -298,28 +312,28 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectobjects()
         {
-            foreach(object item in Global.Objects)
+            foreach(KeyValuePair<int, SomItem> item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
-                        connectbeam(item as Beam);
+                        connectbeam(item.Value as Beam);
                         break;
 
                     case Global.ObjectType.BasicSupport:
-                        connectbasicsupport(item as BasicSupport);
+                        connectbasicsupport(item.Value as BasicSupport);
                         break;
 
                     case Global.ObjectType.SlidingSupport:
-                        connectslidingsupport(item as SlidingSupport);
+                        connectslidingsupport(item.Value as SlidingSupport);
                         break;
 
                     case Global.ObjectType.LeftFixedSupport:
-                        connectleftfixedsupport(item as LeftFixedSupport);
+                        connectleftfixedsupport(item.Value as LeftFixedSupport);
                         break;
 
                     case Global.ObjectType.RightFixedSupport:
-                        connectrightfixedsupport(item as RightFixedSupport);
+                        connectrightfixedsupport(item.Value as RightFixedSupport);
                         break;
                 }
             }
@@ -327,17 +341,18 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectbeam(Beam beam)
         {
-            foreach (object manifestitem in manifestlist)
+            foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.GetType().Name)
+                switch (manifestitem.Type)
                 {
-                    case "BeamManifest":
+                    case Global.ManifestType.BeamManifest:
+
                         var beammanifest = manifestitem as BeamManifest;
                         if (beam.Id == beammanifest.Id)
                         {
                             if (beammanifest.Connections.LeftSide != null)
                             {
-                                beam.LeftSide = Global.GetObject(beammanifest.Connections.LeftSide.Id);
+                                beam.LeftSide = Global.GetObject(beammanifest.Connections.LeftSide.Id) as SupportItem;
                             }
                             else
                             {
@@ -346,7 +361,7 @@ namespace MesnetMD.Classes.IO.Xml
 
                             if (beammanifest.Connections.RightSide != null)
                             {
-                                beam.RightSide = Global.GetObject(beammanifest.Connections.RightSide.Id);
+                                beam.RightSide = Global.GetObject(beammanifest.Connections.RightSide.Id) as SupportItem;                             
                             }
                             else
                             {
@@ -361,13 +376,13 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectbasicsupport(BasicSupport support)
         {
-            SupportManifest manifest;
-            foreach (object manifestitem in manifestlist)
+            BasicSupportManifest manifest;
+            foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.GetType().Name)
+                switch (manifestitem.Type)
                 {
-                    case "SupportManifest":
-                        manifest = manifestitem as SupportManifest;
+                    case Global.ManifestType.BasicSupportManifest:
+                        manifest = manifestitem as BasicSupportManifest;
                         if (support.Id == manifest.Id)
                         {
                             foreach(Member item in manifest.Members)
@@ -394,13 +409,13 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectslidingsupport(SlidingSupport support)
         {
-            SupportManifest manifest;
-            foreach (object manifestitem in manifestlist)
+            SlidingSupportManifest manifest;
+            foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.GetType().Name)
+                switch (manifestitem.Type)
                 {
-                    case "SupportManifest":
-                        manifest = manifestitem as SupportManifest;
+                    case Global.ManifestType.SlidingSupportManifest:
+                        manifest = manifestitem as SlidingSupportManifest;
                         if (support.Id == manifest.Id)
                         {
                             foreach (Member item in manifest.Members)
@@ -427,11 +442,11 @@ namespace MesnetMD.Classes.IO.Xml
         private void connectleftfixedsupport(LeftFixedSupport support)
         {
             LeftFixedSupportManifest manifest;
-            foreach (object manifestitem in manifestlist)
+            foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.GetType().Name)
+                switch (manifestitem.Type)
                 {
-                    case "LeftFixedSupportManifest":
+                    case Global.ManifestType.LeftFixedSupportManifest:
                         manifest = manifestitem as LeftFixedSupportManifest;
                         if (support.Id == manifest.Id)
                         {
@@ -449,11 +464,11 @@ namespace MesnetMD.Classes.IO.Xml
         private void connectrightfixedsupport(RightFixedSupport support)
         {
             RightFixedSupportManifest manifest;
-            foreach (object manifestitem in manifestlist)
+            foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.GetType().Name)
+                switch (manifestitem.Type)
                 {
-                    case "RightFixedSupportManifest":
+                    case Global.ManifestType.RightFixedSupportManifest:
                         manifest = manifestitem as RightFixedSupportManifest;
                         if (support.Id == manifest.Id)
                         {
@@ -472,9 +487,9 @@ namespace MesnetMD.Classes.IO.Xml
         {
             Global.BeamCount = 0;
             Global.SupportCount = 0;
-            foreach (object item in Global.Objects)
+            foreach (KeyValuePair<int, SomItem> item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
                         Global.BeamCount++;
@@ -508,9 +523,9 @@ namespace MesnetMD.Classes.IO.Xml
 
             for (int i = 0; i < manifestlist.Count; i++)
             {
-                switch (manifestlist[i].GetType().Name)
+                switch (manifestlist[i].Type)
                 {
-                    case "BeamManifest":
+                    case Global.ManifestType.BeamManifest:
 
                         var beammanifest = manifestlist[i] as BeamManifest;
                         if (beammanifest.Inertias.MaxAbs > Global.MaxInertia)
@@ -539,6 +554,6 @@ namespace MesnetMD.Classes.IO.Xml
 
         private Canvas _canvas;
 
-        private List<object> manifestlist;       
+        private List<ManifestBase> manifestlist;       
     }
 }

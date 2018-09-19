@@ -232,7 +232,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -260,7 +260,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -292,7 +292,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -324,7 +324,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -351,7 +351,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -378,7 +378,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.Beam:
 
@@ -429,7 +429,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -447,7 +447,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -464,7 +464,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("inertiaslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -482,7 +482,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -500,7 +500,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -517,7 +517,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -540,7 +540,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -558,7 +558,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -575,7 +575,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -598,7 +598,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -616,7 +616,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -633,7 +633,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("momentslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -651,7 +651,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -669,7 +669,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -686,7 +686,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("forceslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -704,7 +704,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -722,7 +722,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 
@@ -739,7 +739,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("stressslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
 

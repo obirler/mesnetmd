@@ -97,7 +97,7 @@
     <system:String x:Key="stressdist">Stress Disribution</system:String>
     <system:String x:Key="crossindex">Cross Index</system:String>
     <system:String x:Key="connections">Connetions</system:String>
-    <system:String x:Key="connection">Connetion</system:String>
+    <system:String x:Key="connection">Connection</system:String>
     <system:String x:Key="degree">Degree</system:String>
     <system:String x:Key="calculatingbeam">Calculating Beam</system:String>
     <system:String x:Key="crosssolver">Cross Solver</system:String>

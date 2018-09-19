@@ -19,9 +19,11 @@
 ========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup.Localizer;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
@@ -128,7 +130,7 @@ namespace MesnetMD.Classes.Ui
             if (beam.LeftSide != null)
             {
                 string leftname = Global.GetString("null");
-                switch (Global.GetObjectType(beam.LeftSide))
+                switch (beam.LeftSide.Type)
                 {
                     case Global.ObjectType.LeftFixedSupport:
                         var ls = beam.LeftSide as LeftFixedSupport;
@@ -162,7 +164,7 @@ namespace MesnetMD.Classes.Ui
             if (beam.RightSide != null)
             {
                 string rightname = Global.GetString("null");
-                switch (Global.GetObjectType(beam.RightSide))
+                switch (beam.RightSide.Type)
                 {
                     case Global.ObjectType.RightFixedSupport:
                         var rs = beam.RightSide as RightFixedSupport;
@@ -401,7 +403,7 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.Beam:
                         Beam beam = (Beam)item.Value;
@@ -424,7 +426,7 @@ namespace MesnetMD.Classes.Ui
 
                 foreach (var item in Global.Objects)
                 {
-                    switch (Global.GetObjectType(item))
+                    switch (item.Value.Type)
                     {
                         case Global.ObjectType.Beam:
 
@@ -482,12 +484,12 @@ namespace MesnetMD.Classes.Ui
         /// Updates given support in the support tree view.
         /// </summary>
         /// <param name="support">The support.</param>
-        public void UpdateSupportTree(object support)
+        public void UpdateSupportTree(SupportItem support)
         {
             var supportitem = new TreeViewSupportItem(support);
             bool exists = false;
 
-            switch (Global.GetObjectType(support))
+            switch (support.Type)
             {
                 case Global.ObjectType.SlidingSupport:
 
@@ -495,7 +497,7 @@ namespace MesnetMD.Classes.Ui
 
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (Global.GetObjectType(item.Support) == Global.ObjectType.SlidingSupport)
+                        if (item.Support.Type is Global.ObjectType.SlidingSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -542,6 +544,55 @@ namespace MesnetMD.Classes.Ui
                         slmembersitem.Items.Add(memberitem);
                     }
 
+                    if (Config.ShowDofInSupportTree)
+                    {
+                        var dofsitem = new TreeViewItem();
+                        dofsitem.Header = "Degree Of Freedoms";
+                        supportitem.Items.Add(dofsitem);
+                        foreach (var dof in slidingsup.DegreeOfFreedoms)
+                        {
+                            var dofitem= new TreeViewItem();
+                            dofitem.Header = "Dof";
+                            dofsitem.Items.Add(dofitem);
+                            switch (dof.Type)
+                            {
+                                case Global.DOFType.Horizontal:
+                                    var hitem= new TreeViewItem();
+                                    hitem.Header = "Type: Horizontal";
+                                    dofitem.Items.Add(hitem);
+                                    var hmitem = new TreeViewItem();
+                                    hmitem.Header = "Dof Members";
+                                    dofitem.Items.Add(hmitem);
+                                    foreach (var dofmember in dof.Members)
+                                    {
+                                        var dmitem= new TreeViewItem();
+                                        string locname=String.Empty;
+                                        dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                        hmitem.Items.Add(dmitem);
+                                    }
+
+                                    break;
+
+                                case Global.DOFType.Rotational:
+                                    var ritem = new TreeViewItem();
+                                    ritem.Header = "Type: Rotational";
+                                    dofitem.Items.Add(ritem);
+                                    var rmitem = new TreeViewItem();
+                                    rmitem.Header = "Dof Members";
+                                    dofitem.Items.Add(rmitem);
+                                    foreach (var dofmember in dof.Members)
+                                    {
+                                        var dmitem = new TreeViewItem();
+                                        string locname = String.Empty;
+                                        dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                        rmitem.Items.Add(dmitem);
+                                    }
+
+                                    break;
+                            }
+                        }
+                    }
+
                     break;
 
                 case Global.ObjectType.BasicSupport:
@@ -550,7 +601,7 @@ namespace MesnetMD.Classes.Ui
 
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (Global.GetObjectType(item.Support) == Global.ObjectType.BasicSupport)
+                        if (item.Support.Type is Global.ObjectType.BasicSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -592,6 +643,38 @@ namespace MesnetMD.Classes.Ui
                         bsmembersitem.Items.Add(memberitem);
                     }
 
+                    if (Config.ShowDofInSupportTree)
+                    {
+                        var dofsitem = new TreeViewItem();
+                        dofsitem.Header = "Degree Of Freedoms";
+                        supportitem.Items.Add(dofsitem);
+                        foreach (var dof in basicsup.DegreeOfFreedoms)
+                        {
+                            var dofitem = new TreeViewItem();
+                            dofitem.Header = "Dof";
+                            dofsitem.Items.Add(dofitem);
+                            switch (dof.Type)
+                            {
+                                case Global.DOFType.Rotational:
+                                    var ritem = new TreeViewItem();
+                                    ritem.Header = "Type: Rotational";
+                                    dofitem.Items.Add(ritem);
+                                    var rmitem = new TreeViewItem();
+                                    rmitem.Header = "Dof Members";
+                                    dofitem.Items.Add(rmitem);
+                                    foreach (var dofmember in dof.Members)
+                                    {
+                                        var dmitem = new TreeViewItem();
+                                        string locname = String.Empty;
+                                        dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                        rmitem.Items.Add(dmitem);
+                                    }
+
+                                    break;
+                            }
+                        }
+                    }
+
                     break;
 
                 case Global.ObjectType.LeftFixedSupport:
@@ -600,7 +683,7 @@ namespace MesnetMD.Classes.Ui
 
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (Global.GetObjectType(item.Support) == Global.ObjectType.LeftFixedSupport)
+                        if (item.Support.Type is Global.ObjectType.LeftFixedSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -653,7 +736,7 @@ namespace MesnetMD.Classes.Ui
 
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (Global.GetObjectType(item.Support) == Global.ObjectType.RightFixedSupport)
+                        if (item.Support.Type is Global.ObjectType.RightFixedSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -707,7 +790,7 @@ namespace MesnetMD.Classes.Ui
         /// Removes TreeViewSupportItem from support tree.
         /// </summary>
         /// <param name="support">The support of the TreeViewSupportItem.</param>
-        public void RemoveSupportTree(object support)
+        public void RemoveSupportTree(SupportItem support)
         {
             foreach (TreeViewSupportItem item in _supporttree.Items)
             {
@@ -727,7 +810,7 @@ namespace MesnetMD.Classes.Ui
             MyDebug.WriteInformation("Update All Support Tree Started");
             foreach (var item in Global.Objects)
             {
-                switch (Global.GetObjectType(item))
+                switch (item.Value.Type)
                 {
                     case Global.ObjectType.SlidingSupport:
 
@@ -764,7 +847,7 @@ namespace MesnetMD.Classes.Ui
         /// Selects the support item corresponds to given support in support tree.
         /// </summary>
         /// <param name="support">The support.</param>
-        public void SelectSupportItem(object support)
+        public void SelectSupportItem(SupportItem support)
         {
             foreach (TreeViewSupportItem item in _supporttree.Items)
             {
@@ -809,7 +892,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.SlidingSupport:
 
@@ -831,7 +914,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.BasicSupport:
 
@@ -853,7 +936,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.LeftFixedSupport:
 
@@ -875,7 +958,7 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (Global.GetObjectType(item))
+                        switch (item.Value.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -896,5 +979,33 @@ namespace MesnetMD.Classes.Ui
             }
         }
         #endregion
+
+        private string doflocname(Global.DOFLocation loc)
+        {
+            string locname = String.Empty;           
+            switch (loc)
+            {
+                case Global.DOFLocation.LeftHorizontal:
+                    locname = "LeftHorizontal";
+                    break;
+                case Global.DOFLocation.LeftVertical:
+                    locname = "LeftVertical";
+                    break;
+                case Global.DOFLocation.LeftRotational:
+                    locname = "LeftRotational";
+                    break;
+                case Global.DOFLocation.RightHorizontal:
+                    locname = "RightHorizontal";
+                    break;
+                case Global.DOFLocation.RightVertical:
+                    locname = "RightVertical";
+                    break;
+                case Global.DOFLocation.RightRotational:
+                    locname = "RightRotational";
+                    break;
+            }
+
+            return locname;
+        }
     }
 }

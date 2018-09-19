@@ -86,13 +86,13 @@ namespace MesnetMD.Xaml.Pages
 
             if (Global.BeamCount > 1)
             {
-                switch (Global.Calculation)
+                switch (Config.Calculation)
                 {
                     case Global.CalculationType.SingleThreaded:
 
                         foreach (var item in Global.Objects)
                         {
-                            if (Global.GetObjectType(item) == Global.ObjectType.Beam)
+                            if (item.Value.Type is Global.ObjectType.Beam)
                             {
                                 Beam beam = (Beam)item.Value;
                                 beam.CrossCalculate();
@@ -114,7 +114,7 @@ namespace MesnetMD.Xaml.Pages
 
                         foreach (var item in Global.Objects)
                         {
-                            if (Global.GetObjectType(item) == Global.ObjectType.Beam)
+                            if (item.Value.Type is Global.ObjectType.Beam)
                             {
                                 Beam beam = (Beam)item.Value;
                                 QueueList.Add(beam);
@@ -141,7 +141,7 @@ namespace MesnetMD.Xaml.Pages
             {
                 foreach (var item in Global.Objects)
                 {
-                    switch (Global.GetObjectType(item))
+                    switch (item.Value.Type)
                     {
                         case Global.ObjectType.Beam:
 

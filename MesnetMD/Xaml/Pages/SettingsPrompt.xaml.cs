@@ -50,7 +50,7 @@ namespace MesnetMD.Xaml.Pages
                     break;
             }
 
-            switch (Global.Calculation)
+            switch (Config.Calculation)
             {
                 case Global.CalculationType.SingleThreaded:
 
@@ -88,13 +88,13 @@ namespace MesnetMD.Xaml.Pages
             {
                 case 0:
 
-                    Global.Calculation = Global.CalculationType.SingleThreaded;
+                    Config.Calculation = Global.CalculationType.SingleThreaded;
 
                     break;
 
                 case 1:
 
-                    Global.Calculation = Global.CalculationType.MultiThreaded;
+                    Config.Calculation = Global.CalculationType.MultiThreaded;
 
                     break;
             }
@@ -108,7 +108,7 @@ namespace MesnetMD.Xaml.Pages
             calculationcbx.Items.Add(Global.GetString("singlethreaded"));
             calculationcbx.Items.Add(Global.GetString("multithreaded"));
 
-            switch (Global.Calculation)
+            switch (Config.Calculation)
             {
                 case Global.CalculationType.SingleThreaded:
 

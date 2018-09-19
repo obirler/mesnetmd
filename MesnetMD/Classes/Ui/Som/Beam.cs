@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -25,11 +26,22 @@ namespace MesnetMD.Classes.Ui.Som
         {
             InitializeComponent(length);
         }
-     
+
+        public Beam(Canvas canvas, double length)
+        {
+            _canvas = canvas;
+
+            InitializeComponent(length);
+
+            AddTopLeft(_canvas, 10000, 10000);
+        }
+
         private void InitializeComponent(double length=1.0)
         {
             _beamid = _beamcount++;
             Name = "Beam " + _beamid;
+            Type = Global.ObjectType.Beam;
+            _length = length;
             Width = length * 100;
             Height = 0;
 
@@ -47,6 +59,7 @@ namespace MesnetMD.Classes.Ui.Som
             _startcircle.Width = 14;
             _startcircle.Stroke = new SolidColorBrush(Colors.Green);
             _startcircle.StrokeThickness = 3;
+            _startcircle.Fill = new SolidColorBrush(Colors.Transparent);
 
             Children.Add(_startcircle);
 
@@ -60,6 +73,7 @@ namespace MesnetMD.Classes.Ui.Som
             _endcircle.Width = 14;
             _endcircle.Stroke = new SolidColorBrush(Colors.Green);
             _endcircle.StrokeThickness = 3;
+            _endcircle.Fill = new SolidColorBrush(Colors.Transparent);
 
             Children.Add(_endcircle);
 
@@ -81,43 +95,48 @@ namespace MesnetMD.Classes.Ui.Som
             arrow.Width = 10;
             arrow.Fill = new SolidColorBrush(Colors.Red);
 
-            _directionarrow = new Canvas();
-            _directionarrow.Width = 50;
-            _directionarrow.Height = 10;
-
-            Children.Add(_directionarrow);
-            Canvas.SetLeft(_directionarrow, Width / 2);
-            Canvas.SetBottom(_directionarrow, 0);
-
-            _directionarrow.Visibility = Visibility.Collapsed;
-
             rotateTransform = new RotateTransform();
-        }
+            rotateTransform.CenterX = Width / 2;
+            rotateTransform.CenterY = Height / 2;
+            rotateTransform.Angle = 0;
+            RenderTransform = rotateTransform;
 
-        public Beam(Canvas canvas, double length)
-        {
-            _canvas = canvas;
+            createarrow();
 
-            InitializeComponent();
-
-            InitializeVariables(length);
-
-            AddTopLeft(_canvas, 10000, 10000);
+            BindEvents();
         }
 
         private void InitializeVariables(double length)
         {
-            _length = length;
+           _length = length;
 
             Width = length * 100;
 
             MyDebug.WriteInformation(Name + " has been created : length = " + _length + " m, Width = " + Width);
 
             RightSide = null;
-
             LeftSide = null;
+            Canvas.SetLeft(_directionarrow, Width / 2 - _directionarrow.Width / 2);
 
             BindEvents();
+        }
+
+        private void createarrow()
+        {
+            _directionarrow = new Polygon();
+            Children.Add(_directionarrow);
+            _directionarrow.Height = 50;
+            _directionarrow.Width = 10;
+            _directionarrow.Points.Add(new Point(5, 0));
+            _directionarrow.Points.Add(new Point(0, 10));
+            _directionarrow.Points.Add(new Point(4, 10));
+            _directionarrow.Points.Add(new Point(4, 50));
+            _directionarrow.Points.Add(new Point(6, 50));
+            _directionarrow.Points.Add(new Point(6, 10));
+            _directionarrow.Points.Add(new Point(10,10));
+            _directionarrow.Fill = new SolidColorBrush(Colors.Red);
+            Canvas.SetLeft(_directionarrow, Width / 2-_directionarrow.Width / 2);
+            _directionarrow.Visibility = Visibility.Collapsed;
         }
 
         public void BindEvents()
@@ -144,7 +163,7 @@ namespace MesnetMD.Classes.Ui.Som
 
         private double _elasticity;
 
-        private bool _canbedragged = true;
+        private double _area = 0.017;//m^2
 
         private double _leftpos;
 
@@ -158,7 +177,7 @@ namespace MesnetMD.Classes.Ui.Som
 
         private Rectangle _core;
 
-        private Canvas _directionarrow;
+        private Polygon _directionarrow;
 
         KeyValueCollection _concentratedloads;
 
@@ -192,9 +211,9 @@ namespace MesnetMD.Classes.Ui.Som
 
         private PiecewisePoly _d;
 
-        public object LeftSide;
+        public SupportItem LeftSide;
 
-        public object RightSide;
+        public SupportItem RightSide;
 
         public double LeftDistributionFactor;
 
@@ -338,6 +357,8 @@ namespace MesnetMD.Classes.Ui.Som
 
         private bool _analyticalsolution = false;
 
+        private double[,] _stiffnessmatrix;
+
         #endregion
 
         #region methods
@@ -454,6 +475,7 @@ namespace MesnetMD.Classes.Ui.Som
             _length = length;
             Width = _length * 100;
             _tgeometry.ChangeWidth(Width);
+            Canvas.SetLeft(_directionarrow, Width / 2 - _directionarrow.Width / 2);
 
             //If the length really is changed then the loads on the beam become meaningless (at least distributed loads), so remove them.
             if (System.Math.Abs(oldlength - length) > 0.00001)
@@ -571,7 +593,7 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.LeftSide != null)
             {
-                if (oldbeam.LeftSide.GetType().Name != "LeftFixedSupport")
+                if (oldbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -592,23 +614,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (oldbeam.LeftSide.GetType().Name)
+                    switch (oldbeam.LeftSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = oldbeam.LeftSide as SlidingSupport;
                             ss.AddBeam(this, Global.Direction.Left);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = oldbeam.LeftSide as BasicSupport;
                             bs.AddBeam(this, Global.Direction.Left);
 
                             break;
 
-                        case "RightFixedSupport":
+                        case Global.ObjectType.RightFixedSupport:
 
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
@@ -624,7 +646,7 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (LeftSide != null)
             {
-                if (LeftSide.GetType().Name != "LeftFixedSupport")
+                if (LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -644,23 +666,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (LeftSide.GetType().Name)
+                    switch (LeftSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = LeftSide as SlidingSupport;
                             ss.AddBeam(oldbeam, Global.Direction.Left);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = LeftSide as BasicSupport;
                             bs.AddBeam(oldbeam, Global.Direction.Left);
 
                             break;
 
-                        case "RightFixedSupport":
+                        case Global.ObjectType.RightFixedSupport:
 
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
@@ -683,7 +705,7 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.RightSide != null)
             {
-                if (Global.GetObjectType(oldbeam.RightSide) != Global.ObjectType.RightFixedSupport)
+                if (oldbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -705,23 +727,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (oldbeam.RightSide.GetType().Name)
+                    switch (oldbeam.RightSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = oldbeam.RightSide as SlidingSupport;
                             ss.AddBeam(this, Global.Direction.Left);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = oldbeam.RightSide as BasicSupport;
                             bs.AddBeam(this, Global.Direction.Left);
 
                             break;
 
-                        case "LeftFixedSupport":
+                        case Global.ObjectType.LeftFixedSupport:
 
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
@@ -735,7 +757,7 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (LeftSide != null)
             {
-                if (LeftSide.GetType().Name != "LeftFixedSupport")
+                if (LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -756,23 +778,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (LeftSide.GetType().Name)
+                    switch (LeftSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = LeftSide as SlidingSupport;
                             ss.AddBeam(oldbeam, Global.Direction.Right);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = LeftSide as BasicSupport;
                             bs.AddBeam(oldbeam, Global.Direction.Right);
 
                             break;
 
-                        case "RightFixedSupport":
+                        case Global.ObjectType.RightFixedSupport:
 
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
@@ -797,7 +819,7 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.LeftSide != null)
             {
-                if (oldbeam.LeftSide.GetType().Name != "LeftFixedSupport")
+                if (oldbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -818,23 +840,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (oldbeam.LeftSide.GetType().Name)
+                    switch (oldbeam.LeftSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = oldbeam.LeftSide as SlidingSupport;
                             ss.AddBeam(this, Global.Direction.Right);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = oldbeam.LeftSide as BasicSupport;
                             bs.AddBeam(this, Global.Direction.Right);
 
                             break;
 
-                        case "RightFixedSupport":
+                        case Global.ObjectType.RightFixedSupport:
 
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
@@ -850,7 +872,7 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (RightSide != null)
             {
-                if (RightSide.GetType().Name != "RightFixedSupport")
+                if (RightSide.Type != Global.ObjectType.RightFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -871,23 +893,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (RightSide.GetType().Name)
+                    switch (RightSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = RightSide as SlidingSupport;
                             ss.AddBeam(oldbeam, Global.Direction.Left);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = RightSide as BasicSupport;
                             bs.AddBeam(oldbeam, Global.Direction.Left);
 
                             break;
 
-                        case "LeftFixedSupport":
+                        case Global.ObjectType.LeftFixedSupport:
 
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
@@ -912,7 +934,7 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.RightSide != null)
             {
-                if (oldbeam.RightSide.GetType().Name != "RightFixedSupport")
+                if (oldbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -933,23 +955,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (oldbeam.RightSide.GetType().Name)
+                    switch (oldbeam.RightSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = oldbeam.RightSide as SlidingSupport;
                             ss.AddBeam(this, Global.Direction.Right);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = oldbeam.RightSide as BasicSupport;
                             bs.AddBeam(this, Global.Direction.Right);
 
                             break;
 
-                        case "LeftFixedSupport":
+                        case Global.ObjectType.LeftFixedSupport:
 
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
@@ -965,7 +987,7 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (RightSide != null)
             {
-                if (RightSide.GetType().Name != "RightFixedSupport")
+                if (RightSide.Type != Global.ObjectType.RightFixedSupport)
                 {
                     if (oldbeam.IsBound)
                     {
@@ -986,23 +1008,23 @@ namespace MesnetMD.Classes.Ui.Som
                         MoveSupports();
                     }
 
-                    switch (RightSide.GetType().Name)
+                    switch (RightSide.Type)
                     {
-                        case "SlidingSupport":
+                        case Global.ObjectType.SlidingSupport:
 
                             var ss = RightSide as SlidingSupport;
                             ss.AddBeam(oldbeam, Global.Direction.Right);
 
                             break;
 
-                        case "BasicSupport":
+                        case Global.ObjectType.BasicSupport:
 
                             var bs = RightSide as BasicSupport;
                             bs.AddBeam(oldbeam, Global.Direction.Right);
 
                             break;
 
-                        case "LeftFixedSupport":
+                        case Global.ObjectType.LeftFixedSupport:
 
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
@@ -1138,30 +1160,30 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.LeftSide != null)
             {
-                switch (oldbeam.LeftSide.GetType().Name)
+                switch (oldbeam.LeftSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = oldbeam.LeftSide as SlidingSupport;
                         ss.AddBeam(this, Global.Direction.Left);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = oldbeam.LeftSide as BasicSupport;
                         bs.AddBeam(this, Global.Direction.Left);
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
@@ -1171,30 +1193,30 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (LeftSide != null)
             {
-                switch (LeftSide.GetType().Name)
+                switch (LeftSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = LeftSide as SlidingSupport;
                         ss.AddBeam(oldbeam, Global.Direction.Left);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = LeftSide as BasicSupport;
                         bs.AddBeam(oldbeam, Global.Direction.Left);
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
@@ -1208,30 +1230,30 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.RightSide != null)
             {
-                switch (oldbeam.RightSide.GetType().Name)
+                switch (oldbeam.RightSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = oldbeam.RightSide as SlidingSupport;
                         ss.AddBeam(this, Global.Direction.Left);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = oldbeam.RightSide as BasicSupport;
                         bs.AddBeam(this, Global.Direction.Left);
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
@@ -1241,30 +1263,30 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (LeftSide != null)
             {
-                switch (LeftSide.GetType().Name)
+                switch (LeftSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = LeftSide as SlidingSupport;
                         ss.AddBeam(oldbeam, Global.Direction.Right);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = LeftSide as BasicSupport;
                         bs.AddBeam(oldbeam, Global.Direction.Right);
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
@@ -1278,30 +1300,30 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.RightSide != null)
             {
-                switch (oldbeam.RightSide.GetType().Name)
+                switch (oldbeam.RightSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = oldbeam.RightSide as SlidingSupport;
                         ss.AddBeam(this, Global.Direction.Right);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = oldbeam.RightSide as BasicSupport;
                         bs.AddBeam(this, Global.Direction.Right);
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
@@ -1311,30 +1333,30 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (RightSide != null)
             {
-                switch (RightSide.GetType().Name)
+                switch (RightSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = RightSide as SlidingSupport;
                         ss.AddBeam(oldbeam, Global.Direction.Right);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = RightSide as BasicSupport;
                         bs.AddBeam(oldbeam, Global.Direction.Right);
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
@@ -1348,30 +1370,30 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (oldbeam.LeftSide != null)
             {
-                switch (oldbeam.LeftSide.GetType().Name)
+                switch (oldbeam.LeftSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = oldbeam.LeftSide as SlidingSupport;
                         ss.AddBeam(this, Global.Direction.Right);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = oldbeam.LeftSide as BasicSupport;
                         bs.AddBeam(this, Global.Direction.Right);
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
@@ -1381,30 +1403,30 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else if (RightSide != null)
             {
-                switch (RightSide.GetType().Name)
+                switch (RightSide.Type)
                 {
-                    case "SlidingSupport":
+                    case Global.ObjectType.SlidingSupport:
 
                         var ss = RightSide as SlidingSupport;
                         ss.AddBeam(oldbeam, Global.Direction.Left);
 
                         break;
 
-                    case "BasicSupport":
+                    case Global.ObjectType.BasicSupport:
 
                         var bs = RightSide as BasicSupport;
                         bs.AddBeam(oldbeam, Global.Direction.Left);
 
                         break;
 
-                    case "RightFixedSupport":
+                    case Global.ObjectType.RightFixedSupport:
 
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case "LeftFixedSupport":
+                    case Global.ObjectType.LeftFixedSupport:
 
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
@@ -1419,45 +1441,48 @@ namespace MesnetMD.Classes.Ui.Som
             Beam leftbeam = null;
             var direction = Global.Direction.None;
 
-            switch (Global.GetObjectType(LeftSide))
+            if (LeftSide != null)
             {
-                case Global.ObjectType.BasicSupport:
+                switch (LeftSide.Type)
+                {
+                    case Global.ObjectType.BasicSupport:
 
-                    var bs = LeftSide as BasicSupport;
-                    if (bs.Members.Count > 1)
-                    {
-                        foreach (Member member in bs.Members)
+                        var bs = LeftSide as BasicSupport;
+                        if (bs.Members.Count > 1)
                         {
-                            if (!member.Beam.Equals(this))
+                            foreach (Member member in bs.Members)
                             {
-                                leftbeam = member.Beam;
-                                direction = member.Direction;
-                                break;
+                                if (!member.Beam.Equals(this))
+                                {
+                                    leftbeam = member.Beam;
+                                    direction = member.Direction;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    break;
+                        break;
 
-                case Global.ObjectType.SlidingSupport:
+                    case Global.ObjectType.SlidingSupport:
 
-                    var ss = LeftSide as SlidingSupport;
-                    if (ss.Members.Count > 1)
-                    {
-                        foreach (Member member in ss.Members)
+                        var ss = LeftSide as SlidingSupport;
+                        if (ss.Members.Count > 1)
                         {
-                            if (!member.Beam.Equals(this))
+                            foreach (Member member in ss.Members)
                             {
-                                leftbeam = member.Beam;
-                                direction = member.Direction;
-                                break;
+                                if (!member.Beam.Equals(this))
+                                {
+                                    leftbeam = member.Beam;
+                                    direction = member.Direction;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    break;
+                        break;
+                }
             }
-
+            
             if (leftbeam != null)
             {
                 switch (direction)
@@ -1479,44 +1504,47 @@ namespace MesnetMD.Classes.Ui.Som
             Beam rightbeam = null;
             var direction = Global.Direction.None;
 
-            switch (Global.GetObjectType(RightSide))
+            if (RightSide != null)
             {
-                case Global.ObjectType.BasicSupport:
+                switch (RightSide.Type)
+                {
+                    case Global.ObjectType.BasicSupport:
 
-                    var bs = RightSide as BasicSupport;
-                    if (bs.Members.Count > 1)
-                    {
-                        foreach (Member member in bs.Members)
+                        var bs = RightSide as BasicSupport;
+                        if (bs.Members.Count > 1)
                         {
-                            if (!member.Beam.Equals(this))
+                            foreach (Member member in bs.Members)
                             {
-                                rightbeam = member.Beam;
-                                direction = member.Direction;
-                                break;
+                                if (!member.Beam.Equals(this))
+                                {
+                                    rightbeam = member.Beam;
+                                    direction = member.Direction;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    break;
+                        break;
 
-                case Global.ObjectType.SlidingSupport:
+                    case Global.ObjectType.SlidingSupport:
 
-                    var ss = RightSide as SlidingSupport;
-                    if (ss.Members.Count > 1)
-                    {
-                        foreach (Member member in ss.Members)
+                        var ss = RightSide as SlidingSupport;
+                        if (ss.Members.Count > 1)
                         {
-                            if (!member.Beam.Equals(this))
+                            foreach (Member member in ss.Members)
                             {
-                                rightbeam = member.Beam;
-                                direction = member.Direction;
-                                break;
+                                if (!member.Beam.Equals(this))
+                                {
+                                    rightbeam = member.Beam;
+                                    direction = member.Direction;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    break;
-            }
+                        break;
+                }
+            }           
 
             if (rightbeam != null)
             {
@@ -1839,7 +1867,7 @@ namespace MesnetMD.Classes.Ui.Som
         public void AddInertia(PiecewisePoly inertiappoly)
         {
             _inertiappoly = inertiappoly;
-            _izero = _inertiappoly.Min;
+            _izero = _inertiappoly.PreciseMin;
             _maxinertia = _inertiappoly.Max;
             Global.WritePPolytoConsole(Name + " inertia added", inertiappoly);
         }
@@ -1961,19 +1989,16 @@ namespace MesnetMD.Classes.Ui.Som
         /// </summary>
         public void UnSelect()
         {
-            if (selected)
-            {
-                _core.Fill = new SolidColorBrush(Colors.Black);
-                _startcircle.Visibility = Visibility.Collapsed;
-                _startcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-                _endcircle.Visibility = Visibility.Collapsed;
-                _endcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-                circledirection = Global.Direction.None;
-                selected = false;
-                UnSelectCircle();
-                _tgeometry.HideCorners();
-                MyDebug.WriteInformation(Name + " Beam unselected : left = " + Canvas.GetLeft(this) + " top = " + Canvas.GetTop(this));
-            }
+            _core.Fill = new SolidColorBrush(Colors.Black);
+            _startcircle.Visibility = Visibility.Collapsed;
+            _startcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
+            _endcircle.Visibility = Visibility.Collapsed;
+            _endcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
+            circledirection = Global.Direction.None;
+            selected = false;
+            UnSelectCircle();
+            _tgeometry.HideCorners();
+            MyDebug.WriteInformation(Name + " Beam unselected : left = " + Canvas.GetLeft(this) + " top = " + Canvas.GetTop(this));
         }
 
         /// <summary>
@@ -2039,22 +2064,15 @@ namespace MesnetMD.Classes.Ui.Som
         /// <param name="y">The y.</param>
         public void SetAbsolutePosition(double x, double y)
         {
-            if (_canbedragged)
-            {
-                Canvas.SetLeft(this, x);
+            Canvas.SetLeft(this, x);
 
-                if (Height > 0)
-                {
-                    Canvas.SetTop(this, y);
-                }
-                else
-                {
-                    Canvas.SetTop(this, y - 7);
-                }
+            if (Height > 0)
+            {
+                Canvas.SetTop(this, y);
             }
             else
             {
-                MyDebug.WriteWarning(Name + " The beam to be dragged can not be dragged");
+                Canvas.SetTop(this, y - 7);
             }
         }
 
@@ -2064,22 +2082,15 @@ namespace MesnetMD.Classes.Ui.Som
         /// <param name="point">The point.</param>
         public void SetAbsolutePosition(Point point)
         {
-            if (_canbedragged)
-            {
-                Canvas.SetLeft(this, point.X);
+            Canvas.SetLeft(this, point.X);
 
-                if (Height > 0)
-                {
-                    Canvas.SetTop(this, point.Y);
-                }
-                else
-                {
-                    Canvas.SetTop(this, point.Y - 7);
-                }
+            if (Height > 0)
+            {
+                Canvas.SetTop(this, point.Y);
             }
             else
             {
-                MyDebug.WriteWarning(Name + " : The beam to be dragged can not be dragged");
+                Canvas.SetTop(this, point.Y - 7);
             }
         }
 
@@ -2104,7 +2115,7 @@ namespace MesnetMD.Classes.Ui.Som
         /// Changes the position of the beam by the given amount.
         /// </summary>
         /// <param name="delta">The change vector.</param>
-        public void Move(Vector delta)
+        public override void Move(Vector delta)
         {
             Canvas.SetLeft(this, Canvas.GetLeft(this) + delta.X);
             Canvas.SetTop(this, Canvas.GetTop(this) + delta.Y);
@@ -2647,9 +2658,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     var conjugateinertia = _inertiappoly.Conjugate(_length);
 
-                    var simpson1 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson1 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson1.AddData(_izero / conjugateinertia.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -2662,9 +2673,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     //////////////////////////////////////////////////////////            
 
-                    var simpson2 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson2 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson2.AddData(_izero / conjugateinertia.Calculate(i) * x.Calculate(i));
                     }
@@ -2679,11 +2690,11 @@ namespace MesnetMD.Classes.Ui.Som
 
                     ///////////////////////////////////////////////////////////
 
-                    var simpson3 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson3 = new SimpsonIntegrator(Config.SimpsonStep);
 
                     var conjugatemoment = _zeromoment.Conjugate(_length);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson3.AddData(conjugatemoment.Calculate(i) * _izero / conjugateinertia.Calculate(i) *
                                          x.Calculate(i));
@@ -2699,9 +2710,9 @@ namespace MesnetMD.Classes.Ui.Som
                     /////////////////Right Equation Solve///////////////////////
                     ////////////////////////////////////////////////////////////
 
-                    var simpson4 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson4 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson4.AddData(_izero / _inertiappoly.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -2710,9 +2721,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     var value2 = 1 / System.Math.Pow(_length, 2) * simpson4.Result;
 
-                    var simpson5 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson5 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson5.AddData((_izero / _inertiappoly.Calculate(i)) * xppoly.Calculate(i));
                     }
@@ -2731,9 +2742,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     ///////////////////////////////////////////////////////////
 
-                    var simpson6 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson6 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson6.AddData(_zeromoment.Calculate(i) * (_izero / _inertiappoly.Calculate(i)) *
                                          xppoly.Calculate(i));
@@ -2842,9 +2853,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     var conjugateinertia = _inertiappoly.Conjugate(_length);
 
-                    var simpson1 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson1 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson1.AddData(_izero / conjugateinertia.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -2857,9 +2868,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     //////////////////////////////////////////////////////////            
 
-                    var simpson2 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson2 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson2.AddData(_izero / conjugateinertia.Calculate(i) * x.Calculate(i));
                     }
@@ -2874,11 +2885,11 @@ namespace MesnetMD.Classes.Ui.Som
 
                     ///////////////////////////////////////////////////////////
 
-                    var simpson3 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson3 = new SimpsonIntegrator(Config.SimpsonStep);
 
                     var conjugatemoment = _zeromoment.Conjugate(_length);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson3.AddData(conjugatemoment.Calculate(i) * _izero / conjugateinertia.Calculate(i) *
                                          x.Calculate(i));
@@ -2894,9 +2905,9 @@ namespace MesnetMD.Classes.Ui.Som
                     /////////////////Right Equation Solve///////////////////////
                     ////////////////////////////////////////////////////////////
 
-                    var simpson4 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson4 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson4.AddData(_izero / _inertiappoly.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -2905,9 +2916,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     var value2 = 1 / System.Math.Pow(_length, 2) * simpson4.Result;
 
-                    var simpson5 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson5 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson5.AddData((_izero / _inertiappoly.Calculate(i)) * xppoly.Calculate(i));
                     }
@@ -2926,9 +2937,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     ///////////////////////////////////////////////////////////
 
-                    var simpson6 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson6 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson6.AddData(_zeromoment.Calculate(i) * (_izero / _inertiappoly.Calculate(i)) *
                                          xppoly.Calculate(i));
@@ -3015,9 +3026,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     var conjugateinertia = _inertiappoly.Conjugate(_length);
 
-                    var simpson1 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson1 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson1.AddData(_izero / conjugateinertia.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -3030,11 +3041,11 @@ namespace MesnetMD.Classes.Ui.Som
 
                     //////////////////////////////////////////////////////////
 
-                    var simpson3 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson3 = new SimpsonIntegrator(Config.SimpsonStep);
 
                     var conjugatemoment = _zeromoment.Conjugate(_length);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson3.AddData(conjugatemoment.Calculate(i) * _izero / conjugateinertia.Calculate(i) * x.Calculate(i));
                     }
@@ -3094,9 +3105,9 @@ namespace MesnetMD.Classes.Ui.Som
                 else
                 {
                     MyDebug.WriteInformation(Name + " : Numerical solution started");
-                    var simpson1 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson1 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson1.AddData(_izero / _inertiappoly.Calculate(i) * xsquare.Calculate(i));
                     }
@@ -3109,9 +3120,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     ///////////////////////////////////////////////////////////
 
-                    var simpson3 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson3 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson3.AddData(_izero / _inertiappoly.Calculate(i) * _zeromoment.Calculate(i) * x.Calculate(i));
                     }
@@ -3289,11 +3300,11 @@ namespace MesnetMD.Classes.Ui.Som
         {
             #region cross support cases
 
-            switch (Global.GetObjectType(LeftSide))
+            switch (LeftSide.Type)
             {
                 case Global.ObjectType.LeftFixedSupport:
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
 
@@ -3321,7 +3332,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                 case Global.ObjectType.BasicSupport:
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
 
@@ -3349,7 +3360,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                 case Global.ObjectType.SlidingSupport:
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
 
@@ -3378,7 +3389,7 @@ namespace MesnetMD.Classes.Ui.Som
 
             #endregion
         }
-
+        
         /// <summary>
         /// Checks if the beam can be calculated analytically, without numerical integration.
         /// If the beam has constant and only one inertia polynomial, and if the beam has 
@@ -3420,6 +3431,79 @@ namespace MesnetMD.Classes.Ui.Som
             MyDebug.WriteInformation(Name + " : Analytical solution is possible");
         }
 
+        public void createstiffnessmatrix()
+        {
+            var m = System.Math.Cos(_angle * System.Math.PI / 180);
+            var m2 = System.Math.Pow(System.Math.Cos(_angle * System.Math.PI / 180), 2);
+            var n = System.Math.Sin(_angle * System.Math.PI / 180);
+            var n2 = System.Math.Pow(System.Math.Sin(_angle * System.Math.PI / 180), 2);
+            var E = _elasticity;
+            var I = _izero;
+            var L = _length;
+            var L2 = System.Math.Pow(_length, 2);
+            var L3 = System.Math.Pow(_length, 3);
+            var A = _area;
+
+            _stiffnessmatrix = new double[6, 6];
+            _stiffnessmatrix[0, 0] = 12 * E * I / L3 * n2 + A * E / L * m2;
+            _stiffnessmatrix[0, 1] = -12 * E * I / L3 * m * n + A * E / L * m * n;
+            _stiffnessmatrix[0, 2] = -6 * E * I/ L2 * n;
+            _stiffnessmatrix[0, 3] = -12 * E * I / L3 * n2 -  A * E / L * m2;
+            _stiffnessmatrix[0, 4] = 12 * E * I / L3 * m * n - A * E / L * m * n;
+            _stiffnessmatrix[0, 5] = -6 * E * I / L2 * n;
+            _stiffnessmatrix[1, 0] = -12 * E * I / L3 * m * n + A * E / L * m * n;
+            _stiffnessmatrix[1, 1] = 12 * E * I / L3 * m2 + A * E / L * n2;
+            _stiffnessmatrix[1, 2] = 6 * E * I/ L2 * m;
+            _stiffnessmatrix[1, 3] = 12 * E * I / L3 * m * n - A * E / L * m * n;
+            _stiffnessmatrix[1, 4] = -12 * E * I / L3 * m2 - A * E / L * n2;
+            _stiffnessmatrix[1, 5] = 6 * E * I / L2 * m;
+            _stiffnessmatrix[2, 0] = -6 * E * I / L2 * n;
+            _stiffnessmatrix[2, 1] = 6 * E * I / L2 * m;
+            _stiffnessmatrix[2, 2] = 4 * E * I / L;
+            _stiffnessmatrix[2, 3] = 6 * E * I / L2 * n;
+            _stiffnessmatrix[2, 4] = -6 * E * I / L2 * m;
+            _stiffnessmatrix[2, 5] = 2 * E * I / L;
+            _stiffnessmatrix[3, 0] = -12 * E * I / L3 * n2 - A * E / L * m2;
+            _stiffnessmatrix[3, 1] = 12 * E * I / L3 * m * n - A * E / L * m * n;
+            _stiffnessmatrix[3, 2] = 6 * E * I / L2 * n;
+            _stiffnessmatrix[3, 3] = 12 * E * I / L3 * n2 + A * E / L * m2;
+            _stiffnessmatrix[3, 4] = -12 * E * I / L3 * m * n + A * E / L * m * n;
+            _stiffnessmatrix[3, 5] = 6 * E * I / L2 * n;
+            _stiffnessmatrix[4, 0] = 12 * E * I / L3 * m * n - A * E / L * m * n;
+            _stiffnessmatrix[4, 1] = -12 * E * I / L3 * m2 - A * E / L * n2;
+            _stiffnessmatrix[4, 2] = -6 * E * I / L2 * m;
+            _stiffnessmatrix[4, 3] = -12 * E * I / L3 * m * n + A * E / L * m * n;
+            _stiffnessmatrix[4, 4] = 12 * E * I / L3 * m2 + A * E / L * n2;
+            _stiffnessmatrix[4, 5] = -6 * E * I / L2 * m;
+            _stiffnessmatrix[5, 0] = -6 * E * I / L2 * n;
+            _stiffnessmatrix[5, 1] = 6 * E * I / L2 * m;
+            _stiffnessmatrix[5, 2] = 2 * E * I / L;
+            _stiffnessmatrix[5, 3] = 6 * E * I / L2 * n;
+            _stiffnessmatrix[5, 4] = -6 * E * I / L2 * m;
+            _stiffnessmatrix[5, 5] = 4 * E * I / L;
+        }
+
+        public void writestiffnessmatrix()
+        {
+            using (var sw = new StreamWriter("stiffness.txt", true))
+            {
+                sw.WriteLine(Name);
+                for (int i = 0; i < 6; i++)
+                {
+                    string str= String.Empty;
+
+                    for (int j = 0; j < 6; j++)
+                    {
+                        str += _stiffnessmatrix[i, j].ToString("N12");
+                        if (j != 5)
+                        {
+                            str += " ";
+                        }
+                    }
+                    sw.WriteLine(str);
+                }
+            }
+        }
         #endregion
 
         #region cross
@@ -3438,7 +3522,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     double conductmoment;
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.BasicSupport:
 
@@ -3499,7 +3583,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     double conductmoment1;
 
-                    switch (Global.GetObjectType(LeftSide))
+                    switch (LeftSide.Type)
                     {
                         case Global.ObjectType.BasicSupport:
 
@@ -3594,9 +3678,9 @@ namespace MesnetMD.Classes.Ui.Som
             else
             {
                 MyDebug.WriteInformation(Name + " : Numerical solution started");
-                var simpson1 = new SimpsonIntegrator(Global.SimpsonStep);
+                var simpson1 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                 {
                     simpson1.AddData(System.Math.Pow(lxpoly.Calculate(i), 2) / _inertiappoly.Calculate(i));
                 }
@@ -3609,13 +3693,13 @@ namespace MesnetMD.Classes.Ui.Som
 
                 Logger.WriteLine(this.Name + " : alfaa = " + _alfaa);
 
-                var simpson2 = new SimpsonIntegrator(Global.SimpsonStep);
+                var simpson2 = new SimpsonIntegrator(Config.SimpsonStep);
 
                 var xsquare = new Poly("x^2");
                 xsquare.StartPoint = 0;
                 xsquare.EndPoint = _length;
 
-                for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                 {
                     simpson2.AddData(xsquare.Calculate(i) / _inertiappoly.Calculate(i));
                 }
@@ -3628,9 +3712,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                 Logger.WriteLine(Name + " : alfab = " + _alfab);
 
-                var simpson3 = new SimpsonIntegrator(Global.SimpsonStep);
+                var simpson3 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                 {
                     simpson3.AddData((lxpoly.Calculate(i) * x.Calculate(i)) / _inertiappoly.Calculate(i));
                 }
@@ -3665,9 +3749,9 @@ namespace MesnetMD.Classes.Ui.Som
                 }
                 else
                 {
-                    var simpson4 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson4 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson4.AddData(mox.Calculate(i) / _inertiappoly.Calculate(i));
                     }
@@ -3680,9 +3764,9 @@ namespace MesnetMD.Classes.Ui.Som
 
                     Logger.WriteLine(Name + " : ka = " + _ka);
 
-                    var simpson5 = new SimpsonIntegrator(Global.SimpsonStep);
+                    var simpson5 = new SimpsonIntegrator(Config.SimpsonStep);
 
-                    for (double i = 0; i <= _length; i = i + Global.SimpsonStep)
+                    for (double i = 0; i <= _length; i = i + Config.SimpsonStep)
                     {
                         simpson5.AddData((_zeromoment.Calculate(i) * lxpoly.Calculate(i)) / _inertiappoly.Calculate(i));
                     }
@@ -3716,11 +3800,11 @@ namespace MesnetMD.Classes.Ui.Som
 
             #region stiffnesses with support cases
 
-            switch (Global.GetObjectType(LeftSide))
+            switch (LeftSide.Type)
             {
                 case Global.ObjectType.LeftFixedSupport:
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
 
@@ -3787,7 +3871,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     if (basic1.Members.Count > 1)
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -3846,7 +3930,7 @@ namespace MesnetMD.Classes.Ui.Som
                     }
                     else
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -3913,7 +3997,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     if (sliding2.Members.Count > 1)
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -3974,7 +4058,7 @@ namespace MesnetMD.Classes.Ui.Som
                     }
                     else
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -4058,11 +4142,11 @@ namespace MesnetMD.Classes.Ui.Som
         {
             #region cross support cases
 
-            switch (Global.GetObjectType(LeftSide))
+            switch (LeftSide.Type)
             {
                 case Global.ObjectType.LeftFixedSupport:
 
-                    switch (Global.GetObjectType(RightSide))
+                    switch (RightSide.Type)
                     {
                         case Global.ObjectType.RightFixedSupport:
 
@@ -4114,7 +4198,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     if (basic1.Members.Count > 1)
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -4160,7 +4244,7 @@ namespace MesnetMD.Classes.Ui.Som
                     }
                     else
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -4213,7 +4297,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                     if (sliding2.Members.Count > 1)
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -4259,7 +4343,7 @@ namespace MesnetMD.Classes.Ui.Som
                     }
                     else
                     {
-                        switch (Global.GetObjectType(RightSide))
+                        switch (RightSide.Type)
                         {
                             case Global.ObjectType.RightFixedSupport:
 
@@ -4317,26 +4401,37 @@ namespace MesnetMD.Classes.Ui.Som
         {
             MyDebug.WriteInformation(Name + " : CrossCalculate has started to work");
 
+            //First, find reaction forces for concentrated loads
             findconcentratedsupportforces();
 
+            //Then, find reaction forces for distributed loads
             finddistributedsupportforces();
 
+            //Then, find force distribution for concentrated loads in zero case (when both side of the beam bound with free supports
             findconcentratedzeroforce();
 
+            //Then, find force distribution for distributed loads in zero case
             finddistributedzeroforce();
 
+            //Superposition to find resultant zero force distribution
             _zeroforce = _zeroforceconc + _zeroforcedist;
 
             Global.WritePPolytoConsole(Name + " : _zeroforce", _zeroforce);
 
+            //Then, find zero memont distribution according to resultant zero force distribution
             findzeromoment();
 
+            //Check if analytical solution is possible
             canbesolvedanalytically();
 
+            //Then, find end moments for each beam based on cross support cases (assumes supports connecting 
+            //more than on beams as fixed support
             crosssupportcases();
 
+            //Then, find fixed end moments according to calculated end moments
             findfixedendmomentcross();
 
+            //Then, find cross coefficients
             findcrosscoefficients();
 
             _maclapeyron = _ma;
@@ -4793,25 +4888,6 @@ namespace MesnetMD.Classes.Ui.Som
 
         #region ui
 
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the beam can be dragged in the canvas.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the beam can be dragged; otherwise, <c>false</c>.
-        /// </value>
-        public bool CanBeDragged
-        {
-            get
-            {
-                return _canbedragged;
-            }
-            set
-            {
-                _canbedragged = value;
-            }
-        }
-
         public double Length
         {
             get { return _length; }
@@ -4951,6 +5027,12 @@ namespace MesnetMD.Classes.Ui.Som
         {
             get { return _angle; }
             set { _angle = value; }
+        }
+
+        public double Area
+        {
+            get { return _area; }
+            set { _area = value; }
         }
 
         public Point LeftPoint

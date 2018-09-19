@@ -23,23 +23,15 @@ using MesnetMD.Classes.Math;
 
 namespace MesnetMD.Classes.IO.Manifest
 {
-    public class BeamManifest
+    public class BeamManifest : ManifestBase
     {
         public double Length { get; set; }
-
-        public string Name { get; set; }
-
-        public int Id { get; set; }
 
         public int BeamId { get; set; }
 
         public double IZero { get; set; }
 
         public double Elasticity { get; set; }
-
-        public double LeftPosition { get; set; }
-
-        public double TopPosition { get; set; }
 
         public bool PerformStressAnalysis { get; set; }
 
@@ -48,8 +40,6 @@ namespace MesnetMD.Classes.IO.Manifest
         public double CenterX { get; set; }
 
         public double CenterY { get; set; }
-
-        public double Angle { get; set; }
 
         public System.Windows.Point TopLeft { get; set; }
 
