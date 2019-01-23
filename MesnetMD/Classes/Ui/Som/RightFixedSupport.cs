@@ -4,41 +4,27 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.Ui.Base;
 using static MesnetMD.Classes.Global;
 
 namespace MesnetMD.Classes.Ui.Som
 {
-    public class RightFixedSupport : SupportItem, ISomItem, ISupportItem, IFixedSupportItem
+    public class RightFixedSupport : RealFixedSupportItem
     {
         public RightFixedSupport() : base(ObjectType.RightFixedSupport)
         {
-            InitializeComponent();
             Name = "Right Fixed Support " + SupportId;
         }
 
         public RightFixedSupport(Canvas canvas) : base(ObjectType.RightFixedSupport)
         {
-            InitializeComponent();
             canvas.Children.Add(this);
             AddObject(this);
             Name = "Right Fixed Support " + SupportId;
             BindEvents();
         }
 
-        private void InitializeComponent()
-        {
-            Width = 7;
-            Height = 27;
-            rotateTransform = new RotateTransform();
-            rotateTransform.CenterX = 0;
-            rotateTransform.CenterY = Height / 2;
-            rotateTransform.Angle = 0;
-            RenderTransform = rotateTransform;
-            createpolygons();
-            createcore();
-        }
-
-        private void createpolygons()
+        protected override void createpolygons()
         {
             _p1 = new Polygon();
             _p1.Points.Add(new Point(0, 27));
@@ -89,7 +75,7 @@ namespace MesnetMD.Classes.Ui.Som
             Children.Add(_p6);
         }
 
-        private void createcore()
+        protected override void createcore()
         {
             _core = new Polygon();
             _core.Points.Add(new Point(1, 27));
@@ -101,68 +87,12 @@ namespace MesnetMD.Classes.Ui.Som
             Children.Add(_core);
         }
 
-        private Polygon _p1;
-
-        private Polygon _p2;
-
-        private Polygon _p3;
-
-        private Polygon _p4;
-
-        private Polygon _p5;
-
-        private Polygon _p6;
-
-        private Polygon _core;
-
-        public Member Member;
-
-        private RotateTransform rotateTransform;
-
-        public void BindEvents()
-        {
-            var mw = (MainWindow)Application.Current.MainWindow;
-            _core.MouseDown += mw.BasicSupportMouseDown;
-            _core.MouseUp += mw.BasicSupportMouseUp;
-        }
-
-        public void Select()
-        {
-            _p1.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _p2.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _p3.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _p4.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _p5.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _p6.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            _selected = true;
-        }
-
-        public void UnSelect()
-        {
-            _p1.Fill = new SolidColorBrush(Colors.Black);
-            _p2.Fill = new SolidColorBrush(Colors.Black);
-            _p3.Fill = new SolidColorBrush(Colors.Black);
-            _p4.Fill = new SolidColorBrush(Colors.Black);
-            _p5.Fill = new SolidColorBrush(Colors.Black);
-            _p6.Fill = new SolidColorBrush(Colors.Black);
-            _selected = false;
-        }
-
-        public void ResetSolution()
+        public override void ResetSolution()
         {
             //todo: implement reset mechanism
         }
 
-        public void Add(Canvas canvas, double leftpos, double toppos)
-        {
-            canvas.Children.Add(this);
-
-            Canvas.SetLeft(this, leftpos);
-
-            Canvas.SetTop(this, toppos);
-        }
-
-        public void UpdatePosition(Beam beam)
+        public override void UpdatePosition(Beam beam)
         {
             Canvas.SetLeft(this, beam.RightPoint.X);
 
@@ -171,30 +101,7 @@ namespace MesnetMD.Classes.Ui.Som
             SetAngle(beam.Angle);
         }
 
-        public void SetPosition(double x, double y)
-        {
-            var left = x - Width / 2;
-            var right = y - Height / 2;
-
-            Canvas.SetLeft(this, left);
-
-            Canvas.SetTop(this, right);
-
-            MyDebug.WriteInformation("Position has been set : " + left + " : " + right);
-        }
-
-        public void SetPosition(Point point)
-        {
-            SetPosition(point.X, point.Y);
-        }
-
-        public void SetAngle(double angle)
-        {
-            rotateTransform.Angle = angle;
-            _angle = angle;
-        }
-
-        public void AddBeam(Beam beam)
+        public override void AddBeam(Beam beam)
         {
             Canvas.SetLeft(this, beam.RightPoint.X);
 

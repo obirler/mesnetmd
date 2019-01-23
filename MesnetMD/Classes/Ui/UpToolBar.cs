@@ -54,10 +54,12 @@ namespace MesnetMD.Classes.Ui
         private void hideall()
         {
             _mw.inertiaborder.Visibility = Visibility.Collapsed;
+            _mw.areaborder.Visibility = Visibility.Collapsed;
             _mw.distloadborder.Visibility = Visibility.Collapsed;
             _mw.concloadborder.Visibility = Visibility.Collapsed;
             _mw.momentborder.Visibility = Visibility.Collapsed;
             _mw.forceborder.Visibility = Visibility.Collapsed;
+            _mw.axialforceborder.Visibility = Visibility.Collapsed;
             _mw.stressborder.Visibility = Visibility.Collapsed;
         }
 
@@ -68,6 +70,10 @@ namespace MesnetMD.Classes.Ui
             _mw.inertiaexpander.Expanded += inertiaexpander_Expanded;
             _mw.inertiaexpander.Collapsed += inertiaexpander_Collapsed;
             _mw.inertiaslider.ValueChanged += inertiaslider_ValueChanged;
+
+            _mw.areaexpander.Expanded += areaexpander_Expanded;
+            _mw.areaexpander.Collapsed += areaexpander_Collapsed;
+            _mw.areaslider.ValueChanged += areaslider_ValueChanged;
 
             _mw.distloadexpander.Expanded += distloadexpander_Expanded;
             _mw.distloadexpander.Collapsed += distloadexpander_Collapsed;
@@ -84,6 +90,10 @@ namespace MesnetMD.Classes.Ui
             _mw.forceexpander.Expanded += forceexpander_Expanded;
             _mw.forceexpander.Collapsed += forceexpander_Collapsed;
             _mw.forceslider.ValueChanged += forceslider_ValueChanged;
+
+            _mw.axialforceexpander.Expanded += axiaforceexpander_Expanded;
+            _mw.axialforceexpander.Collapsed += axiaforceexpander_Collapsed;
+            _mw.axialforceslider.ValueChanged += axiaforceslider_ValueChanged;
 
             _mw.stressexpander.Expanded += stressexpander_Expanded;
             _mw.stressexpander.Collapsed += stressexpander_Collapsed;
@@ -103,6 +113,16 @@ namespace MesnetMD.Classes.Ui
         public void DeActivateInertia()
         {
             _mw.inertiaborder.Visibility = Visibility.Collapsed;
+        }
+
+        public void ActivateArea()
+        {
+            _mw.areaborder.Visibility = Visibility.Visible;
+        }
+
+        public void DeActivateArea()
+        {
+            _mw.areaborder.Visibility = Visibility.Collapsed;
         }
 
         public void ActivateDistLoad()
@@ -160,6 +180,16 @@ namespace MesnetMD.Classes.Ui
             _mw.forceborder.Visibility = Visibility.Collapsed;
         }
 
+        public void ActivateAxialForce()
+        {
+            _mw.axialforceborder.Visibility = Visibility.Visible;
+        }
+
+        public void DeActivateAxialForce()
+        {
+            _mw.axialforceborder.Visibility = Visibility.Collapsed;
+        }
+
         public void ActivateStress()
         {
             _mw.stressborder.Visibility = Visibility.Visible;
@@ -173,16 +203,23 @@ namespace MesnetMD.Classes.Ui
         public void DeActivateAll()
         {
             DeActivateInertia();
+            DeActivateArea();
             DeActivateDistLoad();
             DeActivateConcLoad();
             DeActivateMoment();
             DeActivateForce();
+            DeActivateAxialForce();
             DeActivateStress();
         }
 
         public void CollapseInertia()
         {
             _mw.inertiaexpander.IsExpanded = false;
+        }
+
+        public void CollapseArea()
+        {
+            _mw.areaexpander.IsExpanded = false;
         }
 
         public void CollapseDistLoad()
@@ -205,6 +242,11 @@ namespace MesnetMD.Classes.Ui
             _mw.forceexpander.IsExpanded = false;
         }
 
+        public void CollapseAxialForce()
+        {
+            _mw.axialforceexpander.IsExpanded = false;
+        }
+
         public void CollapseStress()
         {
             _mw.stressexpander.IsExpanded = false;
@@ -213,10 +255,12 @@ namespace MesnetMD.Classes.Ui
         public void CollapseAll()
         {
             CollapseInertia();
+            CollapseArea();
             CollapseConcLoad();
             CollapseDistLoad();
             CollapseMoment();
             CollapseForce();
+            CollapseAxialForce();
             CollapseStress();
         }
 
@@ -247,6 +291,34 @@ namespace MesnetMD.Classes.Ui
             {
                 DeActivateInertia();
                 CollapseInertia();
+            }
+        }
+
+        public void UpdateAreaDiagrams()
+        {
+            if (Global.AnyArea())
+            {
+                Global.UpdateMaxArea();
+                ActivateArea();
+                if (_mw.areaexpander.IsExpanded)
+                {
+                    foreach (var item in Global.Objects)
+                    {
+                        switch (item.Value.Type)
+                        {
+                            case Global.ObjectType.Beam:
+
+                                var beam = item.Value as Beam;
+                                beam.ReDrawArea((int)_mw.areaslider.Value);
+                                break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                DeActivateArea();
+                CollapseArea();
             }
         }
 
@@ -368,6 +440,33 @@ namespace MesnetMD.Classes.Ui
             }           
         }
 
+        public void UpdateAxialForceDiagrams(bool show = false)
+        {
+            if (Global.AnyAxialForce())
+            {
+                Global.UpdateMaxAxialForce();
+                ActivateAxialForce();
+                if (_mw.axialforceexpander.IsExpanded)
+                {
+                    foreach (var item in Global.Objects)
+                    {
+                        switch (item.Value.Type)
+                        {
+                            case Global.ObjectType.Beam:
+
+                                var beam = item.Value as Beam;
+                                beam.ReDrawAxialForce((int)_mw.axialforceslider.Value);
+                                break;
+                        }
+                    }
+                }
+                if (show)
+                {
+                    _mw.axialforceexpander.IsExpanded = true;
+                }
+            }
+        }
+
         public void UpdateStressDiagrams(bool show = false)
         {            
             if (Global.AnyStress())
@@ -402,6 +501,7 @@ namespace MesnetMD.Classes.Ui
         public void UpdateLoadDiagrams()
         {
             UpdateInertiaDiagrams();
+            UpdateAreaDiagrams();
             UpdateDistloadDiagrams();
             UpdateConcloadDiagrams();
         }
@@ -412,9 +512,11 @@ namespace MesnetMD.Classes.Ui
         public void UpdateAllDiagrams()
         {
             UpdateInertiaDiagrams();
+            UpdateAreaDiagrams();
             UpdateDistloadDiagrams();
             UpdateConcloadDiagrams();
             UpdateForceDiagrams();
+            UpdateAxialForceDiagrams();
             UpdateMomentDiagrams();
             UpdateStressDiagrams();
         }
@@ -461,7 +563,6 @@ namespace MesnetMD.Classes.Ui
 
         private void inertiaslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("inertiaslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
@@ -470,6 +571,58 @@ namespace MesnetMD.Classes.Ui
 
                         var beam = item.Value as Beam;
                         beam.ReDrawInertia((int)e.NewValue);
+
+                        break;
+                }
+            }
+        }
+
+        private void areaexpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            _mw.areaborder.Background = new SolidColorBrush(Color.FromArgb(255, 188, 221, 255));
+
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        Beam beam = item.Value as Beam;
+                        beam.ReDrawArea((int)_mw.areaslider.Value);
+
+                        break;
+                }
+            }
+        }
+
+        private void areaexpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            _mw.areaborder.Background = new SolidColorBrush(Colors.WhiteSmoke);
+
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        Beam beam = item.Value as Beam;
+                        beam.DestroyAreaDiagram();
+
+                        break;
+                }
+            }
+        }
+
+        private void areaslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+                        beam.ReDrawArea((int)e.NewValue);
 
                         break;
                 }
@@ -514,7 +667,7 @@ namespace MesnetMD.Classes.Ui
 
         private void distloadslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
+            MesnetMDDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
@@ -572,7 +725,7 @@ namespace MesnetMD.Classes.Ui
 
         private void concloadslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
+            MesnetMDDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
@@ -630,7 +783,7 @@ namespace MesnetMD.Classes.Ui
 
         private void momentslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("momentslider value changed : " + e.NewValue);
+            MesnetMDDebug.WriteInformation("momentslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
@@ -683,7 +836,7 @@ namespace MesnetMD.Classes.Ui
 
         private void forceslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("forceslider value changed : " + e.NewValue);
+            MesnetMDDebug.WriteInformation("forceslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
@@ -692,6 +845,59 @@ namespace MesnetMD.Classes.Ui
 
                         var beam = item.Value as Beam;
                         beam.ReDrawForce((int)e.NewValue);
+
+                        break;
+                }
+            }
+        }
+
+        private void axiaforceexpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            _mw.axialforceborder.Background = new SolidColorBrush(Color.FromArgb(255, 188, 221, 255));
+
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        Beam beam = item.Value as Beam;
+                        beam.ReDrawAxialForce((int)_mw.axialforceslider.Value);
+
+                        break;
+                }
+            }
+        }
+
+        private void axiaforceexpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            _mw.axialforceborder.Background = new SolidColorBrush(Colors.WhiteSmoke);
+
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        Beam beam = item.Value as Beam;
+                        beam.DestroyAxialForceDiagram();
+
+                        break;
+                }
+            }
+        }
+
+        private void axiaforceslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MesnetMDDebug.WriteInformation("axialforceslider value changed : " + e.NewValue);
+            foreach (var item in Global.Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case Global.ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+                        beam.ReDrawAxialForce((int)e.NewValue);
 
                         break;
                 }
@@ -736,7 +942,7 @@ namespace MesnetMD.Classes.Ui
 
         private void stressslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyDebug.WriteInformation("stressslider value changed : " + e.NewValue);
+            MesnetMDDebug.WriteInformation("stressslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)

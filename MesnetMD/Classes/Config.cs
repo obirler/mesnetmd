@@ -13,10 +13,10 @@ namespace MesnetMD.Classes
         public static string VersionNumber = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static double SimpsonStep = 0.0001;
-
-        public static double CrossLoopTreshold = 0.00001;
-
+        
         public static bool ShowDofInSupportTree = true;
+
+        public static bool ShowFictionalSupportInTrees = true;
 
         public static Global.CalculationType Calculation = Global.CalculationType.SingleThreaded;
 

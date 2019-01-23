@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,19 +12,20 @@ using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.Ui.Graphics
 {
-    public class Inertia : GraphicItem, IGraphic
+    public class AxialForce : GraphicItem, IGraphic
     {
-        public Inertia(PiecewisePoly inertiappoly, Beam beam, int c = 200)
+        public AxialForce(PiecewisePoly axialforceppoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Inertia;
+            GraphicType = Global.GraphicType.Force;
             _beam = beam;
-            _inertiappoly = inertiappoly;
+            _axialforceppoly = axialforceppoly;
+
             Draw(c);
         }
 
         private Beam _beam;
 
-        public PiecewisePoly _inertiappoly;
+        private PiecewisePoly _axialforceppoly;
 
         private MainWindow _mw = (MainWindow)Application.Current.MainWindow;
 
@@ -37,8 +41,8 @@ namespace MesnetMD.Classes.Ui.Graphics
 
         private double coeff;
 
-        private SolidColorBrush color = new SolidColorBrush(Colors.Indigo);
-     
+        private SolidColorBrush color = new SolidColorBrush(Colors.DeepPink);
+
         public void Draw(int c)
         {
             if (starttext != null)
@@ -59,12 +63,12 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
             Children.Clear();
 
-            coeff = c / Global.MaxInertia;            
+            coeff = c / Global.MaxAxialForce;
             double calculated = 0;
             double value = 0;
 
             var leftpoints = new PointCollection();
-            leftpoints.Add(new Point(0, -coeff * _inertiappoly.Calculate(0)));
+            leftpoints.Add(new Point(0, coeff * _axialforceppoly.Calculate(0)));
             leftpoints.Add(new Point(0, 0));
             var leftspline = new CardinalSplineShape(leftpoints);
             leftspline.Stroke = color;
@@ -73,7 +77,7 @@ namespace MesnetMD.Classes.Ui.Graphics
 
             Point lastpoint = new Point(0, 0);
 
-            foreach (Poly poly in _inertiappoly)
+            foreach (Poly poly in _axialforceppoly)
             {
                 var points = new PointCollection();
                 points.Clear();
@@ -83,33 +87,30 @@ namespace MesnetMD.Classes.Ui.Graphics
                     for (double i = poly.StartPoint * 100; i <= poly.EndPoint * 100; i++)
                     {
                         calculated = coeff * poly.Calculate(i / 100);
-                        value = -calculated;
-                        points.Add(new Point(i, value));
+                        points.Add(new Point(i, calculated));
                     }
                 }
                 else
                 {
                     calculated = coeff * poly.Calculate(poly.StartPoint);
-                    value = -calculated;
-                    points.Add(new Point(poly.StartPoint * 100, value));
+                    points.Add(new Point(poly.StartPoint * 100, calculated));
 
                     calculated = coeff * poly.Calculate(poly.EndPoint);
-                    value = -calculated;
-                    points.Add(new Point(poly.EndPoint * 100, value));
+                    points.Add(new Point(poly.EndPoint * 100, calculated));
                 }
 
                 lastpoint = points.Last();
                 _spline = new CardinalSplineShape(points);
                 _spline.Stroke = color;
                 _spline.StrokeThickness = 1;
-                _spline.MouseMove += _mw.inertiamousemove;
+                _spline.MouseMove += _mw.axialforcemousemove;
                 _spline.MouseEnter += _mw.mouseenter;
                 _spline.MouseLeave += _mw.mouseleave;
                 Children.Add(_spline);
             }
 
             var rightpoints = new PointCollection();
-            var point1 = new Point(100 * _beam.Length, -coeff * _inertiappoly.Calculate(_beam.Length));
+            var point1 = new Point(100 * _beam.Length, coeff * _axialforceppoly.Calculate(_beam.Length));
             rightpoints.Add(point1);
             var point2 = new Point(100 * _beam.Length, 0);
             rightpoints.Add(point2);
@@ -118,20 +119,20 @@ namespace MesnetMD.Classes.Ui.Graphics
             rightspline.StrokeThickness = 1;
             Children.Add(rightspline);
 
-            double max = _inertiappoly.Max;
-            double maxlocation = _inertiappoly.MaxLocation;
-            double min = _inertiappoly.Min;
-            double minlocation = _inertiappoly.MinLocation;
+            double max = _axialforceppoly.Max;
+            double maxlocation = _axialforceppoly.MaxLocation;
+            double min = _axialforceppoly.Min;
+            double minlocation = _axialforceppoly.MinLocation;
 
             starttext = createtextblock();
             _beam.Children.Add(starttext);
-            starttext.Text = System.Math.Round(_inertiappoly.Calculate(0), 1) + " cm^4";
+            starttext.Text = System.Math.Round(_axialforceppoly.Calculate(0), 1) + " kN";
             starttext.Foreground = color;
             MinSize(starttext);
             starttext.TextAlignment = TextAlignment.Center;
             RotateAround(starttext, _beam.Angle);
             Canvas.SetLeft(starttext, -starttext.Width / 2);
-            calculated = -coeff * _inertiappoly.Calculate(0);
+            calculated = coeff * _axialforceppoly.Calculate(0);
 
             if (calculated > 0)
             {
@@ -139,13 +140,13 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
             else
             {
-                Canvas.SetTop(starttext, calculated - starttext.Height);
+                Canvas.SetTop(starttext, calculated + starttext.Height);
             }
 
             if (minlocation != 0 && minlocation != _beam.Length)
             {
                 mintext = createtextblock();
-                mintext.Text = System.Math.Round(min, 1) + " cm^4";
+                mintext.Text = System.Math.Round(min, 1) + " kN";
                 mintext.Foreground = color;
                 MinSize(mintext);
                 mintext.TextAlignment = TextAlignment.Center;
@@ -155,7 +156,8 @@ namespace MesnetMD.Classes.Ui.Graphics
 
                 Canvas.SetLeft(mintext, minlocation * 100 - mintext.Width / 2);
 
-                calculated = -coeff * min;
+                calculated = coeff * min;
+                value = calculated;
 
                 if (calculated > 0)
                 {
@@ -163,7 +165,7 @@ namespace MesnetMD.Classes.Ui.Graphics
                 }
                 else
                 {
-                    Canvas.SetTop(mintext, calculated - mintext.Height);
+                    Canvas.SetTop(mintext, calculated + mintext.Height);
                 }
 
                 var minpoints = new PointCollection();
@@ -177,7 +179,7 @@ namespace MesnetMD.Classes.Ui.Graphics
             if (maxlocation != 0 && maxlocation != _beam.Length)
             {
                 maxtext = createtextblock();
-                maxtext.Text = System.Math.Round(max, 1) + " cm^4";
+                maxtext.Text = System.Math.Round(max, 1) + " kN";
                 maxtext.Foreground = color;
                 MinSize(maxtext);
                 maxtext.TextAlignment = TextAlignment.Center;
@@ -187,7 +189,8 @@ namespace MesnetMD.Classes.Ui.Graphics
 
                 Canvas.SetLeft(maxtext, maxlocation * 100 - maxtext.Width / 2);
 
-                calculated = -coeff * max;
+                calculated = coeff * max;
+                value = calculated;
 
                 if (calculated > 0)
                 {
@@ -195,7 +198,7 @@ namespace MesnetMD.Classes.Ui.Graphics
                 }
                 else
                 {
-                    Canvas.SetTop(maxtext, calculated - maxtext.Height);
+                    Canvas.SetTop(maxtext, calculated + maxtext.Height);
                 }
 
                 var maxpoints = new PointCollection();
@@ -208,13 +211,14 @@ namespace MesnetMD.Classes.Ui.Graphics
 
             endtext = createtextblock();
             _beam.Children.Add(endtext);
-            endtext.Text = System.Math.Round(_inertiappoly.Calculate(_beam.Length), 1) + " cm^4";
+            endtext.Text = System.Math.Round(_axialforceppoly.Calculate(_beam.Length), 1) + " kN";
             endtext.Foreground = color;
             MinSize(endtext);
             endtext.TextAlignment = TextAlignment.Center;
             RotateAround(endtext, _beam.Angle);
             Canvas.SetLeft(endtext, _beam.Length * 100 - endtext.Width / 2);
-            calculated = -coeff * _inertiappoly.Calculate(_beam.Length);
+            calculated = coeff * _axialforceppoly.Calculate(_beam.Length);
+
             if (calculated > 0)
             {
                 Canvas.SetTop(endtext, calculated);
@@ -277,10 +281,10 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
         }
 
-        public PiecewisePoly InertiaPpoly
+        public PiecewisePoly AxialForcePpoly
         {
-            get { return _inertiappoly; }
-            set { _inertiappoly = value; }
+            get { return _axialforceppoly; }
+            set { _axialforceppoly = value; }
         }
     }
 }

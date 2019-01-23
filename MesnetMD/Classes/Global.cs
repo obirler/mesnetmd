@@ -49,11 +49,36 @@ namespace MesnetMD.Classes
 
                         var beam = item.Value as Beam;
 
-                        if (beam.Inertias?.Count > 0)
+                        if (beam.Inertia?.Count > 0)
                         {
                             if (beam.MaxInertia > MaxInertia)
                             {
                                 MaxInertia = beam.MaxInertia;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        public static void UpdateMaxArea()
+        {
+            MaxArea = Double.MinValue;
+
+            foreach (var item in Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+
+                        if (beam.Area?.Count > 0)
+                        {
+                            if (beam.MaxArea > MaxArea)
+                            {
+                                MaxArea = beam.MaxArea;
                             }
                         }
 
@@ -162,6 +187,31 @@ namespace MesnetMD.Classes
             }
         }
 
+        public static void UpdateMaxAxialForce()
+        {
+            MaxAxialForce = Double.MinValue;
+
+            foreach (var item in Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+
+                        if (beam.AxialForce?.Count > 0)
+                        {
+                            if (beam.MaxAbsAxialForce > MaxAxialForce)
+                            {
+                                MaxAxialForce = beam.MaxAbsAxialForce;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
         public static void UpdateMaxStress()
         {
             MaxStress = Double.MinValue;
@@ -190,10 +240,12 @@ namespace MesnetMD.Classes
         public static void UpdateAllMaxValues()
         {
             MaxInertia = Double.MinValue;
+            MaxArea = Double.MinValue;         
             MaxDistLoad = Double.MinValue;
             MaxConcLoad = Double.MinValue;
             MaxMoment = Double.MinValue;
             MaxForce = Double.MinValue;
+            MaxAxialForce = Double.MinValue;
             MaxStress = Double.MinValue;
 
             foreach (var item in Objects)
@@ -206,6 +258,10 @@ namespace MesnetMD.Classes
                         if (beam.MaxInertia > MaxInertia)
                         {
                             MaxInertia = beam.MaxInertia;
+                        }
+                        if (beam.MaxArea > MaxArea)
+                        {
+                            MaxArea = beam.MaxArea;
                         }
                         if (beam.DistributedLoads?.Count > 0)
                         {
@@ -223,23 +279,30 @@ namespace MesnetMD.Classes
                         }
                         if (beam.FixedEndMoment?.Count > 0)
                         {
-                            if (beam.MaxAbsMoment > MaxMoment)
+                            if (beam.MaxMoment > MaxMoment)
                             {
-                                MaxMoment = beam.MaxAbsMoment;
+                                MaxMoment = beam.MaxMoment;
                             }
                         }
                         if (beam.FixedEndForce?.Count > 0)
                         {
-                            if (beam.MaxAbsForce > MaxForce)
+                            if (beam.MaxForce > MaxForce)
                             {
-                                MaxForce = beam.MaxAbsForce;
+                                MaxForce = beam.MaxForce;
+                            }
+                        }
+                        if (beam.AxialForce?.Count > 0)
+                        {
+                            if (beam.MaxAxialForce > MaxAxialForce)
+                            {
+                                MaxAxialForce = beam.MaxAxialForce;
                             }
                         }
                         if (beam.Stress?.Count > 0)
                         {
-                            if (beam.MaxAbsStress > MaxForce)
+                            if (beam.MaxStress > MaxStress)
                             {
-                                MaxForce = beam.MaxAbsStress;
+                                MaxStress = beam.MaxStress;
                             }
                         }
                         break;
@@ -256,7 +319,27 @@ namespace MesnetMD.Classes
                     case ObjectType.Beam:
 
                         var beam = item.Value as Beam;
-                        if (beam.Inertias?.Count > 0)
+                        if (beam.Inertia?.Count > 0)
+                        {
+                            return true;
+                        }
+
+                        break;
+                }
+            }
+            return false;
+        }
+
+        public static bool AnyArea()
+        {
+            foreach (var item in Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+                        if (beam.Area?.Count > 0)
                         {
                             return true;
                         }
@@ -357,6 +440,26 @@ namespace MesnetMD.Classes
 
                         var beam = item.Value as Beam;
                         if (beam.FixedEndForce?.Count > 0)
+                        {
+                            return true;
+                        }
+
+                        break;
+                }
+            }
+            return false;
+        }
+
+        public static bool AnyAxialForce()
+        {
+            foreach (var item in Objects)
+            {
+                switch (item.Value.Type)
+                {
+                    case ObjectType.Beam:
+
+                        var beam = item.Value as Beam;
+                        if (beam.AxialForce?.Count > 0)
                         {
                             return true;
                         }
@@ -530,6 +633,7 @@ namespace MesnetMD.Classes
             ConcentratedLoad,
             DistibutedLoad,
             Inertia,
+            Area,
             Force,
             Moment,
             Stress
@@ -567,19 +671,25 @@ namespace MesnetMD.Classes
 
         public enum DOFLocation
         {
-            LeftHorizontal=1,
-            LeftVertical=2,
-            LeftRotational=3,
-            RightHorizontal=4,
-            RightVertical=5,
-            RightRotational=6
+            LeftHorizontal=0,
+            LeftVertical=1,
+            LeftRotational=2,
+            RightHorizontal=3,
+            RightVertical=4,
+            RightRotational=5
+        }
+
+        public enum SimpsonIntegrationType
+        {
+            First,
+            Second
         }
 
         public static void WritePPolytoConsole(string message, PiecewisePoly ppoly)
         {
             foreach (Poly poly in ppoly)
             {
-                MyDebug.WriteInformation(message + " : " + poly.ToString() + " , " + poly.StartPoint + " <= x <= " + poly.EndPoint);
+                MesnetMDDebug.WriteInformation(message + " : " + poly.ToString() + " , " + poly.StartPoint + " <= x <= " + poly.EndPoint);
             }
         }
 
@@ -603,6 +713,8 @@ namespace MesnetMD.Classes
 
         public static double MaxForce = Double.MinValue;
 
+        public static double MaxAxialForce = Double.MinValue;
+
         public static double MaxLoad = Double.MinValue;
 
         public static double MaxDeflection = Double.MinValue;
@@ -610,6 +722,8 @@ namespace MesnetMD.Classes
         public static double MaxStress = Double.MinValue;
 
         public static double MaxInertia = Double.MinValue;
+
+        public static double MaxArea = Double.MinValue;
 
         public static double MaxDistLoad = Double.MinValue;
 

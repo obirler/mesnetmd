@@ -52,7 +52,7 @@ namespace MesnetMD.Classes.IO.Xml
                 switch (item.Name.ToString())
                 {
                     case "id":
-                        _support.Id = Convert.ToInt32(item.Value);
+                        _support.Id = Convert.ToInt32(item.Value);                      
                         break;
                     case "supportid":
                         _support.SupportId = Convert.ToInt32(item.Value);

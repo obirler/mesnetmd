@@ -98,6 +98,12 @@
                 </Expander>
             </Border>
 
+            <Border x:Name="areaborder" Margin="5,0,0,0" MinWidth="55" Background="WhiteSmoke" Height="45" BorderBrush="Black" CornerRadius="5" BorderThickness="1">
+                <Expander x:Name="areaexpander" Header="{DynamicResource areamenu}" ExpandDirection="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Slider x:Name="areaslider" Width="80" Minimum="0" Maximum="300" Value="150" Margin="5,0,0,0" VerticalAlignment="Center"></Slider>
+                </Expander>
+            </Border>
+
             <Border x:Name="distloadborder" Margin="5,0,0,0" MinWidth="55" Background="WhiteSmoke" Height="45" BorderBrush="Black" CornerRadius="5" BorderThickness="1">
                 <Expander x:Name="distloadexpander" Header="{DynamicResource distloadmenu}" HorizontalAlignment="Center" ExpandDirection="Right" VerticalAlignment="Center">
                     <Slider x:Name="distloadslider" Width="80" Margin="5,0,0,0" Minimum="0" Maximum="300" Value="150" VerticalAlignment="Center"></Slider>
@@ -122,6 +128,12 @@
                 </Expander>
             </Border>
 
+            <Border x:Name="axialforceborder" Margin="5,0,0,0" MinWidth="55" Background="WhiteSmoke" Height="45" BorderBrush="Black" CornerRadius="5" BorderThickness="1">
+                <Expander x:Name="axialforceexpander" Header="{DynamicResource axialforcemenu}" ExpandDirection="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Slider x:Name="axialforceslider" Width="80" Margin="5,0,0,0" Minimum="0" Maximum="300" Value="150" VerticalAlignment="Center"></Slider>
+                </Expander>
+            </Border>
+
             <Border x:Name="stressborder" Margin="5,0,0,0" Background="WhiteSmoke" MinWidth="55" Height="45" BorderBrush="Black" CornerRadius="5" BorderThickness="1">
                 <Expander x:Name="stressexpander" Header="{DynamicResource stressmenu}" ExpandDirection="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Slider x:Name="stressslider" Width="80" Margin="5,0,0,0" Minimum="0" Maximum="300" Value="150" VerticalAlignment="Center"></Slider>
@@ -132,7 +144,7 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
 
-            <Button Margin="0,0,5,0" Click="DebugClick"  Style="{DynamicResource RoundCorner}" Height="45" MinWidth="55">
+            <Button Margin="0,0,5,0" Click="DebugClick" Visibility="Collapsed" Style="{DynamicResource RoundCorner}" Height="45" MinWidth="55">
                 <Button.Content>
                     <TextBlock FontSize="14">Debug</TextBlock>
                 </Button.Content>
@@ -163,7 +175,7 @@
             <Grid x:Name="btnstack" Grid.Column="0" Grid.Row="0">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="300"></RowDefinition>
+                    <RowDefinition Height="295"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="35"></RowDefinition>
                 </Grid.RowDefinitions>
@@ -242,24 +254,6 @@
 
                     <Border Height="1"  BorderThickness="0,1,0,0" BorderBrush="#FFC3C2C2" Background="#FFE1E1E1" Margin="0,5,0,5"/>
 
-                    <Button x:Name="concentratedloadbtn" IsEnabled="False" Height="30" Width="30"  Margin="5,3,5,5" Click="concentratedloadbtn_Click">
-
-                        <Button.ToolTip>
-                            <ToolTip>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource addpointload}"/>
-                                </StackPanel>
-                            </ToolTip>
-                        </Button.ToolTip>
-
-                        <Grid Height="26" Width="26">
-
-                            <Polygon Points="12,2 14,2 14,17 17,17 13,24 9,17 12,17" Fill="Black"/>
-
-                        </Grid>
-
-                    </Button>
-
                     <Button x:Name="distributedloadbtn" IsEnabled="False" Height="30" Width="30"  Margin="5,5,5,3" Click="distributedloadbtn_Click">
 
                         <Button.ToolTip>
@@ -274,12 +268,53 @@
 
                             <Polygon Points="4,2 22,2 22,4 4,4" Fill="Black"/>
 
-                            <Polygon Points="4,4 6,4 6,17 8,17 5,24 2,17 4,17" Fill="Black"/>
+                            <Polygon Points="4,4 6,4 6,15 8,15 5,21 2,15 4,15" Fill="Black"/>
 
-                            <Polygon Points="12,4 14,4 14,17 16,17 13,24 10,17 12,17" Fill="Black"/>
+                            <Polygon Points="12,4 14,4 14,15 16,15 13,21 10,15 12,15" Fill="Black"/>
 
-                            <Polygon Points="20,4 22,4 22,17 24,17 21,24 18,17 20,17" Fill="Black"/>
+                            <Polygon Points="20,4 22,4 22,15 24,15 21,21 18,15 20,15" Fill="Black"/>
 
+                            <Polygon Points="3,21 23,21 23,23 3,23" Fill="Black"></Polygon>
+
+                        </Grid>
+
+                    </Button>
+
+
+                    <Button x:Name="concentratedloadbtn" IsEnabled="False" Height="30" Width="30"  Margin="5,3,5,5" Click="concentratedloadbtn_Click">
+
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource addpointload}"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
+
+                        <Grid Height="26" Width="26">
+
+                            <Polygon Points="12,2 14,2 14,14 16,14 13,20 10,14 12,14" Fill="Black"/>
+
+                            <Polygon Points="4,20 22,20 22,22 4,22" Fill="Black"></Polygon>
+                        </Grid>
+
+                    </Button>
+
+                    <Button x:Name="directloadbtn" IsEnabled="False" Height="30" Width="30"  Margin="5,3,5,5" Click="concentratedloadbtn_Click">
+
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource adddirectpointload}"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
+
+                        <Grid Height="26" Width="26">
+
+                            <Polygon Points="12,2 14,2 14,14 16,14 13,20 10,14 12,14" Fill="Black"/>
+
+                            <Ellipse Height="4" Width="4" Margin="11,19,11,3" Fill="Black"/>
                         </Grid>
 
                     </Button>
@@ -306,7 +341,7 @@
 
                     </Button>
 
-                    <Button x:Name="zoominbtn" Height="30" Width="30" Margin="5,5,5,5" Click="zoominbtn_Click">
+                    <Button x:Name="zoominbtn" Visibility="Collapsed" Height="30" Width="30" Margin="5,5,5,5" Click="zoominbtn_Click">
 
                         <Button.ToolTip>
                             <ToolTip>
@@ -330,7 +365,7 @@
 
                     </Button>
 
-                    <Button x:Name="zoomoutbtn" Height="30" Width="30"  Margin="5,5,5,5" Click="zoomoutbtn_Click">
+                    <Button x:Name="zoomoutbtn" Visibility="Collapsed" Height="30" Width="30"  Margin="5,5,5,5" Click="zoomoutbtn_Click">
 
                         <Button.ToolTip>
                             <ToolTip>

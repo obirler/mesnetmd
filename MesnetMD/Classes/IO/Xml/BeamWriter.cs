@@ -104,7 +104,7 @@ namespace MesnetMD.Classes.IO.Xml
         {
             _writer.WriteStartElement("Inertias");
 
-            foreach(Math.Poly poly in _beam.Inertias)
+            foreach(Math.Poly poly in _beam.Inertia)
             {
                 _writer.WriteStartElement("Inertia");
                 _writer.WriteElementString("expression", poly.ToString());
@@ -154,7 +154,7 @@ namespace MesnetMD.Classes.IO.Xml
         {
             _writer.WriteStartElement("EPolies");
 
-            foreach (Math.Poly poly in _beam.E)
+            foreach (Math.Poly poly in _beam.Eppoly)
             {
                 _writer.WriteStartElement("EPoly");
                 _writer.WriteElementString("expression", poly.ToString());
@@ -167,7 +167,7 @@ namespace MesnetMD.Classes.IO.Xml
 
             _writer.WriteStartElement("DPolies");
 
-            foreach (Math.Poly poly in _beam.D)
+            foreach (Math.Poly poly in _beam.Dppoly)
             {
                 _writer.WriteStartElement("DPoly");
                 _writer.WriteElementString("expression", poly.ToString());

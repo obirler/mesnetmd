@@ -42,7 +42,7 @@ namespace MesnetMD.Classes.Ui
 
         public int SupportId=0;
 
-        private static int supportcount = 0;
+        private static int supportcount = 1;
 
         protected bool _selected;
 

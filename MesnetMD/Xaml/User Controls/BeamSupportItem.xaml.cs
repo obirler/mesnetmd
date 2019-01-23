@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using MesnetMD.Classes.Ui;
 
 namespace MesnetMD.Xaml.User_Controls
 {
@@ -7,7 +8,7 @@ namespace MesnetMD.Xaml.User_Controls
     /// </summary>
     public partial class BeamSupportItem : UserControl
     {
-        public BeamSupportItem(string header, object support)
+        public BeamSupportItem(string header, SupportItem support)
         {
             InitializeComponent();
             this.Header.Text = header;
@@ -19,6 +20,6 @@ namespace MesnetMD.Xaml.User_Controls
             InitializeComponent();
         }
 
-        public object Support;
+        public SupportItem Support;
     }
 }

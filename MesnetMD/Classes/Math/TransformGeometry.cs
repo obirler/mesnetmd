@@ -427,11 +427,11 @@ namespace MesnetMD.Classes.Math
 
             if (check)
             {
-                MyDebug.WriteInformation("the point is inside of the rectangle");
+                MesnetMDDebug.WriteInformation("the point is inside of the rectangle");
             }
             else
             {
-                MyDebug.WriteInformation("the point is outside of the rectangle");
+                MesnetMDDebug.WriteInformation("the point is outside of the rectangle");
             }
 
             return check;
@@ -451,11 +451,11 @@ namespace MesnetMD.Classes.Math
 
             if (check)
             {
-                MyDebug.WriteInformation("the point is inside of the rectangle");
+                MesnetMDDebug.WriteInformation("the point is inside of the rectangle");
             }
             else
             {
-                MyDebug.WriteInformation("the point is outside of the rectangle");
+                MesnetMDDebug.WriteInformation("the point is outside of the rectangle");
             }
 
             return check;

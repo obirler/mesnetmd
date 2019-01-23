@@ -38,21 +38,37 @@ namespace MesnetMD.Classes.IO
 
         public static void WriteLine(string message)
         {
+            if (_isclosed)
+            {
+                InitializeLogger();
+            }
             stw.WriteLine(message);
         }
 
         public static void NextLine()
         {
+            if (_isclosed)
+            {
+                InitializeLogger();
+            }
             stw.WriteLine("");
         }
 
         public static void SplitLine()
         {
+            if (_isclosed)
+            {
+                InitializeLogger();
+            }
             stw.WriteLine("-------------------------------------------------------------------------------------------------------");
         }
 
         public static void Write(string message)
         {
+            if (_isclosed)
+            {
+                InitializeLogger();
+            }
             stw.Write(message);
         }
 

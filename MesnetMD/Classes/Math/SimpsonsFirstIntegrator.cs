@@ -19,33 +19,18 @@
 ========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace MesnetMD.Classes.Math
 {
-    public class SimpsonIntegrator
+    public class SimpsonsFirstIntegrator : SimpsonBase
     {
-        public SimpsonIntegrator(double deltax)
+        public SimpsonsFirstIntegrator(double deltax) : base(Global.SimpsonIntegrationType.First, deltax)
         {
-            datas = new List<double>();
-            _sum = 0;
-            _h = deltax;
         }
 
-        private double _h;
-
-        private double _sum;
-
-        private List<double> datas;
-
-        private double _result;
-
-        public void AddData(double data)
-        {
-            datas.Add(data);
-        }
-
-        public void Calculate()
+        public override void Calculate()
         {
             for (int i = 0; i < datas.Count; i++)
             {
@@ -66,12 +51,7 @@ namespace MesnetMD.Classes.Math
                     _sum += 4 * datas[i];
                 }
             }
-            _result = _h/3*_sum;
-        }
-
-        public double Result
-        {
-            get { return _result; }
-        }
+            _result = _h / 3 * _sum;
+        }    
     }
 }

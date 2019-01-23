@@ -21,17 +21,9 @@ namespace MesnetMD.Classes.Ui.Graphics
 
         private Beam _beam;
 
-        private double _length;
-
         private MainWindow _mw = (MainWindow)Application.Current.MainWindow;
 
-        private PiecewisePoly _momentppoly;
-
-        public PiecewisePoly MomentPpoly
-        {
-            get { return _momentppoly; }
-            set { _momentppoly = value; }
-        }
+        private PiecewisePoly _momentppoly;   
 
         private TextBlock starttext;
 
@@ -45,14 +37,14 @@ namespace MesnetMD.Classes.Ui.Graphics
 
         private double coeff;
 
-        public double Length
+        private SolidColorBrush color = new SolidColorBrush(Colors.Red);
+
+        public PiecewisePoly MomentPpoly
         {
-            get { return _length; }
-            set
-            {
-                _length = value;
-            }
+            get { return _momentppoly; }
+            set { _momentppoly = value; }
         }
+
         public void Draw(int c)
         {
             if (starttext != null)
@@ -81,7 +73,7 @@ namespace MesnetMD.Classes.Ui.Graphics
             leftpoints.Add(new Point(0, -coeff * _momentppoly.Calculate(0)));
             leftpoints.Add(new Point(0, 0));
             var leftspline = new CardinalSplineShape(leftpoints);
-            leftspline.Stroke = new SolidColorBrush(Colors.Red);
+            leftspline.Stroke = color;
             leftspline.StrokeThickness = 1;
             Children.Add(leftspline);
 
@@ -112,10 +104,9 @@ namespace MesnetMD.Classes.Ui.Graphics
                     points.Add(new Point(poly.EndPoint * 100, value));
                 }
 
-
                 lastpoint = points.Last();
                 _spline = new CardinalSplineShape(points);
-                _spline.Stroke = new SolidColorBrush(Colors.Red);
+                _spline.Stroke = color;
                 _spline.StrokeThickness = 1;
                 _spline.MouseMove += _mw.momentmousemove;
                 _spline.MouseEnter += _mw.mouseenter;
@@ -124,12 +115,12 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
 
             var rightpoints = new PointCollection();
-            var point1 = new Point(100 * _length, -coeff * _momentppoly.Calculate(_length));
+            var point1 = new Point(100 * _beam.Length, -coeff * _momentppoly.Calculate(_beam.Length));
             rightpoints.Add(point1);
-            var point2 = new Point(100 * _length, 0);
+            var point2 = new Point(100 * _beam.Length, 0);
             rightpoints.Add(point2);
             var rightspline = new CardinalSplineShape(rightpoints);
-            rightspline.Stroke = new SolidColorBrush(Colors.Red);
+            rightspline.Stroke = color;
             rightspline.StrokeThickness = 1;
             Children.Add(rightspline);
 
@@ -141,7 +132,7 @@ namespace MesnetMD.Classes.Ui.Graphics
             starttext = createtextblock();
             _beam.Children.Add(starttext);
             starttext.Text = System.Math.Round(_momentppoly.Calculate(0), 1) + " kNm";
-            starttext.Foreground = new SolidColorBrush(Colors.Red);
+            starttext.Foreground = color;
             MinSize(starttext);
             starttext.TextAlignment = TextAlignment.Center;
             RotateAround(starttext, _beam.Angle);
@@ -153,15 +144,14 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
             else
             {
-                Canvas.SetTop(starttext, calculated + starttext.Height);
+                Canvas.SetTop(starttext, calculated - starttext.Height);
             }
 
-
-            if (minlocation != 0 && minlocation != _length)
+            if (minlocation != 0 && minlocation != _beam.Length)
             {
                 mintext = createtextblock();
                 mintext.Text = System.Math.Round(min, 1) + " kNm";
-                mintext.Foreground = new SolidColorBrush(Colors.Red);
+                mintext.Foreground = color;
                 MinSize(mintext);
                 mintext.TextAlignment = TextAlignment.Center;
                 RotateAround(mintext, _beam.Angle);
@@ -171,28 +161,29 @@ namespace MesnetMD.Classes.Ui.Graphics
                 Canvas.SetLeft(mintext, minlocation * 100 - mintext.Width / 2);
 
                 calculated = -coeff * min;
+
                 if (calculated > 0)
                 {
                     Canvas.SetTop(mintext, calculated);
                 }
                 else
                 {
-                    Canvas.SetTop(mintext, calculated + mintext.Height);
+                    Canvas.SetTop(mintext, calculated - mintext.Height);
                 }
 
                 var minpoints = new PointCollection();
                 minpoints.Add(new Point(minlocation * 100, 0));
-                minpoints.Add(new Point(minlocation * 100, -coeff * min));
+                minpoints.Add(new Point(minlocation * 100, calculated));
                 var minspline = new CardinalSplineShape(minpoints);
-                minspline.Stroke = new SolidColorBrush(Colors.Red);
+                minspline.Stroke = color;
                 Children.Add(minspline);
             }
 
-            if (maxlocation != 0 && maxlocation != _length)
+            if (maxlocation != 0 && maxlocation != _beam.Length)
             {
                 maxtext = createtextblock();
                 maxtext.Text = System.Math.Round(max, 1) + " kNm";
-                maxtext.Foreground = new SolidColorBrush(Colors.Red);
+                maxtext.Foreground = color;
                 MinSize(maxtext);
                 maxtext.TextAlignment = TextAlignment.Center;
                 RotateAround(maxtext, _beam.Angle);
@@ -209,21 +200,21 @@ namespace MesnetMD.Classes.Ui.Graphics
                 }
                 else
                 {
-                    Canvas.SetTop(maxtext, calculated + maxtext.Height);
+                    Canvas.SetTop(maxtext, calculated - maxtext.Height);
                 }
 
                 var maxpoints = new PointCollection();
                 maxpoints.Add(new Point(maxlocation * 100, 0));
-                maxpoints.Add(new Point(maxlocation * 100, -coeff * max));
+                maxpoints.Add(new Point(maxlocation * 100, calculated));
                 var maxspline = new CardinalSplineShape(maxpoints);
-                maxspline.Stroke = new SolidColorBrush(Colors.Red);
+                maxspline.Stroke = color;
                 Children.Add(maxspline);
             }
 
             endtext = createtextblock();
             _beam.Children.Add(endtext);
             endtext.Text = System.Math.Round(_momentppoly.Calculate(_beam.Length), 1) + " kNm";
-            endtext.Foreground = new SolidColorBrush(Colors.Red);
+            endtext.Foreground = color;
             MinSize(endtext);
             endtext.TextAlignment = TextAlignment.Center;
             RotateAround(endtext, _beam.Angle);
@@ -235,7 +226,7 @@ namespace MesnetMD.Classes.Ui.Graphics
             }
             else
             {
-                Canvas.SetTop(endtext, calculated + endtext.Height);
+                Canvas.SetTop(endtext, calculated - endtext.Height);
             }
         }
 

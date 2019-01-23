@@ -3,11 +3,13 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="addbeam">Add a Beam</system:String>
+    <system:String x:Key="addbeamorsupport">Add a Beam or a Support</system:String>
     <system:String x:Key="editbeam">Edit the Beam</system:String>
     <system:String x:Key="addfixedsupport">Add a Fixed Support</system:String>
     <system:String x:Key="addbasicsupport">Add a Basic Support</system:String>
     <system:String x:Key="addslidingsupport">Add a Sliding Support</system:String>
-    <system:String x:Key="addpointload">Add a Point Load</system:String>
+    <system:String x:Key="addpointload">Add an Indirect Point Load</system:String>
+    <system:String x:Key="adddirectpointload">Add an Direct Point Load</system:String>
     <system:String x:Key="adddistributedload">Add a Distributed Load</system:String>
     <system:String x:Key="addconcentratedload">Add a Concentrated Load</system:String>
     <system:String x:Key="settings">Settings</system:String>
@@ -24,6 +26,7 @@
     <system:String x:Key="add">Add</system:String>
     <system:String x:Key="invalidbeamlength">Beam Length is Invalid</system:String>
     <system:String x:Key="invalidinertia">Invalid Moment of Inertia</system:String>
+    <system:String x:Key="invalidarea">Invalid Area</system:String>
     <system:String x:Key="invalidelasticity">Invalid Modulus of Elasticity</system:String>
     <system:String x:Key="uniformdistload">Uniformly Distributed Load</system:String>
     <system:String x:Key="uniformvaryingdistload">Linear Distributed Load</system:String>
@@ -56,6 +59,7 @@
     <system:String x:Key="calculationtype">Calculation Type</system:String>
     <system:String x:Key="notcoveredinertia">Invalid inertia piecewise polynomial. You need to define inertia for all x in range zero to beam length</system:String>
     <system:String x:Key="minusinertia">Inertia can not be less than or equal to zero</system:String>
+    <system:String x:Key="minusarea">Area can not be less than or equal to zero</system:String>
     <system:String x:Key="invalidpolynomial">Invalid polynomial. The poly must only be a function of x.</system:String>
     <system:String x:Key="invalidrange">Invalid range. There is already a function defined in this range.</system:String>
     <system:String x:Key="invalidpoint">Invalid point. There is already a magnitude defined in this point.</system:String>
@@ -67,8 +71,8 @@
     <system:String x:Key="solve">Solve</system:String>
     <system:String x:Key="showmoment">Show Moment Distribution</system:String>
     <system:String x:Key="hidemoment">Hide Moment Distribution</system:String>
-    <system:String x:Key="showforce">Show Force Distribution</system:String>
-    <system:String x:Key="hideforce">Hide Force Distribution</system:String>
+    <system:String x:Key="showforce">Show ShearForce Distribution</system:String>
+    <system:String x:Key="hideforce">Hide ShearForce Distribution</system:String>
     <system:String x:Key="showstress">Show Stress Distribution</system:String>
     <system:String x:Key="hidestress">Hide Stress Distribution</system:String>
     <system:String x:Key="showloads">Show Loads</system:String>
@@ -87,7 +91,7 @@
     <system:String x:Key="hide">Hide</system:String>
     <system:String x:Key="concentratedloads">Concentrated Loads</system:String>
     <system:String x:Key="distributedloads">Distributed Loads</system:String>
-    <system:String x:Key="forcefunction">Shear Force Function</system:String>
+    <system:String x:Key="forcefunction">Shear ShearForce Function</system:String>
     <system:String x:Key="momentfunction">Bending Moment Function</system:String>
     <system:String x:Key="maxvalue">Max Value</system:String>
     <system:String x:Key="minvalue">Min Value</system:String>
@@ -128,10 +132,12 @@
     <system:String x:Key="about">About</system:String>
     <system:String x:Key="solved">Frame system has been solved</system:String>
     <system:String x:Key="inertiamenu">Inertia</system:String>
+    <system:String x:Key="areamenu">Area</system:String>
     <system:String x:Key="distloadmenu">Dist. Load</system:String>
     <system:String x:Key="concloadmenu">Conc. Load</system:String>
     <system:String x:Key="momentmenu">Moment</system:String>
-    <system:String x:Key="forcemenu">Force</system:String>
+    <system:String x:Key="forcemenu">ShearForce</system:String>
+    <system:String x:Key="axialforcemenu">AxialForce</system:String>
     <system:String x:Key="stressmenu">Stress</system:String>
     <system:String x:Key="askforbeamdelete">Do you really want to delete this beam?</system:String>
     <system:String x:Key="askforsupportdelete">Do you really want to delete this support?</system:String>

@@ -32,10 +32,40 @@ namespace MesnetMD.Classes.Math
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="PiecewisePoly"/> class with only one polynomial whose expression and bounds given.
+        /// </summary>
+        /// <param name="polyexpression">The polynomial expression for the polynomial that will be added in piecewisepoly.</param>
+        /// <param name="startpoint">The start point of the polynomial.</param>
+        /// <param name="endpoint">The end point of the polynomial.</param>
+        public PiecewisePoly(string polyexpression, double startpoint, double endpoint)
+        {
+            var poly = new Poly(polyexpression, startpoint, endpoint);
+            var polies = new List<Poly>();
+            polies.Add(poly);
+            initialize(polies);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PiecewisePoly"/> class with ony one polynomial.
+        /// </summary>
+        /// <param name="poly">The polynomial that will be added in piecewisepoly.</param>
+        public PiecewisePoly(Poly poly)
+        {
+            var polies = new List<Poly>();
+            polies.Add(poly);
+            initialize(polies);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PiecewisePoly"/> class. With this constructor, polynomials will be sorted automatically.
         /// </summary>
         /// <param name="polylist">The polylist.</param>
         public PiecewisePoly(List<Poly> polylist)
+        {
+            initialize(polylist);           
+        }
+
+        private void initialize(List<Poly> polylist)
         {
             _sortlist = polylist;
 
@@ -44,7 +74,7 @@ namespace MesnetMD.Classes.Math
             foreach (Poly poly in _sortlist)
             {
                 List.Add(poly);
-            }            
+            }
         }
 
         private List<Poly> _sortlist = new List<Poly>();
@@ -249,6 +279,19 @@ namespace MesnetMD.Classes.Math
                 }
             }
             return result;
+        }
+
+        public bool IsConstant()
+        {
+            if (List.Count == 1)
+            {
+                var poly = List[0] as Poly;
+                if (poly.IsConstant())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public double Max

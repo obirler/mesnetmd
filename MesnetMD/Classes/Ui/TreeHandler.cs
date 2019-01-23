@@ -23,11 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Markup.Localizer;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
 using MesnetMD.Xaml.User_Controls;
+using TreeView = System.Windows.Controls.TreeView;
 
 namespace MesnetMD.Classes.Ui
 {
@@ -149,6 +151,20 @@ namespace MesnetMD.Classes.Ui
                         leftname = Global.GetString("basicsupport") + " " + bs.SupportId;
                         leftsideitem.Support = bs;
                         break;
+
+                    case Global.ObjectType.FictionalSupport:
+                        if (Config.ShowFictionalSupportInTrees)
+                        {
+                            var fs = beam.LeftSide as FictionalSupport;
+                            leftname = fs.Name;
+                            leftsideitem.Support = fs;
+                        }
+                        else
+                        {
+                            leftsideitem.Header.Text = Global.GetString("leftside") + " : " + Global.GetString("null");
+                            beamitem.Items.Add(leftsideitem);
+                        }
+                        break;
                 }
                 leftsideitem.Header.Text = Global.GetString("leftside") + " : " + leftname;
                 beamitem.Items.Add(leftsideitem);
@@ -183,6 +199,20 @@ namespace MesnetMD.Classes.Ui
                         rightname = Global.GetString("basicsupport") + " " + bs.SupportId;
                         rightsideitem.Support = bs;
                         break;
+
+                    case Global.ObjectType.FictionalSupport:
+                        if (Config.ShowFictionalSupportInTrees)
+                        {
+                            var fs = beam.RightSide as FictionalSupport;
+                            rightname = fs.Name;
+                            rightsideitem.Support = fs;
+                        }
+                        else
+                        {
+                            rightsideitem.Header.Text = Global.GetString("rightside") + " : " + Global.GetString("null");
+                            beamitem.Items.Add(rightsideitem);
+                        }
+                        break;
                 }
                 rightsideitem.Header.Text = Global.GetString("rightside") + " : " + rightname;
                 beamitem.Items.Add(rightsideitem);
@@ -202,10 +232,10 @@ namespace MesnetMD.Classes.Ui
             inertiaitem.Header = new InertiaItem(Global.GetString("inertia"));
             beamitem.Items.Add(inertiaitem);
 
-            foreach (Poly inertiapoly in beam.Inertias)
+            foreach (Poly inertiapoly in beam.Inertia)
             {
                 var inertiachilditem = new TreeViewItem();
-                inertiachilditem.Header = inertiapoly.GetString(4) + " ,  " + inertiapoly.StartPoint + " <= x <= " + inertiapoly.EndPoint;
+                inertiachilditem.Header = inertiapoly.GetString(15) + " ,  " + inertiapoly.StartPoint + " <= x <= " + inertiapoly.EndPoint;
                 inertiaitem.Items.Add(inertiachilditem);
             }
 
@@ -232,7 +262,7 @@ namespace MesnetMD.Classes.Ui
                 foreach (Poly distloadpoly in beam.DistributedLoads)
                 {
                     var distloadchilditem = new TreeViewItem();
-                    distloadchilditem.Header = distloadpoly.GetString(4) + " ,  " + distloadpoly.StartPoint + " <= x <= " + distloadpoly.EndPoint;
+                    distloadchilditem.Header = distloadpoly.GetString(10) + " ,  " + distloadpoly.StartPoint + " <= x <= " + distloadpoly.EndPoint;
                     distloaditem.Items.Add(distloadchilditem);
                 }
             }
@@ -246,7 +276,7 @@ namespace MesnetMD.Classes.Ui
                 foreach (Poly forcepoly in beam.FixedEndForce)
                 {
                     var forcechilditem = new TreeViewItem();
-                    forcechilditem.Header = forcepoly.GetString(4) + " ,  " + forcepoly.StartPoint + " <= x <= " + forcepoly.EndPoint;
+                    forcechilditem.Header = forcepoly.GetString(10) + " ,  " + forcepoly.StartPoint + " <= x <= " + forcepoly.EndPoint;
                     forcetitem.Items.Add(forcechilditem);
                 }
 
@@ -295,7 +325,7 @@ namespace MesnetMD.Classes.Ui
                 foreach (Poly momentpoly in beam.FixedEndMoment)
                 {
                     var momentchilditem = new TreeViewItem();
-                    momentchilditem.Header = momentpoly.GetString(4) + " ,  " + momentpoly.StartPoint + " <= x <= " + momentpoly.EndPoint;
+                    momentchilditem.Header = momentpoly.GetString(10) + " ,  " + momentpoly.StartPoint + " <= x <= " + momentpoly.EndPoint;
                     momentitem.Items.Add(momentchilditem);
                 }
 
@@ -399,7 +429,7 @@ namespace MesnetMD.Classes.Ui
         /// </summary>
         public void UpdateAllBeamTree()
         {
-            MyDebug.WriteInformation("Update All Tree Started");
+            MesnetMDDebug.WriteInformation("Update All Tree Started");
 
             foreach (var item in Global.Objects)
             {
@@ -467,7 +497,7 @@ namespace MesnetMD.Classes.Ui
         /// </summary>
         public void UnSelectAllBeamItem()
         {
-            MyDebug.WriteInformation("UnSelectAllBeamItem executed");
+            MesnetMDDebug.WriteInformation("UnSelectAllBeamItem executed");
             foreach (TreeViewBeamItem item in _beamtree.Items)
             {
                 item.Selected -= BeamTreeItemSelected;
@@ -521,15 +551,6 @@ namespace MesnetMD.Classes.Ui
                         supportitem.Header =
                             new SlidingSupportItem(slidingsup);
                     }
-
-                    /*
-                    if (slidingsup.CrossIndex != null)
-                    {
-                        var crossitem = new TreeViewItem();
-                        crossitem.Header = Global.GetString("crossindex") + " : " + slidingsup.CrossIndex;
-                        supportitem.Items.Add(crossitem);
-                    }
-                    */
 
                     var slmembersitem = new TreeViewItem();
                     slmembersitem.Header = Global.GetString("connections");
@@ -624,13 +645,6 @@ namespace MesnetMD.Classes.Ui
                         supportitem.Header = new BasicSupportItem(basicsup);
                     }
 
-                    /*if (basicsup.CrossIndex != null)
-                    {
-                        var crossitem = new TreeViewItem();
-                        crossitem.Header = Global.GetString("crossindex") + " : " + basicsup.CrossIndex;
-                        supportitem.Items.Add(crossitem);
-                    }*/
-
                     var bsmembersitem = new TreeViewItem();
                     bsmembersitem.Header = Global.GetString("connections");
                     supportitem.Items.Add(bsmembersitem);
@@ -708,13 +722,6 @@ namespace MesnetMD.Classes.Ui
                             new LeftFixedSupportItem(lfixedsup);
                     }
 
-                    /*if (lfixedsup.CrossIndex != null)
-                    {
-                        var crossitem = new TreeViewItem();
-                        crossitem.Header = Global.GetString("crossindex") + " : " + lfixedsup.CrossIndex;
-                        supportitem.Items.Add(crossitem);
-                    }*/
-
                     var lfmembersitem = new TreeViewItem();
                     lfmembersitem.Header = Global.GetString("connection");
                     supportitem.Items.Add(lfmembersitem);
@@ -762,13 +769,6 @@ namespace MesnetMD.Classes.Ui
                            new RightFixedSupportItem(rfixedsup);
                     }
 
-                    /*if (rfixedsup.CrossIndex != null)
-                    {
-                        var crossitem = new TreeViewItem();
-                        crossitem.Header = Global.GetString("crossindex") + " : " + rfixedsup.CrossIndex;
-                        supportitem.Items.Add(crossitem);
-                    }*/
-
                     var rfmembersitem = new TreeViewItem();
                     rfmembersitem.Header = Global.GetString("connection");
                     supportitem.Items.Add(rfmembersitem);
@@ -781,6 +781,118 @@ namespace MesnetMD.Classes.Ui
                     rfmemberitem.Header = rfbeamitem;
 
                     rfmembersitem.Items.Add(rfmemberitem);
+
+                    break;
+
+                case Global.ObjectType.FictionalSupport:
+
+                    if (Config.ShowFictionalSupportInTrees)
+                    {
+                        var fsup = support as FictionalSupport;
+
+                        foreach (TreeViewSupportItem item in _supporttree.Items)
+                        {
+                            if (item.Support.Type is Global.ObjectType.FictionalSupport)
+                            {
+                                if (Equals(supportitem.Support, item.Support))
+                                {
+                                    item.Items.Clear();
+                                    supportitem = item;
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!exists)
+                        {
+                            supportitem.Header = new FictionalSupportItem(fsup);
+                            _supporttree.Items.Add(supportitem);
+                            supportitem.Selected += SupportTreeItemSelected;
+                        }
+                        else
+                        {
+                            supportitem.Header = new FictionalSupportItem(fsup);
+                        }
+
+                        var fmembersitem = new TreeViewItem();
+                        fmembersitem.Header = Global.GetString("connections");
+                        supportitem.Items.Add(fmembersitem);
+
+                        foreach (Member member in fsup.Members)
+                        {
+                            var memberitem = new TreeViewItem();
+                            var bsbeamitem = new SupportBeamItem(member.Beam.BeamId, member.Direction, member.Moment);
+                            memberitem.Header = bsbeamitem;
+                            fmembersitem.Items.Add(memberitem);
+                        }
+
+                        if (Config.ShowDofInSupportTree)
+                        {
+                            var dofsitem = new TreeViewItem();
+                            dofsitem.Header = "Degree Of Freedoms";
+                            supportitem.Items.Add(dofsitem);
+                            foreach (var dof in fsup.DegreeOfFreedoms)
+                            {
+                                var dofitem = new TreeViewItem();
+                                dofitem.Header = "Dof";
+                                dofsitem.Items.Add(dofitem);
+                                switch (dof.Type)
+                                {
+                                    case Global.DOFType.Horizontal:
+                                        var hitem = new TreeViewItem();
+                                        hitem.Header = "Type: Horizontal";
+                                        dofitem.Items.Add(hitem);
+                                        var hmitem = new TreeViewItem();
+                                        hmitem.Header = "Dof Members";
+                                        dofitem.Items.Add(hmitem);
+                                        foreach (var dofmember in dof.Members)
+                                        {
+                                            var dmitem = new TreeViewItem();
+                                            string locname = String.Empty;
+                                            dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                            hmitem.Items.Add(dmitem);
+                                        }
+
+                                        break;
+
+                                    case Global.DOFType.Vertical:
+                                        var vitem = new TreeViewItem();
+                                        vitem.Header = "Type: Vertical";
+                                        dofitem.Items.Add(vitem);
+                                        var vmitem = new TreeViewItem();
+                                        vmitem.Header = "Dof Members";
+                                        dofitem.Items.Add(vmitem);
+                                        foreach (var dofmember in dof.Members)
+                                        {
+                                            var dmitem = new TreeViewItem();
+                                            string locname = String.Empty;
+                                            dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                            vmitem.Items.Add(dmitem);
+                                        }
+
+                                        break;
+
+                                    case Global.DOFType.Rotational:
+                                        var ritem = new TreeViewItem();
+                                        ritem.Header = "Type: Rotational";
+                                        dofitem.Items.Add(ritem);
+                                        var rmitem = new TreeViewItem();
+                                        rmitem.Header = "Dof Members";
+                                        dofitem.Items.Add(rmitem);
+                                        foreach (var dofmember in dof.Members)
+                                        {
+                                            var dmitem = new TreeViewItem();
+                                            string locname = String.Empty;
+                                            dmitem.Header = dofmember.Beam.Name + " " + doflocname(dofmember.Location);
+                                            rmitem.Items.Add(dmitem);
+                                        }
+
+                                        break;
+                                }
+                            }
+                        }
+                    }
 
                     break;
             }
@@ -807,36 +919,46 @@ namespace MesnetMD.Classes.Ui
         /// </summary>
         public void UpdateAllSupportTree()
         {
-            MyDebug.WriteInformation("Update All Support Tree Started");
+            MesnetMDDebug.WriteInformation("Update All Support Tree Started");
             foreach (var item in Global.Objects)
             {
                 switch (item.Value.Type)
                 {
                     case Global.ObjectType.SlidingSupport:
 
-                        SlidingSupport sliding = (SlidingSupport)item.Value;
+                        var sliding = item.Value as SlidingSupport;
                         UpdateSupportTree(sliding);
 
                         break;
 
                     case Global.ObjectType.BasicSupport:
 
-                        BasicSupport basic = (BasicSupport)item.Value;
+                        var basic = item.Value as BasicSupport;
                         UpdateSupportTree(basic);
 
                         break;
 
                     case Global.ObjectType.LeftFixedSupport:
 
-                        LeftFixedSupport left = (LeftFixedSupport)item.Value;
+                        var left = item.Value as LeftFixedSupport;
                         UpdateSupportTree(left);
 
                         break;
 
                     case Global.ObjectType.RightFixedSupport:
 
-                        RightFixedSupport right = (RightFixedSupport)item.Value;
+                        var right = item.Value as RightFixedSupport;
                         UpdateSupportTree(right);
+
+                        break;
+
+                    case Global.ObjectType.FictionalSupport:
+
+                        if (Config.ShowFictionalSupportInTrees)
+                        {
+                            var fictional = item.Value as FictionalSupport;
+                            UpdateSupportTree(fictional);
+                        }
 
                         break;
                 }
@@ -866,7 +988,7 @@ namespace MesnetMD.Classes.Ui
         /// </summary>
         public void UnSelectAllSupportItem()
         {
-            MyDebug.WriteInformation("UnSelectAllSupportItem executed");
+            MesnetMDDebug.WriteInformation("UnSelectAllSupportItem executed");
             foreach (TreeViewSupportItem item in _supporttree.Items)
             {
                 item.Selected -= SupportTreeItemSelected;
@@ -884,7 +1006,7 @@ namespace MesnetMD.Classes.Ui
         {
             if (SupportTreeItemSelectedEventEnabled)
             {
-                MyDebug.WriteInformation("SupportTreeItemSelected");
+                MesnetMDDebug.WriteInformation("SupportTreeItemSelected");
                 _mw.Reset();
                 var treeitem = sender as TreeViewItem;
 
@@ -975,6 +1097,18 @@ namespace MesnetMD.Classes.Ui
                                 break;
                         }
                     }
+                }
+            }
+        }
+
+        public void DeleteSupportItem(SupportItem support)
+        {
+            foreach (TreeViewSupportItem item in _supporttree.Items)
+            {
+                if (Equals(item.Support, support))
+                {
+                    _supporttree.Items.Remove(item);
+                    break;
                 }
             }
         }

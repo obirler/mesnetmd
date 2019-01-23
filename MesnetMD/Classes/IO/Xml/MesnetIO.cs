@@ -166,7 +166,7 @@ namespace MesnetMD.Classes.IO.Xml
             addtocanvas();
             connectobjects();
             setvariables();
-            _mw.UpToolBar().UpdateLoadDiagrams();
+            _mw.UpToolBar.UpdateLoadDiagrams();
             return true;
         }
 

@@ -27,6 +27,5 @@ namespace MesnetMD.Classes.Tools
         public Beam Beam;
 
         public Global.DOFLocation Location;
-
     }
 }

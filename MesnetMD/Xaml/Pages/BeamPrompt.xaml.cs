@@ -43,13 +43,14 @@ namespace MesnetMD.Xaml.Pages
         {
             InitializeComponent();
 
-            inertiappoly = new PiecewisePoly();
+            InertiaPpoly = new PiecewisePoly();
+            AreaPpoly = new PiecewisePoly();
 
             _loaded = true;
 
             length.Focus();
 
-            if (inertiappoly.Length == 0)
+            if (InertiaPpoly.Length == 0)
             {
                 ui.Text = "1";
                 uix1.Text = "0";
@@ -66,7 +67,8 @@ namespace MesnetMD.Xaml.Pages
         {
             InitializeComponent();
 
-            inertiappoly = new PiecewisePoly();
+            InertiaPpoly = new PiecewisePoly();
+            AreaPpoly = new PiecewisePoly();
             beamlength = Math.Round(Math.Sqrt(Math.Pow(start.X - end.X, 2) + Math.Pow(start.Y - end.Y, 2)) / 100, 4);
             length.Text = beamlength.ToString();
             length.IsEnabled = false;
@@ -74,7 +76,7 @@ namespace MesnetMD.Xaml.Pages
             angletbx.IsEnabled = false;
             _loaded = true;
 
-            if (inertiappoly.Length == 0)
+            if (InertiaPpoly.Length == 0)
             {
                 ui.Text = "1";
                 uix1.Text = "0";
@@ -110,36 +112,38 @@ namespace MesnetMD.Xaml.Pages
             elasticitymodulus.Text = _existingbeam.ElasticityModulus.ToString();
             stresscbx.IsChecked = _existingbeam.PerformStressAnalysis;
 
-            inertiappoly = new PiecewisePoly();
+            InertiaPpoly = new PiecewisePoly();
 
-            foreach (Poly poly in _existingbeam.Inertias)
+            AreaPpoly = new PiecewisePoly();
+
+            foreach (Poly poly in _existingbeam.Inertia)
             {
                 var ineritiapoly = new Poly(poly.ToString());
                 ineritiapoly.StartPoint = Convert.ToDouble(poly.StartPoint);
                 ineritiapoly.EndPoint = Convert.ToDouble(poly.EndPoint);
-                inertiappoly.Add(ineritiapoly);
+                InertiaPpoly.Add(ineritiapoly);
             }
 
             if (_existingbeam.PerformStressAnalysis)
             {
-                eppoly = new PiecewisePoly();
+                EPpoly = new PiecewisePoly();
 
-                foreach (Poly poly in _existingbeam.E)
+                foreach (Poly poly in _existingbeam.Eppoly)
                 {
                     var epoly = new Poly(poly.ToString());
                     epoly.StartPoint = Convert.ToDouble(poly.StartPoint);
                     epoly.EndPoint = Convert.ToDouble(poly.EndPoint);
-                    eppoly.Add(epoly);
+                    EPpoly.Add(epoly);
                 }
 
-                dppoly = new PiecewisePoly();
+                DPpoly = new PiecewisePoly();
 
-                foreach (Poly poly in _existingbeam.D)
+                foreach (Poly poly in _existingbeam.Dppoly)
                 {
                     var dpoly = new Poly(poly.ToString());
                     dpoly.StartPoint = Convert.ToDouble(poly.StartPoint);
                     dpoly.EndPoint = Convert.ToDouble(poly.EndPoint);
-                    dppoly.Add(dpoly);
+                    DPpoly.Add(dpoly);
                 }
             }
 
@@ -156,11 +160,13 @@ namespace MesnetMD.Xaml.Pages
 
         public double angle = 0;
 
-        public PiecewisePoly inertiappoly;
+        public PiecewisePoly InertiaPpoly;
 
-        public PiecewisePoly eppoly;
+        public PiecewisePoly AreaPpoly;
 
-        public PiecewisePoly dppoly;
+        public PiecewisePoly EPpoly;
+
+        public PiecewisePoly DPpoly;
 
         public Global.FunctionType type;
 
@@ -247,36 +253,43 @@ namespace MesnetMD.Xaml.Pages
                     return;
                 }
 
-                if (eppoly == null)
+                if (EPpoly == null)
                 {
-                    eppoly = new PiecewisePoly();
+                    EPpoly = new PiecewisePoly();
                 }
 
                 var epoly = new Poly(eui.Text);
                 epoly.StartPoint = startpoint;
                 epoly.EndPoint = endpoint;
-                eppoly.Add(epoly);
+                EPpoly.Add(epoly);
 
-                if (dppoly == null)
+                if (DPpoly == null)
                 {
-                    dppoly = new PiecewisePoly();
+                    DPpoly = new PiecewisePoly();
                 }
 
                 var dpoly = new Poly(dui.Text);
                 dpoly.StartPoint = startpoint;
                 dpoly.EndPoint = endpoint;
-                dppoly.Add(dpoly);
+                DPpoly.Add(dpoly);
             }
 
-            var ineritiapoly = new Poly(ui.Text);
-            ineritiapoly.StartPoint = startpoint;
-            ineritiapoly.EndPoint = endpoint;
+            var inertiapoly = new Poly(ui.Text);
+            inertiapoly.StartPoint = startpoint;
+            inertiapoly.EndPoint = endpoint;
 
-            inertiappoly.Add(ineritiapoly);
+            InertiaPpoly.Add(inertiapoly);
+
+            var areapoly = new Poly(ua.Text);
+            areapoly.StartPoint = startpoint;
+            areapoly.EndPoint = endpoint;
+
+            AreaPpoly.Add(areapoly);
 
             var fnc = new InertiaFunction();
-            fnc.function.Text = "I(x) = " + ineritiapoly.ToString();
-            fnc.limits.Text = ineritiapoly.StartPoint + " <= x <= " + ineritiapoly.EndPoint;
+            fnc.inertiafunction.Text = "I(x) = " + inertiapoly.ToString();
+            fnc.areafunction.Text = "A(x) = " + areapoly.ToString();
+            fnc.limits.Text = inertiapoly.StartPoint + " <= x <= " + inertiapoly.EndPoint;
             fnc.removebtn.Click += Remove_Click;
 
             if (fncstk.Children.Count == 0)
@@ -311,9 +324,9 @@ namespace MesnetMD.Xaml.Pages
                     return;
                 }
 
-                if (eppoly == null)
+                if (EPpoly == null)
                 {
-                    eppoly = new PiecewisePoly();
+                    EPpoly = new PiecewisePoly();
                 }
                 var epoly = new Poly(eli.Text);
                 epoly.StartPoint = startpoint;
@@ -324,16 +337,16 @@ namespace MesnetMD.Xaml.Pages
                     return;
                 }
 
-                eppoly.Add(epoly);
+                EPpoly.Add(epoly);
 
-                if (dppoly == null)
+                if (DPpoly == null)
                 {
-                    dppoly = new PiecewisePoly();
+                    DPpoly = new PiecewisePoly();
                 }
                 var dpoly = new Poly(dli.Text);
                 dpoly.StartPoint = startpoint;
                 dpoly.EndPoint = endpoint;
-                dppoly.Add(dpoly);
+                DPpoly.Add(dpoly);
             }
 
             double inertiastart = Convert.ToDouble(li1.Text);
@@ -355,10 +368,33 @@ namespace MesnetMD.Xaml.Pages
             var poly = new Poly(polytxt);
             poly.StartPoint = startpoint;
             poly.EndPoint = endpoint;
-            inertiappoly.Add(poly);
+            InertiaPpoly.Add(poly);
+
+            double areastart = Convert.ToDouble(la1.Text);
+            double areaend = Convert.ToDouble(la2.Text);
+
+            var ma = (areaend - areastart) / (endpoint - startpoint);
+            var ca = -ma * endpoint;
+
+            var polytxta = "";
+
+            if (ca > 0)
+            {
+                polytxta = ma + "x+" + ca + "+" + areaend;
+            }
+            else
+            {
+                polytxta = ma + "x" + ca + "+" + areaend;
+            }
+
+            var polya = new Poly(polytxta);
+            polya.StartPoint = startpoint;
+            polya.EndPoint = endpoint;
+            AreaPpoly.Add(polya);
 
             var fnc = new InertiaFunction();
-            fnc.function.Text = "I(x) = " + poly.ToString();
+            fnc.inertiafunction.Text = "I(x) = " + poly.ToString();
+            fnc.areafunction.Text = "A(x) = " + polya.ToString();
             fnc.limits.Text = poly.StartPoint + " <= x <= " + poly.EndPoint;
             fnc.removebtn.Click += Remove_Click;
 
@@ -394,9 +430,9 @@ namespace MesnetMD.Xaml.Pages
                     return;
                 }
 
-                if (eppoly == null)
+                if (EPpoly == null)
                 {
-                    eppoly = new PiecewisePoly();
+                    EPpoly = new PiecewisePoly();
                 }
                 var epoly = new Poly(evi.Text);
                 epoly.StartPoint = startpoint;
@@ -407,25 +443,31 @@ namespace MesnetMD.Xaml.Pages
                     return;
                 }
 
-                eppoly.Add(epoly);
+                EPpoly.Add(epoly);
 
-                if (dppoly == null)
+                if (DPpoly == null)
                 {
-                    dppoly = new PiecewisePoly();
+                    DPpoly = new PiecewisePoly();
                 }
                 var dpoly = new Poly(dvi.Text);
                 dpoly.StartPoint = startpoint;
                 dpoly.EndPoint = endpoint;
-                dppoly.Add(dpoly);
+                DPpoly.Add(dpoly);
             }
 
             Poly poly = new Poly(vi.Text);
             poly.StartPoint = startpoint;
             poly.EndPoint = endpoint;
-            inertiappoly.Add(poly);
+            InertiaPpoly.Add(poly);
+
+            Poly polya = new Poly(va.Text);
+            polya.StartPoint = startpoint;
+            polya.EndPoint = endpoint;
+            AreaPpoly.Add(polya);
 
             var fnc = new InertiaFunction();
-            fnc.function.Text = "I(x) = " + poly.ToString();
+            fnc.inertiafunction.Text = "I(x) = " + poly.ToString();
+            fnc.areafunction.Text = "A(x) = " + polya.ToString();
             fnc.limits.Text = poly.StartPoint + " <= x <= " + poly.EndPoint;
             fnc.removebtn.Click += Remove_Click;
 
@@ -508,15 +550,17 @@ namespace MesnetMD.Xaml.Pages
                 if (_loaded)
                 {
                     ui.IsEnabled = true;
+                    ua.IsEnabled = true;
                     uix1.IsEnabled = true;
                     uix2.IsEnabled = true;
                     uibtn.IsEnabled = true;
                     eui.IsEnabled = true;
                     dui.IsEnabled = true;
 
-                    if (inertiappoly.Length == 0)
+                    if (InertiaPpoly.Length == 0)
                     {
                         ui.Text = "1";
+                        ua.Text = "1";
                         uix1.Text = "0";
                         uix2.Text = beamlength.ToString();
                     }
@@ -525,6 +569,10 @@ namespace MesnetMD.Xaml.Pages
                     li1.Text = "";
                     li2.IsEnabled = false;
                     li2.Text = "";
+                    la1.IsEnabled = false;
+                    la1.Text = "";
+                    la2.IsEnabled = false;
+                    la2.Text = "";
                     lix1.IsEnabled = false;
                     lix1.Text = "";
                     lix2.IsEnabled = false;
@@ -537,6 +585,8 @@ namespace MesnetMD.Xaml.Pages
 
                     vi.IsEnabled = false;
                     vi.Text = "";
+                    va.IsEnabled = false;
+                    va.Text = "";
                     vix1.IsEnabled = false;
                     vix1.Text = "";
                     vix2.IsEnabled = false;
@@ -559,22 +609,28 @@ namespace MesnetMD.Xaml.Pages
         {
             li1.IsEnabled = true;
             li2.IsEnabled = true;
+            la1.IsEnabled = true;
+            la2.IsEnabled = true;
             lix1.IsEnabled = true;
             lix2.IsEnabled = true;
             libtn.IsEnabled = true;
             eli.IsEnabled = true;
             dli.IsEnabled = true;
 
-            if (inertiappoly.Length == 0)
+            if (InertiaPpoly.Length == 0)
             {
                 li1.Text = "1";
+                la1.Text = "1";
                 lix1.Text = "0";
                 li2.Text = "1";
+                la2.Text = "1";
                 lix2.Text = beamlength.ToString();
             }
 
             ui.IsEnabled = false;
             ui.Text = "";
+            ua.IsEnabled = false;
+            ua.Text = "";
             uix1.IsEnabled = false;
             uix1.Text = "";
             uix2.IsEnabled = false;
@@ -587,6 +643,8 @@ namespace MesnetMD.Xaml.Pages
 
             vi.IsEnabled = false;
             vi.Text = "";
+            va.IsEnabled = false;
+            va.Text = "";
             vix1.IsEnabled = false;
             vix1.Text = "";
             vix2.IsEnabled = false;
@@ -604,21 +662,25 @@ namespace MesnetMD.Xaml.Pages
         private void viexpand_Expanded(object sender, RoutedEventArgs e)
         {
             vi.IsEnabled = true;
+            va.IsEnabled = true;
             vix1.IsEnabled = true;
             vix2.IsEnabled = true;
             vibtn.IsEnabled = true;
             evi.IsEnabled = true;
             dvi.IsEnabled = true;
 
-            if (inertiappoly.Length == 0)
+            if (InertiaPpoly.Length == 0)
             {
                 vi.Text = "1";
+                va.Text = "1";
                 vix1.Text = "0";
                 vix2.Text = beamlength.ToString();
             }
 
             ui.IsEnabled = false;
             ui.Text = "";
+            ua.IsEnabled = false;
+            ua.Text = "";
             uix1.IsEnabled = false;
             uix1.Text = "";
             uix2.IsEnabled = false;
@@ -633,6 +695,10 @@ namespace MesnetMD.Xaml.Pages
             li1.Text = "";
             li2.IsEnabled = false;
             li2.Text = "";
+            la1.IsEnabled = false;
+            la1.Text = "";
+            la2.IsEnabled = false;
+            la2.Text = "";
             lix1.IsEnabled = false;
             lix1.Text = "";
             lix2.IsEnabled = false;
@@ -651,6 +717,8 @@ namespace MesnetMD.Xaml.Pages
         {
             ui.IsEnabled = false;
             ui.Text = "";
+            ua.IsEnabled = false;
+            ua.Text = "";
             uix1.IsEnabled = false;
             uix1.Text = "";
             uix2.IsEnabled = false;
@@ -661,32 +729,37 @@ namespace MesnetMD.Xaml.Pages
             dui.Text = "";
             uibtn.IsEnabled = false;
 
-
             li1.IsEnabled = false;
             li1.Text = "";
             li2.IsEnabled = false;
             li2.Text = "";
+            la1.IsEnabled = false;
+            la1.Text = "";
+            la2.IsEnabled = false;
+            la2.Text = "";
             lix1.IsEnabled = false;
             lix1.Text = "";
             lix2.IsEnabled = false;
             lix2.Text = "";
+            libtn.IsEnabled = false;
             eli.IsEnabled = false;
             eli.Text = "";
             dli.IsEnabled = false;
             dli.Text = "";
-            libtn.IsEnabled = false;
 
             vi.IsEnabled = false;
             vi.Text = "";
+            va.IsEnabled = false;
+            va.Text = "";
             vix1.IsEnabled = false;
             vix1.Text = "";
             vix2.IsEnabled = false;
             vix2.Text = "";
+            vibtn.IsEnabled = false;
             evi.IsEnabled = false;
             evi.Text = "";
             dvi.IsEnabled = false;
             dvi.Text = "";
-            vibtn.IsEnabled = false;
 
             uiexpand.IsExpanded = false;
             liexpand.IsExpanded = false;
@@ -698,11 +771,11 @@ namespace MesnetMD.Xaml.Pages
             var stk = (sender as Button).Parent as StackPanel;
             var fnc = stk.Parent as InertiaFunction;
             var index = fncstk.Children.IndexOf(fnc);
-            inertiappoly.RemoveAt(index);
+            InertiaPpoly.RemoveAt(index);
             if ((bool)stresscbx.IsChecked)
             {
-                dppoly?.RemoveAt(index);
-                eppoly?.RemoveAt(index);
+                DPpoly?.RemoveAt(index);
+                EPpoly?.RemoveAt(index);
             }
             fncstk.Children.RemoveAt(index);
 
@@ -760,18 +833,33 @@ namespace MesnetMD.Xaml.Pages
 
         private bool validateinertia()
         {
-            for (int i = 1; i < inertiappoly.Count; i++)
+            for (int i = 1; i < InertiaPpoly.Count; i++)
             {
-                if (inertiappoly[i].StartPoint != inertiappoly[i - 1].EndPoint)
+                if (InertiaPpoly[i].StartPoint != InertiaPpoly[i - 1].EndPoint)
                 {
                     MessageBox.Show(Global.GetString("notcoveredinertia"));
                     return false;
                 }
             }
 
-            if (inertiappoly[0].StartPoint != 0 || inertiappoly.Last().EndPoint != beamlength)
+            if (InertiaPpoly[0].StartPoint != 0 || InertiaPpoly.Last().EndPoint != beamlength)
             {
                 MessageBox.Show(Global.GetString("notcoveredinertia"));
+                return false;
+            }
+
+            for (int i = 1; i < AreaPpoly.Count; i++)
+            {
+                if (AreaPpoly[i].StartPoint != AreaPpoly[i - 1].EndPoint)
+                {
+                    MessageBox.Show(Global.GetString("notcoveredarea"));
+                    return false;
+                }
+            }
+
+            if (AreaPpoly[0].StartPoint != 0 || AreaPpoly.Last().EndPoint != beamlength)
+            {
+                MessageBox.Show(Global.GetString("notcoveredarea"));
                 return false;
             }
 
@@ -780,10 +868,13 @@ namespace MesnetMD.Xaml.Pages
 
         private void updatefncstk()
         {
-            foreach (Poly ipoly in _existingbeam.Inertias)
+            for (int i = 0; i < _existingbeam.Inertia.Length; i++)
             {
+                var ipoly = _existingbeam.Inertia[i] as Poly;
+                var apoly = _existingbeam.Area[i] as Poly;
                 var fnc = new InertiaFunction();
-                fnc.function.Text = "I(x) = " + ipoly.ToString();
+                fnc.inertiafunction.Text = "I(x) = " + ipoly.ToString();
+                fnc.areafunction.Text = "A(x) = " + apoly.ToString();
                 fnc.limits.Text = ipoly.StartPoint + " <= x <= " + ipoly.EndPoint;
                 fnc.removebtn.Click += Remove_Click;
                 fncstk.Children.Add(fnc);
@@ -821,7 +912,7 @@ namespace MesnetMD.Xaml.Pages
                     starttbx.Focus();
                     return false;
                 }
-                if (inertiappoly.Cast<Poly>().Any(item => startp >= item.StartPoint && startp < item.EndPoint))
+                if (InertiaPpoly.Cast<Poly>().Any(item => startp >= item.StartPoint && startp < item.EndPoint))
                 {
                     MessageBox.Show(Global.GetString("invalidrange"));
                     starttbx.Focus();
@@ -845,7 +936,7 @@ namespace MesnetMD.Xaml.Pages
                     return false;
                 }
 
-                if (inertiappoly.Cast<Poly>().Any(item => endp > item.StartPoint && endp <= item.EndPoint))
+                if (InertiaPpoly.Cast<Poly>().Any(item => endp > item.StartPoint && endp <= item.EndPoint))
                 {
                     MessageBox.Show(Global.GetString("invalidrange"));
                     endtbx.Focus();
@@ -879,6 +970,24 @@ namespace MesnetMD.Xaml.Pages
                 ui.Focus();
                 return false;
             }
+
+            double area;
+            if (double.TryParse(ua.Text, out area))
+            {
+                if (area <= 0)
+                {
+                    MessageBox.Show(Global.GetString("minusarea"));
+                    ua.Focus();
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show(Global.GetString("invalidarea"));
+                ua.Focus();
+                return false;
+            }
+
             return true;
         }
 
@@ -918,6 +1027,40 @@ namespace MesnetMD.Xaml.Pages
                 return false;
             }
 
+            double areastart;
+            if (double.TryParse(la1.Text, out areastart))
+            {
+                if (areastart <= 0)
+                {
+                    MessageBox.Show(Global.GetString("minusarea"));
+                    la1.Focus();
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show(Global.GetString("invalidarea"));
+                la1.Focus();
+                return false;
+            }
+
+            double areaend;
+            if (double.TryParse(la2.Text, out areaend))
+            {
+                if (areaend <= 0)
+                {
+                    MessageBox.Show(Global.GetString("minusarea"));
+                    la2.Focus();
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show(Global.GetString("invalidarea"));
+                la2.Focus();
+                return false;
+            }
+
             return true;
         }
 
@@ -949,6 +1092,41 @@ namespace MesnetMD.Xaml.Pages
             {
                 MessageBox.Show(Global.GetString("minusinertia"));
                 vi.Focus();
+                return false;
+            }
+
+            if (!Poly.ValidateExpression(vi.Text))
+            {
+                MessageBox.Show(Global.GetString("invalidpolynomial"));
+                vi.Focus();
+                return false;
+            }
+
+            try
+            {
+                poly = new Poly(va.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(Global.GetString("invalidpolynomial"));
+                va.Focus();
+                return false;
+            }
+
+            poly.StartPoint = startpoint;
+            poly.EndPoint = endpoint;
+
+            if (poly.Minimum(poly.StartPoint, poly.EndPoint) <= 0)
+            {
+                MessageBox.Show(Global.GetString("minusarea"));
+                va.Focus();
+                return false;
+            }
+
+            if (!Poly.ValidateExpression(va.Text))
+            {
+                MessageBox.Show(Global.GetString("invalidpolynomial"));
+                va.Focus();
                 return false;
             }
 

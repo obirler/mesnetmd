@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
 using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.Ui.Base;
 
 namespace MesnetMD.Classes.Ui.Som
 {
-    public class FictionalSupport : SupportItem
+    public class FictionalSupport : FreeSupportItem, IFictionalSupportItem
     {
         public FictionalSupport(): base(Global.ObjectType.FictionalSupport)
-        {
-            Members = new List<Member>();
+        {         
             FID = fcount++;
             Name = "Fictional Support "+ FID;
             var hdof = new DOF(Global.DOFType.Horizontal);
@@ -21,19 +16,19 @@ namespace MesnetMD.Classes.Ui.Som
             DegreeOfFreedoms.Add(hdof);
             DegreeOfFreedoms.Add(vdof);
             DegreeOfFreedoms.Add(rdof);
+            Global.AddObject(this);
         }
+    
+        public int FID = 0;
 
-        public List<Member> Members;
+        private static int fcount = 1;
 
-        public int FID= 0;
-
-        private static int fcount = 0;
-
-        public void AddBeam(Beam beam, Global.Direction direction)
+        public override void AddBeam(Beam beam, Global.Direction direction)
         {
             var member = new Member(beam, direction);
             if (!Members.Contains(member))
             {
+                Members.Add(member);
                 switch (direction)
                 {
                     case Global.Direction.Left:
@@ -75,34 +70,58 @@ namespace MesnetMD.Classes.Ui.Som
             }
             else
             {
-                MyDebug.WriteWarning("the beam is already added!");
+                MesnetMDDebug.WriteWarning("the beam is already added!");
             }
         }
 
-        public void RemoveBeam(Beam beam)
+        public override void SetBeam(Beam beam, Global.Direction direction)
         {
-            Member remove = new Member();
-            foreach (var member in Members)
+            var member = new Member(beam, direction);
+            if (!Members.Contains(member))
             {
-                if (member.Beam.Equals(beam))
-                {
-                    remove = member;
-                    break;
-                }
-            }
+                Members.Add(member);
 
-            for (int i = 0; i < DegreeOfFreedoms.Count; i++)
-            {
-                foreach (var dofmember in DegreeOfFreedoms[i].Members)
+                switch (direction)
                 {
-                    if (Equals(dofmember.Beam, remove.Beam))
-                    {
-                        DegreeOfFreedoms[i].Members.Remove(dofmember);
-                    }
+                    case Global.Direction.Left:
+
+                        beam.LeftSide = this;
+
+                        var lhdofmember = new DOFMember(beam, Global.DOFLocation.LeftHorizontal);
+
+                        DegreeOfFreedoms[0].Members.Add(lhdofmember);
+
+                        var lvdofmember = new DOFMember(beam, Global.DOFLocation.LeftVertical);
+
+                        DegreeOfFreedoms[1].Members.Add(lvdofmember);
+
+                        var lrdofmember = new DOFMember(beam, Global.DOFLocation.LeftRotational);
+
+                        DegreeOfFreedoms[2].Members.Add(lrdofmember);
+
+                        break;
+
+                    case Global.Direction.Right:
+
+                        var rhdofmember = new DOFMember(beam, Global.DOFLocation.RightHorizontal);
+
+                        DegreeOfFreedoms[0].Members.Add(rhdofmember);
+
+                        var rvdofmember = new DOFMember(beam, Global.DOFLocation.RightVertical);
+
+                        DegreeOfFreedoms[1].Members.Add(rvdofmember);
+
+                        var rrdofmember = new DOFMember(beam, Global.DOFLocation.RightRotational);
+
+                        DegreeOfFreedoms[2].Members.Add(rrdofmember);
+
+                        break;
                 }
             }
-            
-            Members.Remove(remove);
-        }      
+            else
+            {
+                MesnetMDDebug.WriteWarning("the beam is already added!");
+            }
+        }
     }
 }

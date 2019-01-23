@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Controls;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Ui.Graphics;
@@ -39,8 +40,6 @@ namespace MesnetMD.Classes.Tools
 
             RegisterInertiaTest();
 
-            RegisterInertiaTest();
-
             RegisterReverseTest();
 
             RegisterReverseTest();
@@ -52,6 +51,18 @@ namespace MesnetMD.Classes.Tools
             RegisterGem513OdevTest();
 
             RegisterStiffness();
+
+            RegisterStiffnessTest2();
+
+            RegisterNewTestCase2();
+
+            RegisterVaryingStiffnessTest();
+
+            RegisterIntervalTest();
+
+            RegisterInterval2Test();
+
+            RegisterAllSupportTest();
         }
 
         //inertia for test purpose in [cm^4]
@@ -101,11 +112,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly2 = new PiecewisePoly(loadpolies2);
                 beam2.AddLoad(ppoly2);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -257,11 +268,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly8 = new PiecewisePoly(loadpolies8);
                 beam8.AddLoad(ppoly8);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -278,6 +289,7 @@ namespace MesnetMD.Classes.Tools
                 var polies1 = new List<Poly>();
                 polies1.Add(new Poly((3 * _testi).ToString(), 0, beam1.Length));
                 beam1.AddInertia(new PiecewisePoly(polies1));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
                 beam1.AddTopLeft(_mw.canvas, 10100, 8600);
 
                 var slidingsupport = new BasicSupport(_mw.canvas);
@@ -307,6 +319,7 @@ namespace MesnetMD.Classes.Tools
                 var polies2 = new List<Poly>();
                 polies2.Add(new Poly((3 * _testi).ToString(), 0, beam2.Length));
                 beam2.AddInertia(new PiecewisePoly(polies2));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
                 beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
                 beam2.SetAngleLeft(90);
 
@@ -334,6 +347,7 @@ namespace MesnetMD.Classes.Tools
                 var polies3 = new List<Poly>();
                 polies3.Add(new Poly((5 * _testi).ToString(), 0, beam3.Length));
                 beam3.AddInertia(new PiecewisePoly(polies3));
+                beam3.AddArea(new PiecewisePoly("1", 0, beam3.Length));
                 beam3.Connect(Global.Direction.Right, beam2, Global.Direction.Right);
 
                 var slidingsupport3 = new BasicSupport(_mw.canvas);
@@ -360,6 +374,7 @@ namespace MesnetMD.Classes.Tools
                 var polies4 = new List<Poly>();
                 polies4.Add(new Poly((4 * _testi).ToString(), 0, beam4.Length));
                 beam4.AddInertia(new PiecewisePoly(polies4));
+                beam4.AddArea(new PiecewisePoly("1", 0, beam4.Length));
                 beam4.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
                 beam4.SetAngleLeft(90);
 
@@ -387,6 +402,7 @@ namespace MesnetMD.Classes.Tools
                 var polies5 = new List<Poly>();
                 polies5.Add(new Poly((20 * _testi).ToString(), 0, beam5.Length));
                 beam5.AddInertia(new PiecewisePoly(polies5));
+                beam5.AddArea(new PiecewisePoly("1", 0, beam5.Length));
                 beam5.Connect(Global.Direction.Left, beam4, Global.Direction.Right);
                 beam5.SetAngleLeft(180);
 
@@ -414,6 +430,7 @@ namespace MesnetMD.Classes.Tools
                 var polies6 = new List<Poly>();
                 polies6.Add(new Poly((20 * _testi).ToString(), 0, beam6.Length));
                 beam6.AddInertia(new PiecewisePoly(polies6));
+                beam6.AddArea(new PiecewisePoly("1", 0, beam6.Length));
                 beam6.Connect(Global.Direction.Left, beam5, Global.Direction.Right);
                 beam6.SetAngleLeft(180);
 
@@ -441,6 +458,7 @@ namespace MesnetMD.Classes.Tools
                 var polies7 = new List<Poly>();
                 polies7.Add(new Poly((4 * _testi).ToString(), 0, beam7.Length));
                 beam7.AddInertia(new PiecewisePoly(polies7));
+                beam7.AddArea(new PiecewisePoly("1", 0, beam7.Length));
                 beam7.Connect(Global.Direction.Left, beam6, Global.Direction.Right);
                 beam7.SetAngleLeft(-90);
                 beam7.CircularConnect(Global.Direction.Right, beam3, Global.Direction.Left);
@@ -466,6 +484,7 @@ namespace MesnetMD.Classes.Tools
                 var polies8 = new List<Poly>();
                 polies8.Add(new Poly((3 * _testi).ToString(), 0, beam8.Length));
                 beam8.AddInertia(new PiecewisePoly(polies8));
+                beam8.AddArea(new PiecewisePoly("1", 0, beam8.Length));
                 beam8.Connect(Global.Direction.Left, beam3, Global.Direction.Left);
                 beam8.SetAngleLeft(-90);
                 beam8.CircularConnect(Global.Direction.Right, beam1, Global.Direction.Left);
@@ -484,11 +503,11 @@ namespace MesnetMD.Classes.Tools
                 beam8.AddD(new PiecewisePoly(dpolies8));
                 beam8.MaxAllowableStress = 150;
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -505,6 +524,7 @@ namespace MesnetMD.Classes.Tools
                 var polies1 = new List<Poly>();
                 polies1.Add(new Poly("1", 0, beam1.Length));
                 beam1.AddInertia(new PiecewisePoly(polies1));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
                 beam1.AddTopLeft(_mw.canvas, 10100, 9400);
 
                 var slidingsupport = new SlidingSupport(_mw.canvas);
@@ -518,13 +538,14 @@ namespace MesnetMD.Classes.Tools
                 var ppoly1 = new PiecewisePoly(loadpolies1);
                 beam1.AddLoad(ppoly1);
 
-                /////////////////////////////// Beam 2 (Bc) //////////////////////////////
+                /////////////////////////////// Beam 2 (BC) //////////////////////////////
 
                 var beam2 = new Beam(_mw.canvas, 6);
                 beam2.AddElasticity(205);
                 var polies2 = new List<Poly>();
                 polies2.Add(new Poly("1", 0, beam2.Length));
                 beam2.AddInertia(new PiecewisePoly(polies2));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
                 beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
 
                 var slidingsupport2 = new SlidingSupport(_mw.canvas);
@@ -542,6 +563,7 @@ namespace MesnetMD.Classes.Tools
                 var polies3 = new List<Poly>();
                 polies3.Add(new Poly("1", 0, beam3.Length));
                 beam3.AddInertia(new PiecewisePoly(polies3));
+                beam3.AddArea(new PiecewisePoly("1", 0, beam3.Length));
                 beam3.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
 
                 var slidingsupport3 = new SlidingSupport(_mw.canvas);
@@ -559,6 +581,7 @@ namespace MesnetMD.Classes.Tools
                 var polies4 = new List<Poly>();
                 polies4.Add(new Poly("2", 0, beam4.Length));
                 beam4.AddInertia(new PiecewisePoly(polies4));
+                beam4.AddArea(new PiecewisePoly("1", 0, beam4.Length));
                 beam4.Connect(Global.Direction.Left, beam3, Global.Direction.Right);
                 beam4.SetAngleLeft(90);
 
@@ -577,6 +600,7 @@ namespace MesnetMD.Classes.Tools
                 var polies5 = new List<Poly>();
                 polies5.Add(new Poly("5", 0, beam5.Length));
                 beam5.AddInertia(new PiecewisePoly(polies5));
+                beam5.AddArea(new PiecewisePoly("1", 0, beam5.Length));
                 beam5.Connect(Global.Direction.Left, beam4, Global.Direction.Right);
                 beam5.SetAngleLeft(90);
 
@@ -594,7 +618,8 @@ namespace MesnetMD.Classes.Tools
                 beam6.AddElasticity(205);
                 var polies6 = new List<Poly>();
                 polies6.Add(new Poly("40", 0, beam6.Length));
-                beam6.AddInertia(new PiecewisePoly(polies5));
+                beam6.AddInertia(new PiecewisePoly(polies6));
+                beam6.AddArea(new PiecewisePoly("1", 0, beam6.Length));
                 beam6.Connect(Global.Direction.Left, beam5, Global.Direction.Right);
                 beam6.SetAngleLeft(180);
 
@@ -613,6 +638,7 @@ namespace MesnetMD.Classes.Tools
                 var polies7 = new List<Poly>();
                 polies7.Add(new Poly("40", 0, beam7.Length));
                 beam7.AddInertia(new PiecewisePoly(polies7));
+                beam7.AddArea(new PiecewisePoly("1", 0, beam7.Length));
                 beam7.Connect(Global.Direction.Left, beam6, Global.Direction.Right);
                 beam7.SetAngleLeft(180);
 
@@ -631,6 +657,7 @@ namespace MesnetMD.Classes.Tools
                 var polies8 = new List<Poly>();
                 polies8.Add(new Poly("5", 0, beam8.Length));
                 beam8.AddInertia(new PiecewisePoly(polies8));
+                beam8.AddArea(new PiecewisePoly("1", 0, beam8.Length));
                 beam8.Connect(Global.Direction.Left, beam7, Global.Direction.Right);
                 beam8.SetAngleLeft(-90);
 
@@ -649,6 +676,7 @@ namespace MesnetMD.Classes.Tools
                 var polies9 = new List<Poly>();
                 polies9.Add(new Poly("2", 0, beam9.Length));
                 beam9.AddInertia(new PiecewisePoly(polies9));
+                beam9.AddArea(new PiecewisePoly("1", 0, beam9.Length));
                 beam9.Connect(Global.Direction.Left, beam8, Global.Direction.Right);
                 beam9.SetAngleLeft(-90);
                 beam9.CircularConnect(Global.Direction.Right, beam1, Global.Direction.Left);
@@ -665,6 +693,7 @@ namespace MesnetMD.Classes.Tools
                 var polies10 = new List<Poly>();
                 polies10.Add(new Poly("4", 0, beam10.Length));
                 beam10.AddInertia(new PiecewisePoly(polies10));
+                beam10.AddArea(new PiecewisePoly("1", 0, beam10.Length));
                 beam10.Connect(Global.Direction.Left, beam8, Global.Direction.Right);
 
                 var slidingsupport10 = new SlidingSupport(_mw.canvas);
@@ -677,6 +706,7 @@ namespace MesnetMD.Classes.Tools
                 var polies11 = new List<Poly>();
                 polies11.Add(new Poly("4", 0, beam11.Length));
                 beam11.AddInertia(new PiecewisePoly(polies11));
+                beam11.AddArea(new PiecewisePoly("1", 0, beam11.Length));
                 beam11.Connect(Global.Direction.Left, beam10, Global.Direction.Right);
                 beam11.CircularConnect(Global.Direction.Right, beam4, Global.Direction.Right);
 
@@ -687,15 +717,16 @@ namespace MesnetMD.Classes.Tools
                 var polies12 = new List<Poly>();
                 polies12.Add(new Poly("5", 0, beam12.Length));
                 beam12.AddInertia(new PiecewisePoly(polies12));
+                beam12.AddArea(new PiecewisePoly("1", 0, beam12.Length));
                 beam12.Connect(Global.Direction.Left, beam10, Global.Direction.Right);
                 beam12.SetAngleLeft(90);
                 beam12.CircularConnect(Global.Direction.Right, beam6, Global.Direction.Right);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -793,11 +824,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly5 = new PiecewisePoly(loadpolies5);
                 beam5.AddLoad(ppoly5);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -905,11 +936,11 @@ namespace MesnetMD.Classes.Tools
                 var load5 = new DistributedLoad(ppoly5, beam5);
                 beam5.AddLoad(ppoly5);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1015,11 +1046,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly5 = new PiecewisePoly(loadpolies5);
                 beam5.AddLoad(ppoly5);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1048,16 +1079,6 @@ namespace MesnetMD.Classes.Tools
                 beam1.AddD(new PiecewisePoly(dpolies));
                 beam1.MaxAllowableStress = 150;
                 beam1.AddTopLeft(_mw.canvas, 10200, 9700);
-                //beam1.SetAngleCenter(90);
-
-                /*
-                var slidingsupport11 = new SlidingSupport(_mw.canvas);
-                slidingsupport11.AddBeam(beam1, Direction.Left);
-
-                var slidingsupport1 = new SlidingSupport(_mw.canvas);
-                slidingsupport1.AddBeam(beam1, Direction.Right);
-
-                */
 
                 var leftsupport = new LeftFixedSupport(_mw.canvas);
                 leftsupport.AddBeam(beam1);
@@ -1070,11 +1091,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly1 = new PiecewisePoly(loadpolies1);
                 beam1.AddLoad(ppoly1);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1146,11 +1167,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly2 = new PiecewisePoly(loadpolies2);
                 beam2.AddLoad(ppoly2);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
         }
 
@@ -1165,6 +1186,7 @@ namespace MesnetMD.Classes.Tools
                 var inertiapolies = new List<Poly>();
                 inertiapolies.Add(new Poly("416.667+625x+312.5x^2+52.0833x^3", 0, beam1.Length));
                 beam1.AddInertia(new PiecewisePoly(inertiapolies));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
 
                 beam1.PerformStressAnalysis = true;
                 var epolies = new List<Poly>();
@@ -1179,8 +1201,8 @@ namespace MesnetMD.Classes.Tools
                 var leftsupport = new LeftFixedSupport(_mw.canvas);
                 leftsupport.AddBeam(beam1);
 
-                var basicsupport1 = new BasicSupport(_mw.canvas);
-                basicsupport1.AddBeam(beam1, Global.Direction.Right);
+                var slidingsupport1 = new SlidingSupport(_mw.canvas);
+                slidingsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 var loadpolies1 = new List<Poly>();
                 loadpolies1.Add(new Poly("100-25x^2", 0, beam1.Length));
@@ -1196,6 +1218,7 @@ namespace MesnetMD.Classes.Tools
                 inertiapolies2.Add(new Poly("416.667", 0.25, 2.75));
                 inertiapolies2.Add(new Poly("-416667+500000x-200000x^2+26666.7x^3", 2.75, 3));
                 beam2.AddInertia(new PiecewisePoly(inertiapolies2));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
 
                 if (beam2.MaxInertia > Global.MaxInertia)
                 {
@@ -1231,11 +1254,11 @@ namespace MesnetMD.Classes.Tools
                 concloadlist.Add(0.5, 20);
                 beam2.AddLoad(concloadlist);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1289,11 +1312,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly2 = new PiecewisePoly(loadpolies2);
                 beam2.AddLoad(ppoly2);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1357,11 +1380,11 @@ namespace MesnetMD.Classes.Tools
                 var ppoly3 = new PiecewisePoly(loadpolies3);
                 beam3.AddLoad(ppoly3);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1597,11 +1620,11 @@ namespace MesnetMD.Classes.Tools
 
                 /////////////////////////////////////////////////////////////
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
-                _mw.TreeHandler().UpdateAllSupportTree();
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1682,13 +1705,13 @@ namespace MesnetMD.Classes.Tools
                 var rightfixedsupport = new RightFixedSupport(_mw.canvas);
                 rightfixedsupport.AddBeam(beam4);
 
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
 
-                _mw.TreeHandler().UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
 
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
@@ -1696,15 +1719,13 @@ namespace MesnetMD.Classes.Tools
         private void RegisterStiffness()
         {
             var menuitem = new MenuItem();
-            menuitem.Header = "Stiffness Test";
+            menuitem.Header = "GEM513 Odev Stiffness Test";
             menuitem.Click += (sender, args) =>
             {
                 var beam1 = new Beam(4);
                 beam1.AddElasticity(1);
-                var inertiapolies = new List<Poly>();
-                inertiapolies.Add(new Poly("0.000013", 0, beam1.Length));
-                beam1.AddInertia(new PiecewisePoly(inertiapolies));
-                beam1.Area = 0.017;
+                beam1.AddInertia(new PiecewisePoly("1300", 0, beam1.Length));
+                beam1.AddArea(new PiecewisePoly("170", 0, beam1.Length));
 
                 beam1.AddTopLeft(_mw.canvas, 10200, 9700);
                 beam1.SetAngleCenter(90);
@@ -1712,25 +1733,20 @@ namespace MesnetMD.Classes.Tools
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
 
-                var basicsupport1 = new BasicSupport(_mw.canvas);
-                basicsupport1.AddBeam(beam1, Global.Direction.Right);
+                var fictionalsupport1 = new FictionalSupport();
+                fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 var loadpolies1 = new List<Poly>();
                 loadpolies1.Add(new Poly("5", 0, beam1.Length));
                 var ppoly1 = new PiecewisePoly(loadpolies1);
                 beam1.AddLoad(ppoly1);
 
-                beam1.createstiffnessmatrix();
-                beam1.writestiffnessmatrix();
-
                 ////////////////////////////////////////////////////////////
 
                 var beam2 = new Beam(_mw.canvas, 4);
                 beam2.AddElasticity(1);
-                var inertiapolies2 = new List<Poly>();
-                inertiapolies2.Add(new Poly("0.000026", 0, beam2.Length));
-                beam2.AddInertia(new PiecewisePoly(inertiapolies2));
-                beam2.Area= 0.034;
+                beam2.AddInertia(new PiecewisePoly("2600", 0, beam2.Length));
+                beam2.AddArea(new PiecewisePoly("340", 0, beam2.Length));
 
                 beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
 
@@ -1742,59 +1758,641 @@ namespace MesnetMD.Classes.Tools
                 var ppoly2 = new PiecewisePoly(loadpolies2);
                 beam2.AddLoad(ppoly2);
 
-                beam2.createstiffnessmatrix();
-                beam2.writestiffnessmatrix();
-
                 /////////////////////////////////////////////////////////////
 
                 var beam3 = new Beam(_mw.canvas, 4);
                 beam3.AddElasticity(1);
-                var inertiapolies3 = new List<Poly>();
-                inertiapolies3.Add(new Poly("0.0000065", 0, beam3.Length));
-                beam3.AddInertia(new PiecewisePoly(inertiapolies3));
-                beam3.Area = 0.0085;
+                beam3.AddInertia(new PiecewisePoly("650", 0, beam3.Length));
+                beam3.AddArea(new PiecewisePoly("85", 0, beam3.Length));
 
                 beam3.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
 
-                var basicsupport4 = new BasicSupport(_mw.canvas);
-                basicsupport4.AddBeam(beam3, Global.Direction.Right);
+                var fictionalsupport2 = new FictionalSupport();
+                fictionalsupport2.AddBeam(beam3, Global.Direction.Right);
 
                 var loadpolies3 = new List<Poly>();
                 loadpolies3.Add(new Poly("10", 0, beam3.Length));
                 var ppoly3 = new PiecewisePoly(loadpolies3);
                 beam3.AddLoad(ppoly3);
 
-                beam3.createstiffnessmatrix();
-                beam3.writestiffnessmatrix();
-
                 /////////////////////////////////////////////////////////////
 
                 var beam4 = new Beam(_mw.canvas, 5);
                 beam4.AddElasticity(1);
-                var inertiapolies4 = new List<Poly>();
-                inertiapolies4.Add(new Poly("0.000013", 0, beam4.Length));
-                beam4.AddInertia(new PiecewisePoly(inertiapolies4));
-                beam4.Area = 0.017;
+                beam4.AddInertia(new PiecewisePoly("1300", 0, beam4.Length));
+                beam4.AddArea(new PiecewisePoly("170", 0, beam4.Length));
 
-                beam4.Connect(Global.Direction.Left, beam3, Global.Direction.Right);
-                beam4.SetAngleLeft(-53.1301);
+                beam4.SetAngleCenter(126.8698976);
+                beam4.Connect(Global.Direction.Right, beam3, Global.Direction.Right);
+                
+                var leftfixedsupport2 = new LeftFixedSupport(_mw.canvas);
+                leftfixedsupport2.AddBeam(beam4);
 
-                var rightfixedsupport = new RightFixedSupport(_mw.canvas);
-                rightfixedsupport.AddBeam(beam4);
-
-                beam4.createstiffnessmatrix();
-                beam4.writestiffnessmatrix();
-
-                _mw.UpToolBar().UpdateLoadDiagrams();
+                _mw.UpToolBar.UpdateLoadDiagrams();
 
                 _mw.DisableTestMenus();
 
-                _mw.TreeHandler().UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllSupportTree();
 
-                _mw.TreeHandler().UpdateAllBeamTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
             };
             _mw.testmenu.Items.Add(menuitem);
         }
 
+        private void RegisterStiffnessTest2()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "Stiffness Test 2";
+            menuitem.Click += (sender, args) =>
+            {
+                var beam1 = new Beam(2);
+                beam1.AddElasticity(1);
+                beam1.AddInertia(new PiecewisePoly("2", 0, beam1.Length));
+                beam1.AddArea(new PiecewisePoly("2", 0, beam1.Length));
+
+                beam1.AddTopLeft(_mw.canvas, 10200, 9700);
+                beam1.SetAngleCenter(90);
+
+                var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
+                leftfixedsupport.AddBeam(beam1);
+
+                var fictionalsupport1 = new FictionalSupport();
+                fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
+
+                var concload1 = new KeyValueCollection();
+                concload1.Add(1, 10);
+                beam1.AddLoad(concload1);
+
+                ////////////////////////////////////////////////////////////
+
+                var beam2 = new Beam(_mw.canvas, 1);
+                beam2.AddElasticity(1);
+                beam2.AddInertia(new PiecewisePoly("1", 0, beam2.Length));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
+
+                beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
+
+                var rightfixedsupport = new RightFixedSupport(_mw.canvas);
+                rightfixedsupport.AddBeam(beam2);
+
+                var concload2 = new KeyValueCollection();
+                concload2.Add(0.5, 20);
+                beam2.AddLoad(concload2);
+
+                /////////////////////////////////////////////////////////////
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+
+                _mw.TreeHandler.UpdateAllSupportTree();
+
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
+
+        private void RegisterNewTestCase2()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "Test Case 2";
+            menuitem.Click += (sender, args) =>
+            {
+                /////////////////////////////// Beam 1 (GA) /////////////////////////////
+                var beam1 = new Beam(16);
+                beam1.AddElasticity(205);
+                var polies1 = new List<Poly>();
+                polies1.Add(new Poly((3 * _testi).ToString(), 0, beam1.Length));
+                beam1.AddInertia(new PiecewisePoly(polies1));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
+                beam1.AddTopLeft(_mw.canvas, 10100, 8600);
+
+                var slidingsupport = new BasicSupport(_mw.canvas);
+                slidingsupport.AddBeam(beam1, Global.Direction.Left);
+
+                var slidingsupport1 = new BasicSupport(_mw.canvas);
+                slidingsupport1.AddBeam(beam1, Global.Direction.Right);
+
+                var loadpolies1 = new List<Poly>();
+                loadpolies1.Add(new Poly("10", 0, beam1.Length));
+                var ppoly1 = new PiecewisePoly(loadpolies1);
+                beam1.AddLoad(ppoly1);
+
+                beam1.PerformStressAnalysis = true;
+                var epolies = new List<Poly>();
+                epolies.Add(new Poly((3 * _testdim).ToString(), 0, beam1.Length));
+                beam1.AddE(new PiecewisePoly(epolies));
+                var dpolies = new List<Poly>();
+                dpolies.Add(new Poly((3 * 2 * _testdim).ToString(), 0, beam1.Length));
+                beam1.AddD(new PiecewisePoly(dpolies));
+                beam1.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 2 (AB) //////////////////////////////
+
+                var beam2 = new Beam(_mw.canvas, 3);
+                beam2.AddElasticity(205);
+                var polies2 = new List<Poly>();
+                polies2.Add(new Poly((3 * _testi).ToString(), 0, beam2.Length));
+                beam2.AddInertia(new PiecewisePoly(polies2));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
+                beam2.SetAngleLeft(-90);
+                beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);          
+
+                var slidingsupport2 = new BasicSupport(_mw.canvas);
+                slidingsupport2.AddBeam(beam2, Global.Direction.Right);
+
+                var loadpolies2 = new List<Poly>();
+                loadpolies2.Add(new Poly("10+6.66666666667x", 0, beam2.Length));
+                var ppoly2 = new PiecewisePoly(loadpolies2);
+                beam2.AddLoad(ppoly2);
+
+                beam2.PerformStressAnalysis = true;
+                var epolies2 = new List<Poly>();
+                epolies2.Add(new Poly((3 * _testdim).ToString(), 0, beam2.Length));
+                beam2.AddE(new PiecewisePoly(epolies2));
+                var dpolies2 = new List<Poly>();
+                dpolies2.Add(new Poly((3 * 2 * _testdim).ToString(), 0, beam2.Length));
+                beam2.AddD(new PiecewisePoly(dpolies2));
+                beam2.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 3 (FB) /////////////////////////////
+
+                var beam3 = new Beam(_mw.canvas, 16);
+                beam3.AddElasticity(205);
+                var polies3 = new List<Poly>();
+                polies3.Add(new Poly((5 * _testi).ToString(), 0, beam3.Length));
+                beam3.AddInertia(new PiecewisePoly(polies3));
+                beam3.AddArea(new PiecewisePoly("1", 0, beam3.Length));
+                beam3.Connect(Global.Direction.Right, beam2, Global.Direction.Right);
+
+                var slidingsupport3 = new BasicSupport(_mw.canvas);
+                slidingsupport3.AddBeam(beam3, Global.Direction.Left);
+
+                var loadpolies3 = new List<Poly>();
+                loadpolies3.Add(new Poly("30", 0, beam3.Length));
+                var ppoly3 = new PiecewisePoly(loadpolies3);
+                beam3.AddLoad(ppoly3);
+
+                beam3.PerformStressAnalysis = true;
+                var epolies3 = new List<Poly>();
+                epolies3.Add(new Poly((5 * _testdim).ToString(), 0, beam3.Length));
+                beam3.AddE(new PiecewisePoly(epolies3));
+                var dpolies3 = new List<Poly>();
+                dpolies3.Add(new Poly((5 * 2 * _testdim).ToString(), 0, beam3.Length));
+                beam3.AddD(new PiecewisePoly(dpolies3));
+                beam3.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 4 (BC) /////////////////////////////
+
+                var beam4 = new Beam(_mw.canvas, 8);
+                beam4.AddElasticity(205);
+                var polies4 = new List<Poly>();
+                polies4.Add(new Poly((4 * _testi).ToString(), 0, beam4.Length));
+                beam4.AddInertia(new PiecewisePoly(polies4));
+                beam4.AddArea(new PiecewisePoly("1", 0, beam4.Length));
+                beam4.SetAngleLeft(-90);
+                beam4.Connect(Global.Direction.Left, beam2, Global.Direction.Right);              
+
+                var slidingsupport4 = new BasicSupport(_mw.canvas);
+                slidingsupport4.AddBeam(beam4, Global.Direction.Right);
+
+                var loadpolies4 = new List<Poly>();
+                loadpolies4.Add(new Poly("30+10x", 0, beam4.Length));
+                var ppoly4 = new PiecewisePoly(loadpolies4);
+                beam4.AddLoad(ppoly4);
+
+                beam4.PerformStressAnalysis = true;
+                var epolies4 = new List<Poly>();
+                epolies4.Add(new Poly((4 * _testdim).ToString(), 0, beam4.Length));
+                beam4.AddE(new PiecewisePoly(epolies4));
+                var dpolies4 = new List<Poly>();
+                dpolies4.Add(new Poly((4 * 2 * _testdim).ToString(), 0, beam4.Length));
+                beam4.AddD(new PiecewisePoly(dpolies4));
+                beam4.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 5 (CD) /////////////////////////////
+
+                var beam5 = new Beam(_mw.canvas, 8);
+                beam5.AddElasticity(205);
+                var polies5 = new List<Poly>();
+                polies5.Add(new Poly((20 * _testi).ToString(), 0, beam5.Length));
+                beam5.AddInertia(new PiecewisePoly(polies5));
+                beam5.AddArea(new PiecewisePoly("1", 0, beam5.Length));
+                beam5.SetAngleLeft(-180);
+                beam5.Connect(Global.Direction.Left, beam4, Global.Direction.Right);              
+
+                var slidingsupport5 = new BasicSupport(_mw.canvas);
+                slidingsupport5.AddBeam(beam5, Global.Direction.Right);
+
+                var loadpolies5 = new List<Poly>();
+                loadpolies5.Add(new Poly("110", 0, beam5.Length));
+                var ppoly5 = new PiecewisePoly(loadpolies5);
+                beam5.AddLoad(ppoly5);
+
+                beam5.PerformStressAnalysis = true;
+                var epolies5 = new List<Poly>();
+                epolies5.Add(new Poly((20 * _testdim).ToString(), 0, beam5.Length));
+                beam5.AddE(new PiecewisePoly(epolies5));
+                var dpolies5 = new List<Poly>();
+                dpolies5.Add(new Poly((20 * 2 * _testdim).ToString(), 0, beam5.Length));
+                beam5.AddD(new PiecewisePoly(dpolies5));
+                beam5.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 6 (DE) /////////////////////////////
+
+                var beam6 = new Beam(_mw.canvas, 8);
+                beam6.AddElasticity(205);
+                var polies6 = new List<Poly>();
+                polies6.Add(new Poly((20 * _testi).ToString(), 0, beam6.Length));
+                beam6.AddInertia(new PiecewisePoly(polies6));
+                beam6.AddArea(new PiecewisePoly("1", 0, beam6.Length));
+                beam6.SetAngleLeft(-180);
+                beam6.Connect(Global.Direction.Left, beam5, Global.Direction.Right);               
+
+                var slidingsupport6 = new BasicSupport(_mw.canvas);
+                slidingsupport6.AddBeam(beam6, Global.Direction.Right);
+
+                var loadpolies6 = new List<Poly>();
+                loadpolies6.Add(new Poly("110", 0, beam6.Length));
+                var ppoly6 = new PiecewisePoly(loadpolies6);
+                beam6.AddLoad(ppoly6);
+
+                beam6.PerformStressAnalysis = true;
+                var epolies6 = new List<Poly>();
+                epolies6.Add(new Poly((20 * _testdim).ToString(), 0, beam6.Length));
+                beam6.AddE(new PiecewisePoly(epolies6));
+                var dpolies6 = new List<Poly>();
+                dpolies6.Add(new Poly((20 * 2 * _testdim).ToString(), 0, beam6.Length));
+                beam6.AddD(new PiecewisePoly(dpolies6));
+                beam6.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 7 (EF) /////////////////////////////
+
+                var beam7 = new Beam(_mw.canvas, 8);
+                beam7.AddElasticity(205);
+                var polies7 = new List<Poly>();
+                polies7.Add(new Poly((4 * _testi).ToString(), 0, beam7.Length));
+                beam7.AddInertia(new PiecewisePoly(polies7));
+                beam7.AddArea(new PiecewisePoly("1", 0, beam7.Length));
+                beam7.SetAngleLeft(90);
+                beam7.Connect(Global.Direction.Left, beam6, Global.Direction.Right);              
+                beam7.CircularConnect(Global.Direction.Right, beam3, Global.Direction.Left);
+
+                var loadpolies7 = new List<Poly>();
+                loadpolies7.Add(new Poly("110-10x", 0, beam7.Length));
+                var ppoly7 = new PiecewisePoly(loadpolies7);
+                beam7.AddLoad(ppoly7);
+
+                beam7.PerformStressAnalysis = true;
+                var epolies7 = new List<Poly>();
+                epolies7.Add(new Poly((4 * _testdim).ToString(), 0, beam7.Length));
+                beam7.AddE(new PiecewisePoly(epolies7));
+                var dpolies7 = new List<Poly>();
+                dpolies7.Add(new Poly((4 * 2 * _testdim).ToString(), 0, beam7.Length));
+                beam7.AddD(new PiecewisePoly(dpolies7));
+                beam7.MaxAllowableStress = 150;
+
+                /////////////////////////////// Beam 8 (FG) /////////////////////////////
+
+                var beam8 = new Beam(_mw.canvas, 3);
+                beam8.AddElasticity(205);
+                var polies8 = new List<Poly>();
+                polies8.Add(new Poly((3 * _testi).ToString(), 0, beam8.Length));
+                beam8.AddInertia(new PiecewisePoly(polies8));
+                beam8.AddArea(new PiecewisePoly("1", 0, beam8.Length));
+                beam8.SetAngleLeft(90);
+                beam8.Connect(Global.Direction.Left, beam3, Global.Direction.Left);                
+                beam8.CircularConnect(Global.Direction.Right, beam1, Global.Direction.Left);
+
+                var loadpolies8 = new List<Poly>();
+                loadpolies8.Add(new Poly("30-6.66666666667x", 0, beam8.Length));
+                var ppoly8 = new PiecewisePoly(loadpolies8);
+                beam8.AddLoad(ppoly8);
+
+                beam8.PerformStressAnalysis = true;
+                var epolies8 = new List<Poly>();
+                epolies8.Add(new Poly((3 * _testdim).ToString(), 0, beam8.Length));
+                beam8.AddE(new PiecewisePoly(epolies8));
+                var dpolies8 = new List<Poly>();
+                dpolies8.Add(new Poly((3 * 2 * _testdim).ToString(), 0, beam8.Length));
+                beam8.AddD(new PiecewisePoly(dpolies8));
+                beam8.MaxAllowableStress = 150;
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+                _mw.TreeHandler.UpdateAllSupportTree();
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
+
+        private void RegisterVaryingStiffnessTest()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "Varying Stiffness Test";
+            menuitem.Click += (sender, args) =>
+            {
+                var beam1 = new Beam(4);
+                beam1.AddElasticity(210);
+                beam1.AddInertia(new PiecewisePoly("2500-937.5x+117.1875x^2-4.8828x^3", 0, beam1.Length));
+                if (beam1.MaxInertia > Global.MaxInertia)
+                {
+                    Global.MaxInertia = beam1.MaxInertia;
+                }
+                beam1.AddArea(new PiecewisePoly("300-37.5x", 0, beam1.Length));
+                beam1.PerformStressAnalysis = true;
+                beam1.AddE(new PiecewisePoly("5-0.625x", 0, beam1.Length));
+                beam1.AddD(new PiecewisePoly("10-1.25x", 0, beam1.Length));
+                beam1.MaxAllowableStress = 150;
+                beam1.AddTopLeft(_mw.canvas, 10200, 9700);
+                beam1.SetAngleCenter(90);
+
+                var leftsupport = new LeftFixedSupport(_mw.canvas);
+                leftsupport.AddBeam(beam1);
+
+                var fictionalsupport1 = new FictionalSupport();
+                fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
+
+                beam1.AddLoad(new PiecewisePoly("10-2.5x", 0, beam1.Length));
+
+                ////////////////////////////////////////////////////////////
+
+                var beam2 = new Beam(_mw.canvas, 5);
+                beam2.AddElasticity(210);
+                var inertias=new List<Poly>();
+                var inertia1= new Poly("2500-7500x+7500x^2-2500x^3", 0, 0.5);
+                inertias.Add(inertia1);
+                var inertia2 = new Poly("312.5", 0.5, 4.5);
+                inertias.Add(inertia2);
+                var inertia3 = new Poly("-160000+120000x-30000x^2+2500x^3", 4.5, 5);
+                inertias.Add(inertia3);
+                beam2.AddInertia(new PiecewisePoly(inertias));
+                if (beam2.MaxInertia > Global.MaxInertia)
+                {
+                    Global.MaxInertia = beam2.MaxInertia;
+                }
+                var areas = new List<Poly>();
+                var area1 = new Poly("300-300x", 0, 0.5);
+                areas.Add(area1);
+                var area2 = new Poly("150", 0.5, 4.5);
+                areas.Add(area2);
+                var area3 = new Poly("300x-1200", 4.5, 5);
+                areas.Add(area3);
+                beam2.AddArea(new PiecewisePoly(areas));
+
+                beam2.PerformStressAnalysis = true;
+
+                var es = new List<Poly>();
+                var e1 = new Poly("5-5x", 0, 0.5);
+                es.Add(e1);
+                var e2 = new Poly("2.5", 0.5, 4.5);
+                es.Add(e2);
+                var e3 = new Poly("5x-20", 4.5, 5);
+                es.Add(e3);
+                beam2.AddE(new PiecewisePoly(es));
+
+                var ds = new List<Poly>();
+                var d1 = new Poly("10-10x", 0, 0.5);
+                ds.Add(d1);
+                var d2 = new Poly("5", 0.5, 4.5);
+                ds.Add(d2);
+                var d3 = new Poly("10x-40", 4.5, 5);
+                ds.Add(d3);
+                beam2.AddD(new PiecewisePoly(ds));
+                beam2.MaxAllowableStress = 150;
+
+                beam2.AddLoad(new PiecewisePoly("15", 0, beam2.Length));
+
+                beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
+
+                var fictionalsupport2 = new FictionalSupport();
+                fictionalsupport2.AddBeam(beam2, Global.Direction.Right);
+
+                /////////////////////////////////////////////////////////////
+
+                var beam3 = new Beam(4);
+                beam3.AddElasticity(210);
+                beam3.AddInertia(new PiecewisePoly("2500-937.5x+117.1875x^2-4.8828x^3", 0, beam3.Length));
+                if (beam3.MaxInertia > Global.MaxInertia)
+                {
+                    Global.MaxInertia = beam3.MaxInertia;
+                }
+                beam3.AddArea(new PiecewisePoly("300-37.5x", 0, beam3.Length));
+                beam3.PerformStressAnalysis = true;
+                beam3.AddE(new PiecewisePoly("5-0.625x", 0, beam3.Length));
+                beam3.AddD(new PiecewisePoly("10-1.25x", 0, beam3.Length));
+                beam3.MaxAllowableStress = 150;
+                beam3.AddTopLeft(_mw.canvas, 10200, 9700);
+                beam3.SetAngleCenter(90);
+
+                beam3.AddLoad(new PiecewisePoly("-10+2.5x", 0, beam3.Length));
+
+                beam3.Connect(Global.Direction.Right, beam2, Global.Direction.Right);
+
+                var leftsupport2 = new LeftFixedSupport(_mw.canvas);
+                leftsupport2.AddBeam(beam3);
+
+                /////////////////////////////////////////////////////////////
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+
+                _mw.TreeHandler.UpdateAllSupportTree();
+
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
+
+        private void RegisterIntervalTest()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "Interval Test";
+            menuitem.Click += (sender, args) =>
+            {
+                var beam1 = new Beam(1);
+                beam1.AddElasticity(1);
+                beam1.AddInertia(new PiecewisePoly("1", 0, beam1.Length));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
+
+                beam1.AddTopLeft(_mw.canvas, 10200, 9700);
+
+                var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
+                leftfixedsupport.AddBeam(beam1);
+
+                var fictionalsupport1 = new FictionalSupport();
+                fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
+
+                beam1.AddLoad(new PiecewisePoly("10", 0, beam1.Length));
+
+                ////////////////////////////////////////////////////////////
+
+                var beam2 = new Beam(_mw.canvas, 1);
+                beam2.AddElasticity(1);
+                beam2.AddInertia(new PiecewisePoly("1", 0, beam2.Length));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
+
+                beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
+
+                var rightfixedsupport = new RightFixedSupport(_mw.canvas);
+                rightfixedsupport.AddBeam(beam2);
+
+                beam2.AddLoad(new PiecewisePoly("10", 0, beam2.Length));
+
+                /////////////////////////////////////////////////////////////
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+
+                _mw.TreeHandler.UpdateAllSupportTree();
+
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
+
+        private void RegisterInterval2Test()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "Interval Test 2";
+            menuitem.Click += (sender, args) =>
+            {
+                var beams = new List<Beam>();                
+                int count = 100;
+                double len = 10.0 / (count*2);
+                for (int i = 0; i < count; i++)
+                {
+                    Beam beam;
+                    if (i==0)
+                    {
+                        beam = new Beam(10.0 / count);
+                    }
+                    else
+                    {
+                        beam = new Beam(_mw.canvas, 10.0 / count);
+                    }
+
+                    beam.AddElasticity(1);
+                    var inertia = 90 * len + 100;
+                    var term = new Term(0, inertia);
+                    var poly = new Poly(term, 0, beam.Length);
+                    beam.AddInertia(new PiecewisePoly(poly));
+                    beam.AddArea(new PiecewisePoly("1", 0, beam.Length));
+                    beam.AddLoad(new PiecewisePoly("10", 0, beam.Length));
+                    if (i==0)
+                    {
+                        beam.AddTopLeft(_mw.canvas, 10020, 10100);
+                        var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
+                        leftfixedsupport.AddBeam(beam);
+                        var fictionalsupport = new FictionalSupport();
+                        fictionalsupport.AddBeam(beam, Global.Direction.Right);
+                    }
+                    else if(i==count-1)
+                    {
+                        beam.Connect(Global.Direction.Left, beams[i - 1], Global.Direction.Right);
+                        var rightfixedsupport = new RightFixedSupport(_mw.canvas);
+                        rightfixedsupport.AddBeam(beam);
+                    }
+                    else
+                    {
+                        beam.Connect(Global.Direction.Left, beams[i - 1], Global.Direction.Right);
+                        var fictionalsupport = new FictionalSupport();
+                        fictionalsupport.AddBeam(beam, Global.Direction.Right);
+                    }
+                    beams.Add(beam);
+                    len += beam.Length;
+                }
+
+                /////////////////////////////////////////////////////////////
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+
+                _mw.TreeHandler.UpdateAllSupportTree();
+
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
+
+        private void RegisterAllSupportTest()
+        {
+            var menuitem = new MenuItem();
+            menuitem.Header = "All Support Test";
+            menuitem.Click += (sender, args) =>
+            {
+                var beam1 = new Beam(1);
+                beam1.AddElasticity(1);
+                beam1.AddInertia(new PiecewisePoly("1", 0, beam1.Length));
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
+
+                beam1.AddTopLeft(_mw.canvas, 10200, 9700);
+
+                var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
+                leftfixedsupport.AddBeam(beam1);
+
+                var fictionalsupport1 = new FictionalSupport();
+                fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
+
+                beam1.AddLoad(new PiecewisePoly("10", 0, beam1.Length));
+
+                ////////////////////////////////////////////////////////////
+
+                var beam2 = new Beam(_mw.canvas, 1);
+                beam2.AddElasticity(1);
+                beam2.AddInertia(new PiecewisePoly("1", 0, beam2.Length));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
+
+                beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
+
+                var basicsupport  =new BasicSupport(_mw.canvas);
+                basicsupport.AddBeam(beam2, Global.Direction.Right);
+
+                beam2.AddLoad(new PiecewisePoly("10", 0, beam2.Length));
+
+                /////////////////////////////////////////////////////////////
+
+                var beam3 = new Beam(_mw.canvas, 1);
+                beam3.AddElasticity(1);
+                beam3.AddInertia(new PiecewisePoly("1", 0, beam3.Length));
+                beam3.AddArea(new PiecewisePoly("1", 0, beam3.Length));
+                    
+                beam3.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
+
+                var slidingsupport = new SlidingSupport(_mw.canvas);
+                slidingsupport.AddBeam(beam3, Global.Direction.Right);
+
+                beam3.AddLoad(new PiecewisePoly("10", 0, beam3.Length));
+
+                /////////////////////////////////////////////////////////////
+
+                var beam4 = new Beam(_mw.canvas, 1);
+                beam4.AddElasticity(1);
+                beam4.AddInertia(new PiecewisePoly("1", 0, beam4.Length));
+                beam4.AddArea(new PiecewisePoly("1", 0, beam4.Length));
+
+                beam4.Connect(Global.Direction.Left, beam3, Global.Direction.Right);
+
+                var rightfixedsupport = new RightFixedSupport(_mw.canvas);
+                rightfixedsupport.AddBeam(beam4);
+
+                beam4.AddLoad(new PiecewisePoly("10", 0, beam3.Length));
+
+                /////////////////////////////////////////////////////////////
+
+                _mw.UpToolBar.UpdateLoadDiagrams();
+
+                _mw.DisableTestMenus();
+
+                _mw.TreeHandler.UpdateAllSupportTree();
+
+                _mw.TreeHandler.UpdateAllBeamTree();
+            };
+            _mw.testmenu.Items.Add(menuitem);
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace MesnetMD.Classes
         void ResetSolution();
     }
 
-    public interface ISupportItem
+    public interface IRealSupportItem
     {
         void Add(Canvas canvas, double leftpos, double toppos);
 
@@ -39,17 +39,22 @@ namespace MesnetMD.Classes
         void SetAngle(double angle);
     }
 
-    public interface IFreeSupportItem
+    public interface IFictionalSupportItem
     {
         void AddBeam(Beam beam, Global.Direction direction);
 
         void RemoveBeam(Beam beam);
-
-        void SetBeam(Beam beam, Global.Direction direction);
     }
 
     public interface IFixedSupportItem
     {
         void AddBeam(Beam beam);
+    }
+
+    public abstract class ISimpsonIntegrator
+    {
+        public abstract void AddData(double data);
+        public abstract void Calculate();
+        private double Result;
     }
 }

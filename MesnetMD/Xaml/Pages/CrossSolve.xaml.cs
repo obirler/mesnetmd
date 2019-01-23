@@ -47,9 +47,10 @@ namespace MesnetMD.Xaml.Pages
 
             timer.Interval = TimeSpan.FromMilliseconds(10);
 
-            bw.DoWork += bw_DoWork;
-            bw.WorkerReportsProgress = true;
-            bw3.DoWork += bw3_DoWork;
+            bwprecalculate.DoWork += BwprecalculateDoWork;
+            bwprecalculate.WorkerReportsProgress = true;
+            bwpostcalculate.DoWork += BwpostcalculateDoWork;
+            bwpostcalculate.RunWorkerCompleted += BwpostcalculateOnRunWorkerCompleted;
 
             timer.Start();
         }
@@ -60,9 +61,9 @@ namespace MesnetMD.Xaml.Pages
 
         DispatcherTimer timer = new DispatcherTimer();
 
-        BackgroundWorker bw = new BackgroundWorker();
+        BackgroundWorker bwprecalculate = new BackgroundWorker();
 
-        BackgroundWorker bw3 = new BackgroundWorker();
+        BackgroundWorker bwpostcalculate = new BackgroundWorker();
 
         private List<Beam> QueueList = new List<Beam>();
 
@@ -70,19 +71,9 @@ namespace MesnetMD.Xaml.Pages
 
         private double calculated = 0;
 
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        private void BwprecalculateDoWork(object sender, DoWorkEventArgs e)
         {
-            Global.SetDecimalSeperator();
-
-            if (Logger.IsClosed())
-            {
-                Logger.InitializeLogger();
-            }
-            MyDebug.WriteInformation("************************************************************Cross Solve Algorithm Started****************************************");
-
-            Logger.WriteLine("**************************Cross Solve Algorithm Started****************************");
-
-            Logger.NextLine();
+            Global.SetDecimalSeperator();          
 
             if (Global.BeamCount > 1)
             {
@@ -95,7 +86,7 @@ namespace MesnetMD.Xaml.Pages
                             if (item.Value.Type is Global.ObjectType.Beam)
                             {
                                 Beam beam = (Beam)item.Value;
-                                beam.CrossCalculate();
+                                beam.Calculate();
                                 Dispatcher.BeginInvoke(new Action(() =>
                                 {
                                     calculated++;
@@ -106,7 +97,7 @@ namespace MesnetMD.Xaml.Pages
                             }
                         }
 
-                        bw3.RunWorkerAsync();
+                        bwpostcalculate.RunWorkerAsync();
 
                         break;
 
@@ -121,16 +112,14 @@ namespace MesnetMD.Xaml.Pages
                             }
                         }
 
-                        Thread.Sleep(300);
-
                         for (int i = 0; i < Environment.ProcessorCount; i++)
                         {
                             if (QueueList.Count > 0)
                             {
-                                BackgroundWorker bw = new BackgroundWorker();
-                                bw.DoWork += bwbeam_DoWork;
-                                bwlist.Add(bw);
-                                bw.RunWorkerAsync(i);
+                                BackgroundWorker bwbeamprecalculate = new BackgroundWorker();
+                                bwbeamprecalculate.DoWork += bwbeamprecalculate_DoWork;
+                                bwlist.Add(bwbeamprecalculate);
+                                bwbeamprecalculate.RunWorkerAsync(i);
                             }
                         }
 
@@ -153,8 +142,8 @@ namespace MesnetMD.Xaml.Pages
                                 progress.UpdateLayout();
                                 status.Text = Global.GetString("calculatingbeam") + " " + beam.BeamId;
                             }));
-                            beam.ClapeyronCalculate();
-                            bw3.RunWorkerAsync();
+                            beam.Calculate();
+                            bwpostcalculate.RunWorkerAsync();
 
                             break;
                     }
@@ -162,10 +151,10 @@ namespace MesnetMD.Xaml.Pages
             }
         }
 
-        private void bwbeam_DoWork(object senderbw, DoWorkEventArgs ebw)
+        private void bwbeamprecalculate_DoWork(object senderbw, DoWorkEventArgs ebw)
         {
             int threadnumber = (int)ebw.Argument;
-            MyDebug.WriteInformation(" started to work");
+            MesnetMDDebug.WriteInformation(" started to work");
             Global.SetDecimalSeperator();
             Beam cachebeam;
             while (QueueList.Count > 0)
@@ -186,7 +175,7 @@ namespace MesnetMD.Xaml.Pages
                             status.Text = Global.GetString("calculatingbeam") + " " + cachebeam.BeamId;
                         }));
                         mutex.ReleaseMutex();
-                        cachebeam.CrossCalculate();
+                        cachebeam.Calculate();
                     }
                     else
                     {
@@ -210,37 +199,28 @@ namespace MesnetMD.Xaml.Pages
                 }
             }
 
-            bw3.RunWorkerAsync();
+            bwpostcalculate.RunWorkerAsync();
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
             timer.Stop();
-            bw.RunWorkerAsync();
+            bwprecalculate.RunWorkerAsync();
         }
 
-        private void bw3_DoWork(object sender, DoWorkEventArgs e)
+        private void BwpostcalculateDoWork(object sender, DoWorkEventArgs e)
         {
-            if (Global.BeamCount > 1)
+            Global.SetDecimalSeperator();
+
+            MDSolver.Calculate();     
+        }
+
+        private void BwpostcalculateOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    Global.SetDecimalSeperator();
-                    _mw.WriteCarryoverFactors();
-                    var obj = _mw.MaxMomentSupport();
-                    _mw.IndexAll(obj);
-                    _mw.CrossLoop();
-                    DialogResult = true;
-                }));
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    Global.SetDecimalSeperator();
-                    DialogResult = true;
-                }));
-            }
+                DialogResult = true;
+            }));
         }
     }
 }

@@ -34,6 +34,5 @@ namespace MesnetMD.Classes.Ui.Base
             get { return _angle; }
             set { value = _angle; }
         }
-
     }
 }

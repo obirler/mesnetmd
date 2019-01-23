@@ -25,7 +25,7 @@ using System.IO;
 
 namespace MesnetMD.Classes.Tools
 {
-    public static class MyDebug
+    public static class MesnetMDDebug
     {
         public static void WriteInformation(string info)
         {

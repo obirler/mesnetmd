@@ -3,13 +3,15 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="addbeam">Kiriş Ekle</system:String>
+    <system:String x:Key="addbeamorsupport">Kiriş ya da Mesnet Ekle</system:String>
     <system:String x:Key="editbeam">Kirişi Düzenle</system:String>
     <system:String x:Key="addfixedsupport">Ankastre Mesnet Ekle</system:String>
     <system:String x:Key="addbasicsupport">Basit Mesnet Ekle</system:String>
     <system:String x:Key="addslidingsupport">Kayıcı Mesnet Ekle</system:String>
     <system:String x:Key="addpointload">Tekil Yük Ekle</system:String>
     <system:String x:Key="adddistributedload">Yayılı Yük Ekle</system:String>
-    <system:String x:Key="addconcentratedload">Tekil Yük Ekle</system:String>
+    <system:String x:Key="addconcentratedload">Endirekt Tekil Yük Ekle</system:String>
+    <system:String x:Key="adddirectpointload">Direkt Tekil Yük Ekle</system:String>
     <system:String x:Key="settings">Ayarlar</system:String>
     <system:String x:Key="language">Dil</system:String>
     <system:String x:Key="chooselang">Dili Seç</system:String>
@@ -24,6 +26,7 @@
     <system:String x:Key="add">Ekle</system:String>
     <system:String x:Key="invalidbeamlength">Geçersiz Kiriş Uzunluğu</system:String>
     <system:String x:Key="invalidinertia">Geçersiz Eylemsizlik Momenti</system:String>
+    <system:String x:Key="invalidarea">Geçersiz Alan</system:String>
     <system:String x:Key="invalidelasticity">Geçersiz Elastisite Modülü</system:String>
     <system:String x:Key="uniformdistload">Düzgün Yayılı Yük</system:String>
     <system:String x:Key="uniformvaryingdistload">Doğrusal Yayılı Yük</system:String>
@@ -55,7 +58,9 @@
     <system:String x:Key="maxstress">İzin verilen en yüksek gerilme </system:String>
     <system:String x:Key="calculationtype">Hesaplama Tipi</system:String>
     <system:String x:Key="notcoveredinertia">Geçersiz atalet fonksiyonu. Sıfırdan kiriş boyuna kadar bütün x değerleri için atalet fonksiyonu tanımlanmalı.</system:String>
+    <system:String x:Key="notcoveredarea">Geçersiz alan fonksiyonu. Sıfırdan kiriş boyuna kadar bütün x değerleri için alan fonksiyonu tanımlanmalı.</system:String>
     <system:String x:Key="minusinertia">Atalet momenti sıfıra eşit yada sıfırdan küçük olamaz.</system:String>
+    <system:String x:Key="minusarea">Alan sıfıra eşit yada sıfırdan küçük olamaz.</system:String>
     <system:String x:Key="invalidpolynomial">Geçersiz polinom. Polinom sadece x'in fonksiyonu olmalı.</system:String>
     <system:String x:Key="invalidrange">Geçersiz aralık. Bu aralık için zaten bir fonksiyon tanımlandı.</system:String>
     <system:String x:Key="invalidpoint">Geçersiz nokta. Bu nokta için zaten bir değer tanımlandı.</system:String>
@@ -128,10 +133,12 @@
     <system:String x:Key="about">Hakkında</system:String>
     <system:String x:Key="solved">Kiriş sistemi çözüldü</system:String>
     <system:String x:Key="inertiamenu">Atalet</system:String>
+    <system:String x:Key="areamenu">Alan</system:String>
     <system:String x:Key="distloadmenu">Yay. Yük</system:String>
     <system:String x:Key="concloadmenu">Tek. Yük</system:String>
     <system:String x:Key="momentmenu">Moment</system:String>
-    <system:String x:Key="forcemenu">Kuvvet</system:String>
+    <system:String x:Key="forcemenu">Kes.Kuvvet</system:String>
+    <system:String x:Key="axialforcemenu">Eks.Kuvvet</system:String>
     <system:String x:Key="stressmenu">Gerilme</system:String>
     <system:String x:Key="askforbeamdelete">Bu kirişi gerçekten silmek istiyor musunuz?</system:String>
     <system:String x:Key="askforsupportdelete">Bu mesnedi gerçekten silmek istiyor musunuz?</system:String>
