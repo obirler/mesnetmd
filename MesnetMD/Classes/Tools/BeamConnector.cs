@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.Tools

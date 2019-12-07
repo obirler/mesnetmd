@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -83,7 +81,7 @@ namespace MesnetMD.Classes.Ui.Som
             _core.Fill = new SolidColorBrush(Colors.Transparent);
             Children.Add(_core);
         }
-
+  
         private Ellipse _e1;
 
         private Ellipse _e2;    

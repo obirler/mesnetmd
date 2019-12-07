@@ -19,9 +19,6 @@
 ========================================================================
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace MesnetMD.Classes.Math
 {
     public class SimpsonsFirstIntegrator : SimpsonBase

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using MesnetMD.Classes.Tools;
-using MesnetMD.Classes.Ui.Base;
 
-namespace MesnetMD.Classes.Ui
+namespace MesnetMD.Classes.Ui.Base
 {
-    public class SupportItem : SomItem
+    public abstract class SupportItem : SomItem
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SupportItem"/> class.
         /// All types of supports are derived from this class
         /// </summary>
-        public SupportItem(Global.ObjectType type)
+        protected SupportItem(Global.ObjectType type)
         {
             Type = type;
             if (type != Global.ObjectType.FictionalSupport)
@@ -50,5 +50,13 @@ namespace MesnetMD.Classes.Ui
 
         public List<DOF> DegreeOfFreedoms;
 
+        public void Add(Canvas canvas, double leftpos, double toppos)
+        {
+            canvas.Children.Add(this);
+
+            Canvas.SetLeft(this, leftpos);
+
+            Canvas.SetTop(this, toppos);
+        }
     }
 }

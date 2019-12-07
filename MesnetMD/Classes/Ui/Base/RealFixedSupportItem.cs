@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -30,6 +25,7 @@ namespace MesnetMD.Classes.Ui.Base
             RenderTransform = rotateTransform;
             createpolygons();
             createcore();
+            bindevents();
         }
 
         protected virtual void createpolygons()
@@ -38,6 +34,13 @@ namespace MesnetMD.Classes.Ui.Base
 
         protected virtual void createcore()
         {           
+        }
+
+        private void bindevents()
+        {
+            var mw = (MainWindow)Application.Current.MainWindow;
+            _core.MouseDown += mw.FixedSupportMouseDown;
+            _core.MouseUp += mw.FixedSupportMouseUp;
         }
 
         protected Polygon _p1;
@@ -58,14 +61,7 @@ namespace MesnetMD.Classes.Ui.Base
 
         protected RotateTransform rotateTransform;
 
-        public void BindEvents()
-        {
-            var mw = (MainWindow)Application.Current.MainWindow;
-            _core.MouseDown += mw.BasicSupportMouseDown;
-            _core.MouseUp += mw.BasicSupportMouseUp;
-        }
-
-        public void Select()
+        public override void Select()
         {
             _p1.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
             _p2.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
@@ -76,7 +72,7 @@ namespace MesnetMD.Classes.Ui.Base
             _selected = true;
         }
 
-        public void UnSelect()
+        public override void UnSelect()
         {
             _p1.Fill = new SolidColorBrush(Colors.Black);
             _p2.Fill = new SolidColorBrush(Colors.Black);
@@ -87,18 +83,9 @@ namespace MesnetMD.Classes.Ui.Base
             _selected = false;
         }
 
-        public virtual void ResetSolution()
+        public override void ResetSolution()
         {
             //todo: implement reset mechanism
-        }
-
-        public void Add(Canvas canvas, double leftpos, double toppos)
-        {
-            canvas.Children.Add(this);
-
-            Canvas.SetLeft(this, leftpos);
-
-            Canvas.SetTop(this, toppos);
         }
 
         public virtual void UpdatePosition(Beam beam)

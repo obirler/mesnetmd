@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Windows.Controls;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Ui.Graphics;
@@ -1733,7 +1732,7 @@ namespace MesnetMD.Classes.Tools
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
 
-                var fictionalsupport1 = new FictionalSupport();
+                var fictionalsupport1 = new FictionalSupport(_mw.canvas);
                 fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 var loadpolies1 = new List<Poly>();
@@ -1767,7 +1766,7 @@ namespace MesnetMD.Classes.Tools
 
                 beam3.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
 
-                var fictionalsupport2 = new FictionalSupport();
+                var fictionalsupport2 = new FictionalSupport(_mw.canvas);
                 fictionalsupport2.AddBeam(beam3, Global.Direction.Right);
 
                 var loadpolies3 = new List<Poly>();
@@ -1816,7 +1815,7 @@ namespace MesnetMD.Classes.Tools
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
 
-                var fictionalsupport1 = new FictionalSupport();
+                var fictionalsupport1 = new FictionalSupport(_mw.canvas);
                 fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 var concload1 = new KeyValueCollection();
@@ -2111,7 +2110,7 @@ namespace MesnetMD.Classes.Tools
                 var leftsupport = new LeftFixedSupport(_mw.canvas);
                 leftsupport.AddBeam(beam1);
 
-                var fictionalsupport1 = new FictionalSupport();
+                var fictionalsupport1 = new FictionalSupport(_mw.canvas);
                 fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 beam1.AddLoad(new PiecewisePoly("10-2.5x", 0, beam1.Length));
@@ -2166,7 +2165,7 @@ namespace MesnetMD.Classes.Tools
 
                 beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
 
-                var fictionalsupport2 = new FictionalSupport();
+                var fictionalsupport2 = new FictionalSupport(_mw.canvas);
                 fictionalsupport2.AddBeam(beam2, Global.Direction.Right);
 
                 /////////////////////////////////////////////////////////////
@@ -2222,7 +2221,7 @@ namespace MesnetMD.Classes.Tools
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
 
-                var fictionalsupport1 = new FictionalSupport();
+                var fictionalsupport1 = new FictionalSupport(_mw.canvas);
                 fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 beam1.AddLoad(new PiecewisePoly("10", 0, beam1.Length));
@@ -2287,7 +2286,7 @@ namespace MesnetMD.Classes.Tools
                         beam.AddTopLeft(_mw.canvas, 10020, 10100);
                         var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                         leftfixedsupport.AddBeam(beam);
-                        var fictionalsupport = new FictionalSupport();
+                        var fictionalsupport = new FictionalSupport(_mw.canvas);
                         fictionalsupport.AddBeam(beam, Global.Direction.Right);
                     }
                     else if(i==count-1)
@@ -2299,7 +2298,7 @@ namespace MesnetMD.Classes.Tools
                     else
                     {
                         beam.Connect(Global.Direction.Left, beams[i - 1], Global.Direction.Right);
-                        var fictionalsupport = new FictionalSupport();
+                        var fictionalsupport = new FictionalSupport(_mw.canvas);
                         fictionalsupport.AddBeam(beam, Global.Direction.Right);
                     }
                     beams.Add(beam);
@@ -2335,7 +2334,7 @@ namespace MesnetMD.Classes.Tools
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
 
-                var fictionalsupport1 = new FictionalSupport();
+                var fictionalsupport1 = new FictionalSupport(_mw.canvas);
                 fictionalsupport1.AddBeam(beam1, Global.Direction.Right);
 
                 beam1.AddLoad(new PiecewisePoly("10", 0, beam1.Length));

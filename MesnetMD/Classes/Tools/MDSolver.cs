@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MesnetMD.Classes.IO;
-using MesnetMD.Classes.Ui;
+using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.Tools

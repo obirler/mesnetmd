@@ -26,7 +26,6 @@ using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
 using MesnetMD.Classes.IO.Manifest;
-using MesnetMD.Classes.Ui;
 using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Som;
 

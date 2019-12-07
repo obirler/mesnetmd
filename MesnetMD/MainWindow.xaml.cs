@@ -40,7 +40,6 @@ using MesnetMD.Classes.Ui.Som;
 using MesnetMD.Properties;
 using MesnetMD.Xaml.Pages;
 using MesnetMD.Xaml.User_Controls;
-using MoreLinq;
 using ZoomAndPan;
 
 namespace MesnetMD
@@ -278,10 +277,10 @@ namespace MesnetMD
 
                     tempbeam.AddCenter(canvas, x, y);
                     tempbeam.SetAngleCenter(beamangle);
-                    var fictionalsupport1 = new FictionalSupport();
+                    var fictionalsupport1 = new FictionalSupport(canvas);
                     fictionalsupport1.AddBeam(tempbeam, Global.Direction.Left);
 
-                    var fictionalsupport2 = new FictionalSupport();
+                    var fictionalsupport2 = new FictionalSupport(canvas);
                     fictionalsupport2.AddBeam(tempbeam, Global.Direction.Right);
 
                     Notify("beamput");
@@ -779,11 +778,40 @@ namespace MesnetMD
             e.Handled = true;
         }
 
-        public void StartCircleMouseDown(object sender, MouseButtonEventArgs e)
+        public void CircleMouseDown(object sender, MouseButtonEventArgs e)
         {
             var ellipse = sender as Ellipse;
-            var beam = ellipse.Parent as Beam;
+            var fs = ellipse.Parent as FreeSupportItem;
 
+            if (selectedbeam is null)
+            {
+                fs.Select();
+            }
+            else
+            {
+                foreach (var member in fs.Members)
+                {
+                    if (Equals(member.Beam, selectedbeam))
+                    {
+                        switch (member.Direction)
+                        {
+                            case Global.Direction.Left:
+                                StartCircleMouseDown(member.Beam);
+                                break;
+
+                            case Global.Direction.Right:
+                                EndCircleMouseDown(member.Beam);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            e.Handled = true;
+        }
+
+        public void StartCircleMouseDown(Beam beam)
+        {
             MesnetMDDebug.WriteInformation("Left circle selected");
 
             if (beam.IsSelected())
@@ -836,7 +864,6 @@ namespace MesnetMD
                                             }
                                             //If the user cancels the dialog, reser the system.
                                             Reset();
-                                            e.Handled = true;
                                             return;
                                         }
                                     }
@@ -898,7 +925,6 @@ namespace MesnetMD
                                             }
                                             //If the user cancels the dialog, reser the system.
                                             Reset();
-                                            e.Handled = true;
                                             return;
                                         }
                                     }
@@ -961,20 +987,14 @@ namespace MesnetMD
                     Notify("selectsupport");
                 }
 
-                MesnetMDDebug.WriteInformation("Mouse point = " + e.GetPosition(canvas).X + " : " + e.GetPosition(canvas).Y);
-
                 MesnetMDDebug.WriteInformation("Circle location = " + circlelocation.X + " : " + circlelocation.Y);
 
                 selectedbeam = beam;
             }
-            e.Handled = true;
         }
 
-        public void EndCircleMouseDown(object sender, MouseButtonEventArgs e)
+        public void EndCircleMouseDown(Beam beam)
         {
-            var ellipse = sender as Ellipse;
-            var beam = ellipse.Parent as Beam;
-
             MesnetMDDebug.WriteInformation("Right circle selected");
 
             if (beam.IsSelected())
@@ -1026,7 +1046,6 @@ namespace MesnetMD
                                             }
                                             //If the user cancels the dialog, reser the system.
                                             Reset();
-                                            e.Handled = true;
                                             return;
                                         }
                                     }
@@ -1087,7 +1106,6 @@ namespace MesnetMD
                                             }
                                             //If the user cancels the dialog, reser the system.
                                             Reset();
-                                            e.Handled = true;
                                             return;
                                         }
                                     }
@@ -1095,7 +1113,6 @@ namespace MesnetMD
                                 else if (assemblybeam.RightSide != null && beam.RightSide != null)
                                 {
                                     Reset();
-                                    e.Handled = true;
                                     return;
                                 }
 
@@ -1151,113 +1168,82 @@ namespace MesnetMD
                     Notify("selectsupport");
                 }
 
-                MesnetMDDebug.WriteInformation("Mouse point = " + e.GetPosition(canvas).X + " : " + e.GetPosition(canvas).Y);
-
-                MesnetMDDebug.WriteInformation("Beam Left = " + Canvas.GetLeft(beam).ToString() + " : Beam Top = " + Canvas.GetTop(beam).ToString());
+                MesnetMDDebug.WriteInformation("Beam Left = " + Canvas.GetLeft(beam) + " : Beam Top = " + Canvas.GetTop(beam));
 
                 MesnetMDDebug.WriteInformation("Circle location = " + circlelocation.X + " : " + circlelocation.Y);
 
                 selectedbeam = beam;
             }
-
-            e.Handled = true;
         }
 
         #endregion
 
         #region Support Events
 
-        public void BasicSupportMouseDown(object sender, MouseButtonEventArgs e)
+        public void FreeSupportMouseDown(object sender, MouseButtonEventArgs e)
         {
             canvas.Focus();
             mousedownpoint = e.GetPosition(canvas);
             e.Handled = true;
         }
 
-        public void BasicSupportMouseUp(object sender, MouseButtonEventArgs e)
+        public void FreeSupportMouseUp(object sender, MouseButtonEventArgs e)
         {
             canvas.Focus();
             mouseuppoint = e.GetPosition(canvas);
 
             if (mouseuppoint.Equals(mousedownpoint))
             {
-                MesnetMDDebug.WriteInformation("Basic support clicked");
+                MesnetMDDebug.WriteInformation("Free support clicked");
 
-                var core = sender as Polygon;
-                var bs = core.Parent as BasicSupport;
+                var core = sender as Shape;
+                var fs = core.Parent as FreeSupportItem;
 
                 UnselectAll();
                 _treehandler.UnSelectAllBeamItem();
                 _treehandler.UnSelectAllSupportItem();
-                bs.Select();
-                _treehandler.SelectSupportItem(bs);
-                selectesupport = bs;
+                fs.Select();
+                _treehandler.SelectSupportItem(fs);
+                selectesupport = fs;
+                if (fs is FictionalSupport)
+                {
+                    if (fs.Members.Count > 1)
+                    {
+                        
+                    }
+                }
                 btndisableall();
             }
             e.Handled = true;
         }
 
-        public void LeftFixedSupportMouseDown(object sender, MouseButtonEventArgs e)
+        public void FixedSupportMouseDown(object sender, MouseButtonEventArgs e)
         {
             canvas.Focus();
             mousedownpoint = e.GetPosition(canvas);
             e.Handled = true;
         }
 
-        public void LeftFixedSupportMouseUp(object sender, MouseButtonEventArgs e)
+        public void FixedSupportMouseUp(object sender, MouseButtonEventArgs e)
         {
             canvas.Focus();
             mouseuppoint = e.GetPosition(canvas);
 
             if (mouseuppoint.Equals(mousedownpoint))
             {
-                MesnetMDDebug.WriteInformation("Left fixed support clicked");
-
                 var core = sender as Polygon;
-                var grid = core.Parent as Grid;
-                var ls = grid.Parent as LeftFixedSupport;
+                var rf = core.Parent as RealFixedSupportItem;
 
                 UnselectAll();
                 _treehandler.UnSelectAllBeamItem();
                 _treehandler.UnSelectAllSupportItem();
-                ls.Select();
-                _treehandler.SelectSupportItem(ls);
-                selectesupport = ls;
+                rf.Select();
+                _treehandler.SelectSupportItem(rf);
+                selectesupport = rf;
                 btndisableall();
             }
             e.Handled = true;
-        }
-
-        public void RightFixedSupportMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            canvas.Focus();
-            mousedownpoint = e.GetPosition(canvas);
-            e.Handled = true;
-        }
-
-        public void RightFixedSupportMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            canvas.Focus();
-            mouseuppoint = e.GetPosition(canvas);
-
-            if (mouseuppoint.Equals(mousedownpoint))
-            {
-                MesnetMDDebug.WriteInformation("Right fixed support clicked");
-
-                var core = sender as Polygon;
-                var grid = core.Parent as Grid;
-                var rs = grid.Parent as RightFixedSupport;
-
-                UnselectAll();
-                _treehandler.UnSelectAllBeamItem();
-                _treehandler.UnSelectAllSupportItem();
-                rs.Select();
-                _treehandler.SelectSupportItem(rs);
-                selectesupport = rs;
-                btndisableall();
-            }
-            e.Handled = true;
-        }
+        } 
 
         #endregion
 
@@ -1303,7 +1289,7 @@ namespace MesnetMD
                                         beam.Connect(Global.Direction.Left, selectedbeam, Global.Direction.Left);
                                         beam.SetAngleLeft(beamangle);
 
-                                        var fictionalsupport = new FictionalSupport();
+                                        var fictionalsupport = new FictionalSupport(canvas);
                                         fictionalsupport.AddBeam(beam, Global.Direction.Right);
 
                                         Notify("beamput");
@@ -1343,7 +1329,7 @@ namespace MesnetMD
                                         beam.Connect(Global.Direction.Left, selectedbeam, Global.Direction.Right);
                                         beam.SetAngleLeft(beamangle);
 
-                                        var fictionalsupport = new FictionalSupport();
+                                        var fictionalsupport = new FictionalSupport(canvas);
                                         fictionalsupport.AddBeam(beam, Global.Direction.Right);
 
                                         Notify("beamput");
@@ -2548,6 +2534,7 @@ namespace MesnetMD
             distributedloadbtn.IsEnabled = false;
             directloadbtn.IsEnabled = true;
         }
+        
         /// <summary>
         /// Enables only beam and support buttons.
         /// </summary>
@@ -2555,6 +2542,28 @@ namespace MesnetMD
         {
             beambtn.IsEnabled = true;
             fixedsupportbtn.IsEnabled = true;
+            basicsupportbtn.IsEnabled = true;
+            slidingsupportbtn.IsEnabled = true;
+            concentratedloadbtn.IsEnabled = false;
+            distributedloadbtn.IsEnabled = false;
+            directloadbtn.IsEnabled = true;
+        }
+
+        private void btnfreesupportmode()
+        {
+            beambtn.IsEnabled = true;
+            fixedsupportbtn.IsEnabled = true;
+        }
+
+
+        /// <summary>
+        /// Enables only beam and free support buttons. 
+        /// Is being called when clicked on a fictional support who has more than one beams
+        /// </summary>
+        private void btninsidefictionalsupportmode()
+        {
+            beambtn.IsEnabled = true;
+            fixedsupportbtn.IsEnabled = false;
             basicsupportbtn.IsEnabled = true;
             slidingsupportbtn.IsEnabled = true;
             concentratedloadbtn.IsEnabled = false;
@@ -2591,43 +2600,8 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
-                {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
-                        beam.UnSelect();
-
-                        break;
-
-                    case Global.ObjectType.SlidingSupport:
-
-                        var slidingsupport = item.Value as SlidingSupport;
-                        slidingsupport.UnSelect();
-
-                        break;
-
-                    case Global.ObjectType.BasicSupport:
-
-                        var basicsupport = item.Value as BasicSupport;
-                        basicsupport.UnSelect();
-
-                        break;
-
-                    case Global.ObjectType.LeftFixedSupport:
-
-                        var leftfixedsupport = item.Value as LeftFixedSupport;
-                        leftfixedsupport.UnSelect();
-
-                        break;
-
-                    case Global.ObjectType.RightFixedSupport:
-
-                        var rightfixedsupport = item.Value as RightFixedSupport;
-                        rightfixedsupport.UnSelect();
-
-                        break;
-                }
+                var som = item.Value;
+                som.UnSelect();              
             }
             selectedbeam = null;
             selectesupport = null;
@@ -4548,43 +4522,8 @@ namespace MesnetMD
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
-                {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
-                        beam.ResetSolution();
-
-                        break;
-
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = item.Value as BasicSupport;
-                        bs.ResetSolution();
-
-                        break;
-
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = item.Value as SlidingSupport;
-                        ss.ResetSolution();
-
-                        break;
-
-                    case Global.ObjectType.LeftFixedSupport:
-
-                        var ls = item.Value as LeftFixedSupport;
-                        ls.ResetSolution();
-
-                        break;
-
-                    case Global.ObjectType.RightFixedSupport:
-
-                        var rs = item.Value as RightFixedSupport;
-                        rs.ResetSolution();
-
-                        break;
-                }
+                var som = item.Value;
+                som.ResetSolution();                
             }
 
             MesnetMDDebug.WriteInformation("Solution reset");

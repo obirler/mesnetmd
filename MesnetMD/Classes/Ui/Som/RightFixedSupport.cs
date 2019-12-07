@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -21,7 +20,6 @@ namespace MesnetMD.Classes.Ui.Som
             canvas.Children.Add(this);
             AddObject(this);
             Name = "Right Fixed Support " + SupportId;
-            BindEvents();
         }
 
         protected override void createpolygons()

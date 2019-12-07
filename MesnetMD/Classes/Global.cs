@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Base;

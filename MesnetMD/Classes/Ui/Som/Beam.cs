@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -62,33 +61,6 @@ namespace MesnetMD.Classes.Ui.Som
 
             SetLeft(_core, 0);
             SetBottom(_core, -2);
-
-            _startcircle = new Ellipse();
-            _startcircle.Height = 14;
-            _startcircle.Width = 14;
-            _startcircle.Stroke = new SolidColorBrush(Colors.Green);
-            _startcircle.StrokeThickness = 3;
-            _startcircle.Fill = new SolidColorBrush(Colors.Transparent);
-
-            Children.Add(_startcircle);
-
-            SetLeft(_startcircle, -7);
-            SetBottom(_startcircle, -7);
-
-            _startcircle.Visibility = Visibility.Collapsed;
-
-            _endcircle = new Ellipse();
-            _endcircle.Height = 14;
-            _endcircle.Width = 14;
-            _endcircle.Stroke = new SolidColorBrush(Colors.Green);
-            _endcircle.StrokeThickness = 3;
-            _endcircle.Fill = new SolidColorBrush(Colors.Transparent);
-
-            Children.Add(_endcircle);
-
-            SetLeft(_endcircle, Width - 7);
-            SetBottom(_endcircle, -7);
-            _endcircle.Visibility = Visibility.Collapsed;
 
             var arrow = new Polygon();
             arrow.Points.Add(new Point(5, 50));
@@ -156,8 +128,6 @@ namespace MesnetMD.Classes.Ui.Som
             _core.MouseDown += mw.BeamCoreMouseDown;
             _core.MouseUp += mw.BeamCoreMouseUp;
             _core.MouseMove += mw.BeamCoreMouseMove;
-            _startcircle.MouseDown += mw.StartCircleMouseDown;
-            _endcircle.MouseDown += mw.EndCircleMouseDown;
         }
 
         #region internal variables
@@ -182,9 +152,9 @@ namespace MesnetMD.Classes.Ui.Som
 
         public RotateTransform rotateTransform;
 
-        private Ellipse _startcircle;
+        //private Ellipse _startcircle;
 
-        private Ellipse _endcircle;
+        //private Ellipse _endcircle;
 
         private Rectangle _core;
 
@@ -633,85 +603,76 @@ namespace MesnetMD.Classes.Ui.Som
         /// <summary>
         /// It is executed when the beam was selected. It changes the beam color and shows circles.
         /// </summary>
-        public void Select()
+        public override void Select()
         {
             //BringToFront(_canvas, this);
             _core.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
-            if (LeftSide != null)
+            if (LeftSide is FreeSupportItem ls)
             {
-                if (LeftSide is LeftFixedSupport)
-                {
-                    _startcircle.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    _startcircle.Visibility = Visibility.Visible;
-                }
-            }
-            else
-            {
-                _startcircle.Visibility = Visibility.Visible;
+                ls.CircleShow();
             }
 
-            if (RightSide != null)
+            if (RightSide is FreeSupportItem rs)
             {
-                if (RightSide is RightFixedSupport)
-                {
-                    _endcircle.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    _endcircle.Visibility = Visibility.Visible;
-                }
-            }
-            else
-            {
-                _endcircle.Visibility = Visibility.Visible;
+                rs.CircleShow();
             }
 
             selected = true;
         }
 
+        /// <summary>
+        /// Executed when the beam was unselected. It changes the beam color and hides circles.
+        /// </summary>
+        public override void UnSelect()
+        {
+            _core.Fill = new SolidColorBrush(Colors.Black);
+            if (LeftSide is FreeSupportItem ls)
+            {
+                ls.CircleHide();
+            }
+            if (RightSide is FreeSupportItem rs)
+            {
+                rs.CircleHide();
+            }
+            circledirection = Global.Direction.None;
+            selected = false;
+            _tgeometry.HideCorners();
+            MesnetMDDebug.WriteInformation(Name + " Beam unselected : left = " + Canvas.GetLeft(this) + " top = " + Canvas.GetTop(this));
+        }
+
         public void SelectLeftCircle()
         {
-            _endcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-            _startcircle.Stroke = new SolidColorBrush(Colors.Yellow);
+            if (LeftSide is FreeSupportItem ls)
+            {
+                ls.CircleSelect();
+            }
             circledirection = Global.Direction.Left;
             _leftcircleseleted = true;
         }
 
         public void SelectRightCircle()
         {
-            _startcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-            _endcircle.Stroke = new SolidColorBrush(Colors.Yellow);
+            if (RightSide is FreeSupportItem rs)
+            {
+                rs.CircleSelect();
+            }
             circledirection = Global.Direction.Right;
             _rightcircleselected = true;
         }
 
         public void UnSelectCircle()
         {
-            _startcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-            _endcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
+            if (LeftSide is FreeSupportItem ls)
+            {
+                ls.CircleUnSelect();
+            }
+            if (RightSide is FreeSupportItem rs)
+            {
+                rs.CircleUnSelect();
+            }
             circledirection = Global.Direction.None;
             _leftcircleseleted = false;
             _rightcircleselected = false;
-        }
-
-        /// <summary>
-        /// Executed when the beam was unselected. It changes the beam color and hides circles.
-        /// </summary>
-        public void UnSelect()
-        {
-            _core.Fill = new SolidColorBrush(Colors.Black);
-            _startcircle.Visibility = Visibility.Collapsed;
-            _startcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-            _endcircle.Visibility = Visibility.Collapsed;
-            _endcircle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
-            circledirection = Global.Direction.None;
-            selected = false;
-            UnSelectCircle();
-            _tgeometry.HideCorners();
-            MesnetMDDebug.WriteInformation(Name + " Beam unselected : left = " + Canvas.GetLeft(this) + " top = " + Canvas.GetTop(this));
         }
 
         /// <summary>
@@ -864,6 +825,12 @@ namespace MesnetMD.Classes.Ui.Som
                         bs.UpdatePosition(this);
 
                         break;
+
+                    case Global.ObjectType.FictionalSupport:
+                        var fs = LeftSide as FictionalSupport;
+                        fs.UpdatePosition(this);
+
+                        break;
                 }
             }
 
@@ -889,6 +856,12 @@ namespace MesnetMD.Classes.Ui.Som
 
                         var bs = RightSide as BasicSupport;
                         bs.UpdatePosition(this);
+
+                        break;
+
+                    case Global.ObjectType.FictionalSupport:
+                        var fs = RightSide as FictionalSupport;
+                        fs.UpdatePosition(this);
 
                         break;
                 }
@@ -3083,7 +3056,7 @@ namespace MesnetMD.Classes.Ui.Som
             MesnetMDDebug.WriteInformation(Name + " : Calculate has finished to work");
         }
 
-        public void ResetSolution()
+        public override void ResetSolution()
         {
             _ma = 0;
             _mb = 0;

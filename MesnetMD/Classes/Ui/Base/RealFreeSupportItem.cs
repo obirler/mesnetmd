@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -31,13 +26,9 @@ namespace MesnetMD.Classes.Ui.Base
             createtriangle();
             createellipses();
             createcore();
-        }
-
-        protected void BindEvents()
-        {
-            var mw = (MainWindow)Application.Current.MainWindow;
-            _core.MouseDown += mw.BasicSupportMouseDown;
-            _core.MouseUp += mw.BasicSupportMouseUp;
+            createcircle();
+            createcirclecore();
+            bindevents();
         }
 
         protected virtual void createtriangle()
@@ -55,37 +46,56 @@ namespace MesnetMD.Classes.Ui.Base
 
         }
 
+        private void createcircle()
+        {
+            _circle = new Ellipse();
+            _circle.Width = 14;
+            _circle.Height = 14;
+            _circle.StrokeThickness = 3;
+            _circle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
+            _circle.Margin = new Thickness(6, 9, 6, 0);
+            Children.Add(_circle);
+            CircleHide();
+        }
+
+        private void createcirclecore()
+        {
+            _circlecore = new Ellipse();
+            _circlecore.Width = 14;
+            _circlecore.Height = 14;
+            _circlecore.Fill = new SolidColorBrush(Colors.Transparent);
+            _circlecore.Margin = new Thickness(6, 9, 6, 0);
+            Children.Add(_circlecore);
+        }
+
+        private void bindevents()
+        {
+            var mw = (MainWindow)Application.Current.MainWindow;
+            _core.MouseDown += mw.FreeSupportMouseDown;
+            _core.MouseUp += mw.FreeSupportMouseUp;
+            _circlecore.MouseDown += mw.CircleMouseDown;
+        }
+
         protected RotateTransform rotateTransform;
 
         protected Polygon _triangle;
 
         protected Polygon _core;
 
-        public void Select()
+        protected Ellipse _circlecore;
+
+        public override void Select()
         {
             _triangle.Fill = new SolidColorBrush(Color.FromArgb(180, 255, 165, 0));
             _selected = true;
         }
 
-        public void UnSelect()
+        public override void UnSelect()
         {
             _triangle.Fill = new SolidColorBrush(Colors.Black);
+            _circle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
             _selected = false;
-        }
-
-        public void ResetSolution()
-        {
-            //todo: implement reset mechanism
-        }
-
-        public virtual void Add(Canvas canvas, double leftpos, double toppos)
-        {
-            canvas.Children.Add(this);
-
-            Canvas.SetLeft(this, leftpos);
-
-            Canvas.SetTop(this, toppos);
-        }
+        }   
 
         /// <summary>
         /// Updates the position of the support according to the beam that is bounded.
@@ -95,7 +105,7 @@ namespace MesnetMD.Classes.Ui.Base
         {
             foreach (Member member in Members)
             {
-                if (member.Beam == beam)
+                if (Equals(member.Beam, beam))
                 {
                     switch (member.Direction)
                     {
@@ -159,8 +169,8 @@ namespace MesnetMD.Classes.Ui.Base
 
         public void SetAngle(double angle)
         {
-            rotateTransform.Angle = angle;
-            _angle = angle;
+            //rotateTransform.Angle = angle;
+            //angle = angle;
         }
     }
 }

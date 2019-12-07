@@ -23,10 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Markup.Localizer;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Som;
 using MesnetMD.Xaml.User_Controls;
 using TreeView = System.Windows.Controls.TreeView;
@@ -541,15 +540,13 @@ namespace MesnetMD.Classes.Ui
 
                     if (!exists)
                     {
-                        supportitem.Header =
-                            new SlidingSupportItem(slidingsup);
+                        supportitem.Header = new SlidingSupportItem(slidingsup);
                         _supporttree.Items.Add(supportitem);
                         supportitem.Selected += SupportTreeItemSelected;
                     }
                     else
                     {
-                        supportitem.Header =
-                            new SlidingSupportItem(slidingsup);
+                        supportitem.Header =  new SlidingSupportItem(slidingsup);
                     }
 
                     var slmembersitem = new TreeViewItem();
@@ -561,7 +558,6 @@ namespace MesnetMD.Classes.Ui
                         var memberitem = new TreeViewItem();
                         var ssbeamitem = new SupportBeamItem(member.Beam.BeamId, member.Direction, member.Moment);
                         memberitem.Header = ssbeamitem;
-
                         slmembersitem.Items.Add(memberitem);
                     }
 
@@ -1091,6 +1087,28 @@ namespace MesnetMD.Classes.Ui
                                     rightfixedsupport.Select();
                                     _mw.selectesupport = rightfixedsupport;
                                     SelectSupportItem(rightfixedsupport);
+                                    return;
+                                }
+
+                                break;
+                        }
+                    }
+                }
+                else if (treeitem.Header is FictionalSupportItem fsitem)
+                {
+                    foreach (var item in Global.Objects)
+                    {
+                        switch (item.Value.Type)
+                        {
+                            case Global.ObjectType.FictionalSupport:
+
+                                var fictionalsupport = item.Value as FictionalSupport;
+
+                                if (Equals(fsitem.Support, fictionalsupport))
+                                {
+                                    fictionalsupport.Select();
+                                    _mw.selectesupport = fictionalsupport;
+                                    SelectSupportItem(fictionalsupport);
                                     return;
                                 }
 

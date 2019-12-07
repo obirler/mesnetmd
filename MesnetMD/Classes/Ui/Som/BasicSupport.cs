@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -26,7 +26,6 @@ namespace MesnetMD.Classes.Ui.Som
             DegreeOfFreedoms.Add(rdof);
             canvas.Children.Add(this);           
             AddObject(this);
-            BindEvents();
         }
 
         /// <summary>
@@ -60,8 +59,8 @@ namespace MesnetMD.Classes.Ui.Som
             _core.Points.Add(new Point(6.5, 1.5));
             _core.Fill = new SolidColorBrush(Colors.Transparent);
             Children.Add(_core);
-        }
-   
+        }       
+
         public override void AddBeam(Beam beam, Global.Direction direction)
         {
             var member = new Member(beam, direction);

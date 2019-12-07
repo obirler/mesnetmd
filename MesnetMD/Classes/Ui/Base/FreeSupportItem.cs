@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
 
@@ -18,6 +18,8 @@ namespace MesnetMD.Classes.Ui.Base
         public List<Member> Members;
 
         public DirectLoad Loads;
+
+        protected Ellipse _circle;
 
         public virtual void AddBeam(Beam beam, Global.Direction direction)
         {
@@ -51,6 +53,31 @@ namespace MesnetMD.Classes.Ui.Base
 
         public virtual void SetBeam(Beam beam, Global.Direction direction)
         {
+        }
+
+        public override void ResetSolution()
+        {
+            //todo: implement reset mechanism
+        }
+
+        public virtual void CircleShow()
+        {
+            _circle.Visibility = Visibility.Visible;
+        }
+
+        public virtual void CircleHide()
+        {
+            _circle.Visibility = Visibility.Collapsed;
+        }
+
+        public virtual void CircleSelect()
+        {
+            _circle.Stroke = new SolidColorBrush(Colors.Yellow);
+        }
+
+        public virtual void CircleUnSelect()
+        {
+            _circle.Stroke = new SolidColorBrush(Color.FromArgb(255, 5, 118, 0));
         }
     }
 }

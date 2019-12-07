@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls;
-using MesnetMD.Classes.Ui;
+using MesnetMD.Classes.Ui.Base;
 
 namespace MesnetMD.Xaml.User_Controls
 {
