@@ -12,7 +12,6 @@ namespace MesnetMD.Classes.Ui.Som
         public FictionalSupport(Canvas canvas): base(Global.ObjectType.FictionalSupport)
         {
             InitializeVariables(canvas);
-
             InitializeComponent();
         }
 

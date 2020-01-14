@@ -15,6 +15,7 @@ namespace MesnetMD.Classes.Ui.Base
             Members = new List<Member>();
         }
 
+
         public List<Member> Members;
 
         public DirectLoad Loads;

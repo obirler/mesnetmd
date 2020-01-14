@@ -1506,6 +1506,7 @@ namespace MesnetMD
                             var fs = selectedbeam.LeftSide as FictionalSupport;
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         var leftfixedsupport = new LeftFixedSupport(canvas);
                         leftfixedsupport.AddBeam(selectedbeam);
@@ -1518,6 +1519,7 @@ namespace MesnetMD
                             var fs = selectedbeam.RightSide as FictionalSupport;
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         var rightfixedsupport = new RightFixedSupport(canvas);
                         rightfixedsupport.AddBeam(selectedbeam);
@@ -1564,6 +1566,7 @@ namespace MesnetMD
                             }
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         else
                         {
@@ -1586,6 +1589,7 @@ namespace MesnetMD
                             }
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         else
                         {
@@ -1634,6 +1638,7 @@ namespace MesnetMD
                             }
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         else
                         {
@@ -1656,6 +1661,7 @@ namespace MesnetMD
                             }
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
+                            canvas.Children.Remove(fs);
                         }
                         else
                         {
