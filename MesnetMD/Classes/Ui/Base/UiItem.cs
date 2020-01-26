@@ -17,10 +17,6 @@ namespace MesnetMD.Classes.Ui.Base
 
         private double _toppos;
 
-        public Global.ObjectType Type;
-
-        public Global.ItemType ItemType;
-
         public double LeftPos
         {
             get

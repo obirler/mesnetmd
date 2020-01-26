@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest.Base;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
 
@@ -9,7 +10,12 @@ namespace MesnetMD.Classes.Ui.Base
 {
     public abstract class RealFixedSupportItem : SupportItem, IRealSupportItem
     {
-        protected RealFixedSupportItem(Global.ObjectType type) : base(type)
+        protected RealFixedSupportItem()
+        {
+            InitializeComponent();
+        }
+
+        protected RealFixedSupportItem(FixedSupportManifest manifest) : base(manifest)
         {
             InitializeComponent();
         }

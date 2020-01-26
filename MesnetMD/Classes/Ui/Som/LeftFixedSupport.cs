@@ -2,24 +2,29 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Ui.Base;
 using static MesnetMD.Classes.Global;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class LeftFixedSupport : RealFixedSupportItem
     {
-        public LeftFixedSupport() : base(ObjectType.LeftFixedSupport)
+        public LeftFixedSupport()
         {           
             Name = "Left Fixed Support " + SupportId;
         }
 
-        public LeftFixedSupport(Canvas canvas) : base(ObjectType.LeftFixedSupport)
+        public LeftFixedSupport(Canvas canvas)
         {
             canvas.Children.Add(this);
             AddObject(this);
             Name = "Left Fixed Support " + SupportId;
+        }
+
+        public LeftFixedSupport(LeftFixedSupportManifest manifest) : base(manifest)
+        {
         }
 
         protected override void createpolygons()

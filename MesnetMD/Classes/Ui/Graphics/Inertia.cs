@@ -12,7 +12,6 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public Inertia(PiecewisePoly inertiappoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Inertia;
             _beam = beam;
             _inertiappoly = inertiappoly;
             Draw(c);

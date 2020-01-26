@@ -131,30 +131,26 @@ namespace MesnetMD.Classes.Ui
             if (beam.LeftSide != null)
             {
                 string leftname = Global.GetString("null");
-                switch (beam.LeftSide.Type)
+                switch (beam.LeftSide)
                 {
-                    case Global.ObjectType.LeftFixedSupport:
-                        var ls = beam.LeftSide as LeftFixedSupport;
+                    case LeftFixedSupport ls:
                         leftname = Global.GetString("leftfixedsupport") + " " + ls.SupportId;
                         leftsideitem.Support = ls;
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = beam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         leftname = Global.GetString("slidingsupport") + " " + ss.SupportId;
                         leftsideitem.Support = ss;
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-                        var bs = beam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         leftname = Global.GetString("basicsupport") + " " + bs.SupportId;
                         leftsideitem.Support = bs;
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
+                    case FictionalSupport fs:
                         if (Config.ShowFictionalSupportInTrees)
                         {
-                            var fs = beam.LeftSide as FictionalSupport;
                             leftname = fs.Name;
                             leftsideitem.Support = fs;
                         }
@@ -179,30 +175,26 @@ namespace MesnetMD.Classes.Ui
             if (beam.RightSide != null)
             {
                 string rightname = Global.GetString("null");
-                switch (beam.RightSide.Type)
+                switch (beam.RightSide)
                 {
-                    case Global.ObjectType.RightFixedSupport:
-                        var rs = beam.RightSide as RightFixedSupport;
+                    case RightFixedSupport rs:
                         rightname = Global.GetString("rightfixedsupport") + " " + rs.SupportId;
                         rightsideitem.Support = rs;
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = beam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         rightname = Global.GetString("slidingsupport") + " " + ss.SupportId;
                         rightsideitem.Support = ss;
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-                        var bs = beam.RightSide as BasicSupport;
+                    case BasicSupport bs:
                         rightname = Global.GetString("basicsupport") + " " + bs.SupportId;
                         rightsideitem.Support = bs;
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
+                    case FictionalSupport fs:
                         if (Config.ShowFictionalSupportInTrees)
                         {
-                            var fs = beam.RightSide as FictionalSupport;
                             rightname = fs.Name;
                             rightsideitem.Support = fs;
                         }
@@ -432,10 +424,9 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-                        Beam beam = (Beam)item.Value;
+                    case Beam beam:
                         UpdateBeamTree(beam);
                         break;
                 }
@@ -455,18 +446,14 @@ namespace MesnetMD.Classes.Ui
 
                 foreach (var item in Global.Objects)
                 {
-                    switch (item.Value.Type)
+                    switch (item.Value)
                     {
-                        case Global.ObjectType.Beam:
-
-                            var beam1 = item.Value as Beam;
-
+                        case Beam beam1:
                             if (Equals(beam1, beam))
                             {
                                 _mw.SelectBeam(beam1);
                                 return;
                             }
-
                             break;
                     }
                 }
@@ -518,15 +505,13 @@ namespace MesnetMD.Classes.Ui
             var supportitem = new TreeViewSupportItem(support);
             bool exists = false;
 
-            switch (support.Type)
+            switch (support)
             {
-                case Global.ObjectType.SlidingSupport:
-
-                    var slidingsup = support as SlidingSupport;
+                case SlidingSupport slidingsup:
 
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (item.Support.Type is Global.ObjectType.SlidingSupport)
+                        if (item.Support is SlidingSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -575,7 +560,7 @@ namespace MesnetMD.Classes.Ui
                             {
                                 case Global.DOFType.Horizontal:
                                     var hitem= new TreeViewItem();
-                                    hitem.Header = "Type: Horizontal";
+                                    hitem.Header = "ObjectType: Horizontal";
                                     dofitem.Items.Add(hitem);
                                     var hmitem = new TreeViewItem();
                                     hmitem.Header = "Dof Members";
@@ -592,7 +577,7 @@ namespace MesnetMD.Classes.Ui
 
                                 case Global.DOFType.Rotational:
                                     var ritem = new TreeViewItem();
-                                    ritem.Header = "Type: Rotational";
+                                    ritem.Header = "ObjectType: Rotational";
                                     dofitem.Items.Add(ritem);
                                     var rmitem = new TreeViewItem();
                                     rmitem.Header = "Dof Members";
@@ -612,13 +597,10 @@ namespace MesnetMD.Classes.Ui
 
                     break;
 
-                case Global.ObjectType.BasicSupport:
-
-                    var basicsup = support as BasicSupport;
-
+                case BasicSupport basicsup:
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (item.Support.Type is Global.ObjectType.BasicSupport)
+                        if (item.Support is BasicSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -629,7 +611,6 @@ namespace MesnetMD.Classes.Ui
                             }
                         }
                     }
-
                     if (!exists)
                     {
                         supportitem.Header = new BasicSupportItem(basicsup);
@@ -667,7 +648,7 @@ namespace MesnetMD.Classes.Ui
                             {
                                 case Global.DOFType.Rotational:
                                     var ritem = new TreeViewItem();
-                                    ritem.Header = "Type: Rotational";
+                                    ritem.Header = "ObjectType: Rotational";
                                     dofitem.Items.Add(ritem);
                                     var rmitem = new TreeViewItem();
                                     rmitem.Header = "Dof Members";
@@ -687,13 +668,10 @@ namespace MesnetMD.Classes.Ui
 
                     break;
 
-                case Global.ObjectType.LeftFixedSupport:
-
-                    var lfixedsup = support as LeftFixedSupport;
-
+                case LeftFixedSupport lfixedsup:
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (item.Support.Type is Global.ObjectType.LeftFixedSupport)
+                        if (item.Support is LeftFixedSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -733,13 +711,10 @@ namespace MesnetMD.Classes.Ui
 
                     break;
 
-                case Global.ObjectType.RightFixedSupport:
-
-                    var rfixedsup = support as RightFixedSupport;
-
+                case RightFixedSupport rfixedsup:
                     foreach (TreeViewSupportItem item in _supporttree.Items)
                     {
-                        if (item.Support.Type is Global.ObjectType.RightFixedSupport)
+                        if (item.Support is RightFixedSupport)
                         {
                             if (Equals(supportitem.Support, item.Support))
                             {
@@ -751,7 +726,6 @@ namespace MesnetMD.Classes.Ui
                         }
 
                     }
-
                     if (!exists)
                     {
                         supportitem.Header =
@@ -775,20 +749,17 @@ namespace MesnetMD.Classes.Ui
                         rfixedsup.Member.Moment);
 
                     rfmemberitem.Header = rfbeamitem;
-
                     rfmembersitem.Items.Add(rfmemberitem);
 
                     break;
 
-                case Global.ObjectType.FictionalSupport:
+                case FictionalSupport fsup:
 
                     if (Config.ShowFictionalSupportInTrees)
                     {
-                        var fsup = support as FictionalSupport;
-
                         foreach (TreeViewSupportItem item in _supporttree.Items)
                         {
-                            if (item.Support.Type is Global.ObjectType.FictionalSupport)
+                            if (item.Support is FictionalSupport)
                             {
                                 if (Equals(supportitem.Support, item.Support))
                                 {
@@ -837,7 +808,7 @@ namespace MesnetMD.Classes.Ui
                                 {
                                     case Global.DOFType.Horizontal:
                                         var hitem = new TreeViewItem();
-                                        hitem.Header = "Type: Horizontal";
+                                        hitem.Header = "ObjectType: Horizontal";
                                         dofitem.Items.Add(hitem);
                                         var hmitem = new TreeViewItem();
                                         hmitem.Header = "Dof Members";
@@ -854,7 +825,7 @@ namespace MesnetMD.Classes.Ui
 
                                     case Global.DOFType.Vertical:
                                         var vitem = new TreeViewItem();
-                                        vitem.Header = "Type: Vertical";
+                                        vitem.Header = "ObjectType: Vertical";
                                         dofitem.Items.Add(vitem);
                                         var vmitem = new TreeViewItem();
                                         vmitem.Header = "Dof Members";
@@ -871,7 +842,7 @@ namespace MesnetMD.Classes.Ui
 
                                     case Global.DOFType.Rotational:
                                         var ritem = new TreeViewItem();
-                                        ritem.Header = "Type: Rotational";
+                                        ritem.Header = "ObjectType: Rotational";
                                         dofitem.Items.Add(ritem);
                                         var rmitem = new TreeViewItem();
                                         rmitem.Header = "Dof Members";
@@ -918,44 +889,29 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("Update All Support Tree Started");
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var sliding = item.Value as SlidingSupport;
+                    case SlidingSupport sliding:
                         UpdateSupportTree(sliding);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var basic = item.Value as BasicSupport;
+                    case BasicSupport basic:
                         UpdateSupportTree(basic);
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
-                        var left = item.Value as LeftFixedSupport;
+                    case LeftFixedSupport left:
                         UpdateSupportTree(left);
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
-                        var right = item.Value as RightFixedSupport;
+                    case RightFixedSupport right:
                         UpdateSupportTree(right);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
+                    case FictionalSupport fictional:
                         if (Config.ShowFictionalSupportInTrees)
                         {
-                            var fictional = item.Value as FictionalSupport;
                             UpdateSupportTree(fictional);
                         }
-
                         break;
                 }
             }
@@ -1010,12 +966,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.SlidingSupport:
-
-                                var slidingsupport = item.Value as SlidingSupport;
-
+                            case SlidingSupport slidingsupport:
                                 if (Equals(ssitem.Support, slidingsupport))
                                 {
                                     slidingsupport.Select();
@@ -1023,7 +976,6 @@ namespace MesnetMD.Classes.Ui
                                     SelectSupportItem(slidingsupport);
                                     return;
                                 }
-
                                 break;
                         }
                     }
@@ -1032,12 +984,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.BasicSupport:
-
-                                var basicsupport = item.Value as BasicSupport;
-
+                            case BasicSupport basicsupport:
                                 if (Equals(bsitem.Support, basicsupport))
                                 {
                                     basicsupport.Select();
@@ -1045,7 +994,6 @@ namespace MesnetMD.Classes.Ui
                                     SelectSupportItem(basicsupport);
                                     return;
                                 }
-
                                 break;
                         }
                     }
@@ -1054,12 +1002,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.LeftFixedSupport:
-
-                                var leftfixedsupport = item.Value as LeftFixedSupport;
-
+                            case LeftFixedSupport leftfixedsupport:
                                 if (Equals(lsitem.Support, leftfixedsupport))
                                 {
                                     leftfixedsupport.Select();
@@ -1067,7 +1012,6 @@ namespace MesnetMD.Classes.Ui
                                     SelectSupportItem(leftfixedsupport);
                                     return;
                                 }
-
                                 break;
                         }
                     }
@@ -1076,12 +1020,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.RightFixedSupport:
-
-                                var rightfixedsupport = item.Value as RightFixedSupport;
-
+                            case RightFixedSupport rightfixedsupport:
                                 if (Equals(rsitem.Support, rightfixedsupport))
                                 {
                                     rightfixedsupport.Select();
@@ -1089,7 +1030,6 @@ namespace MesnetMD.Classes.Ui
                                     SelectSupportItem(rightfixedsupport);
                                     return;
                                 }
-
                                 break;
                         }
                     }
@@ -1098,12 +1038,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.FictionalSupport:
-
-                                var fictionalsupport = item.Value as FictionalSupport;
-
+                            case FictionalSupport fictionalsupport:
                                 if (Equals(fsitem.Support, fictionalsupport))
                                 {
                                     fictionalsupport.Select();
@@ -1111,7 +1048,6 @@ namespace MesnetMD.Classes.Ui
                                     SelectSupportItem(fictionalsupport);
                                     return;
                                 }
-
                                 break;
                         }
                     }

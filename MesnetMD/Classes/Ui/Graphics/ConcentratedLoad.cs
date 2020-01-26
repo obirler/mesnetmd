@@ -13,16 +13,10 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public ConcentratedLoad(KeyValueCollection loads, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.ConcentratedLoad;
-
             _beam = beam;
-
             _loads = loads;
-
             _length = _beam.Length;
-
             _labellist = new List<TextBlock>();
-
             Draw(c);
         }
 

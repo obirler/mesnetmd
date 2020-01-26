@@ -12,7 +12,6 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public Area(PiecewisePoly areappoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Area;
             _beam = beam;
             _areappoly = areappoly;
             Draw(c);

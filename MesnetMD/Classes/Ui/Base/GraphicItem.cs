@@ -8,10 +8,7 @@ namespace MesnetMD.Classes.Ui.Base
     {
         protected GraphicItem()
         {
-            ItemType = Global.ItemType.GraphicItem;
         }
-
-        public Global.GraphicType GraphicType;
 
         protected void MinSize(TextBlock textBlock)
         {

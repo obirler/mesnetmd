@@ -1,9 +1,11 @@
-﻿namespace MesnetMD.Classes.IO.Manifest
-{
-    public class LeftFixedSupportManifest : ManifestBase
-    {
-        public int SupportId { get; set; }
+﻿using MesnetMD.Classes.IO.Manifest.Base;
 
-        public Member Member { get; set; }
+namespace MesnetMD.Classes.IO.Manifest
+{
+    public class LeftFixedSupportManifest : FixedSupportManifest
+    {
+        public LeftFixedSupportManifest()
+        {
+        }
     }
 }

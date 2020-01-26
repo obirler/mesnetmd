@@ -90,7 +90,7 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.LeftSide is IRealSupportItem)
             {
-                if (oldbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                if (!(oldbeam.LeftSide is LeftFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -111,27 +111,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (oldbeam.LeftSide.Type)
+                    switch (oldbeam.LeftSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = oldbeam.LeftSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(_beam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = oldbeam.LeftSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(_beam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
-
                             break;
                     }
                 }
@@ -143,7 +135,7 @@ namespace MesnetMD.Classes.Tools
             }
             else if (_beam.LeftSide is IRealSupportItem)
             {
-                if (_beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                if (!(_beam.LeftSide is LeftFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -164,24 +156,17 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (_beam.LeftSide.Type)
+                    switch (_beam.LeftSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = _beam.LeftSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(oldbeam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = _beam.LeftSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(oldbeam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
                     }
@@ -250,7 +235,7 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.RightSide is IRealSupportItem)
             {
-                if (oldbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                if (!(oldbeam.RightSide is RightFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -272,24 +257,17 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (oldbeam.RightSide.Type)
+                    switch (oldbeam.RightSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = oldbeam.RightSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(_beam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = oldbeam.RightSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(_beam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.LeftFixedSupport:
-
+                        case LeftFixedSupport ls:
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
                     }
@@ -302,7 +280,7 @@ namespace MesnetMD.Classes.Tools
             }
             else if (_beam.LeftSide is IRealSupportItem)
             {
-                if (_beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                if (!(_beam.LeftSide is LeftFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -323,27 +301,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (_beam.LeftSide.Type)
+                    switch (_beam.LeftSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = _beam.LeftSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(oldbeam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = _beam.LeftSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(oldbeam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
-
                             break;
                     }
                 }
@@ -414,7 +384,7 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.LeftSide is IRealSupportItem)
             {
-                if (oldbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                if (!(oldbeam.LeftSide is LeftFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -435,27 +405,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (oldbeam.LeftSide.Type)
+                    switch (oldbeam.LeftSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = oldbeam.LeftSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(_beam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = oldbeam.LeftSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(_beam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             throw new InvalidOperationException(
                                 "RightFixedSupport has been bounded to the left side of the beam");
-
                             break;
                     }
                 }
@@ -467,7 +429,7 @@ namespace MesnetMD.Classes.Tools
             }
             else if (_beam.RightSide is IRealSupportItem)
             {
-                if (_beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                if (!(_beam.RightSide is RightFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -488,27 +450,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (_beam.RightSide.Type)
+                    switch (_beam.RightSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = _beam.RightSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(oldbeam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = _beam.RightSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(oldbeam, Global.Direction.Left);
-
                             break;
 
-                        case Global.ObjectType.LeftFixedSupport:
-
+                        case LeftFixedSupport ls:
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
-
                             break;
                     }
                 }
@@ -577,7 +531,7 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.RightSide is IRealSupportItem)
             {
-                if (oldbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                if (!(oldbeam.RightSide is RightFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -598,27 +552,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (oldbeam.RightSide.Type)
+                    switch (oldbeam.RightSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = oldbeam.RightSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(_beam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = oldbeam.RightSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(_beam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.LeftFixedSupport:
-
+                        case LeftFixedSupport ls:
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
-
                             break;
                     }
                 }
@@ -630,7 +576,7 @@ namespace MesnetMD.Classes.Tools
             }
             else if (_beam.RightSide is IRealSupportItem)
             {
-                if (_beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                if (!(_beam.RightSide is RightFixedSupport))
                 {
                     if (oldbeam.IsBound)
                     {
@@ -651,27 +597,19 @@ namespace MesnetMD.Classes.Tools
                         _beam.MoveSupports();
                     }
 
-                    switch (_beam.RightSide.Type)
+                    switch (_beam.RightSide)
                     {
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = _beam.RightSide as SlidingSupport;
+                        case SlidingSupport ss:
                             ss.AddBeam(oldbeam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = _beam.RightSide as BasicSupport;
+                        case BasicSupport bs:
                             bs.AddBeam(oldbeam, Global.Direction.Right);
-
                             break;
 
-                        case Global.ObjectType.LeftFixedSupport:
-
+                        case LeftFixedSupport ls:
                             throw new InvalidOperationException(
                                 "LeftFixedSupport has been bounded to the right side of the beam");
-
                             break;
                     }
                 }
@@ -851,81 +789,55 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.LeftSide != null)
             {
-                switch (oldbeam.LeftSide.Type)
+                switch (oldbeam.LeftSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = oldbeam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = oldbeam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = oldbeam.LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
-
                         break;
                 }
             }
             else if (_beam.LeftSide != null)
             {
-                switch (_beam.LeftSide.Type)
+                switch (_beam.LeftSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = _beam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = _beam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = _beam.LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
-
                         break;
                 }
             }
@@ -935,81 +847,55 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.RightSide != null)
             {
-                switch (oldbeam.RightSide.Type)
+                switch (oldbeam.RightSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = oldbeam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = oldbeam.RightSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = oldbeam.RightSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(_beam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
-
                         break;
                 }
             }
             else if (_beam.LeftSide != null)
             {
-                switch (_beam.LeftSide.Type)
+                switch (_beam.LeftSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = _beam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = _beam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = _beam.LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case  LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
-
                         break;
                 }
             }
@@ -1019,81 +905,55 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.RightSide != null)
             {
-                switch (oldbeam.RightSide.Type)
+                switch (oldbeam.RightSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = oldbeam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(_beam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = oldbeam.RightSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(_beam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = oldbeam.RightSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(_beam, Global.Direction.Right);
+                        break;
+
+                    case RightFixedSupport rs:
+                        throw new InvalidOperationException("The side that has a fixed support can not be connected.");
 
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
-                        throw new InvalidOperationException(
-                            "The side that has a fixed support can not be connected.");
-
-                        break;
-
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
-
                         break;
                 }
             }
             else if (_beam.RightSide != null)
             {
-                switch (_beam.RightSide.Type)
+                switch (_beam.RightSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = _beam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = _beam.RightSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = _beam.RightSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(oldbeam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
-
                         break;
                 }
             }
@@ -1103,81 +963,55 @@ namespace MesnetMD.Classes.Tools
         {
             if (oldbeam.LeftSide != null)
             {
-                switch (oldbeam.LeftSide.Type)
+                switch (oldbeam.LeftSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = oldbeam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(_beam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = oldbeam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(_beam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = oldbeam.LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(_beam, Global.Direction.Right);
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "RightFixedSupport has been bounded to the left side of the beam");
-
                         break;
                 }
             }
             else if (_beam.RightSide != null)
             {
-                switch (_beam.RightSide.Type)
+                switch (_beam.RightSide)
                 {
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = _beam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = _beam.RightSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = _beam.RightSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.AddBeam(oldbeam, Global.Direction.Left);
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         throw new InvalidOperationException(
                             "The side that has a fixed support can not be connected.");
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         throw new InvalidOperationException(
                             "LeftFixedSupport has been bounded to the right side of the beam");
-
                         break;
                 }
             }

@@ -24,28 +24,25 @@ namespace MesnetMD.Classes.Tools
             GlobalDofs = new List<DOF>();
             foreach (var pair in Global.Objects)
             {
-                switch (pair.Value.Type)
+                switch (pair.Value)
                 {
-                    case Global.ObjectType.BasicSupport:
-                        var bs = pair.Value as BasicSupport;
+                    case BasicSupport bs:
                         var rbdof = bs.DegreeOfFreedoms[0];
                         GlobalDofs.Add(rbdof);
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = pair.Value as SlidingSupport;
+                    case SlidingSupport ss:
                         var hsdof = ss.DegreeOfFreedoms[0];
                         GlobalDofs.Add(hsdof);
                         var rsdof = ss.DegreeOfFreedoms[1];
                         GlobalDofs.Add(rsdof);
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-                        var fs = pair.Value as FictionalSupport;
+                    case FictionalSupport fs:
                         var hfdof = fs.DegreeOfFreedoms[0];
                         GlobalDofs.Add(hfdof);
-                        var vbdof = fs.DegreeOfFreedoms[1];
-                        GlobalDofs.Add(vbdof);
+                        var vfdof = fs.DegreeOfFreedoms[1];
+                        GlobalDofs.Add(vfdof);
                         var rfdof = fs.DegreeOfFreedoms[2];
                         GlobalDofs.Add(rfdof);
                         break;
@@ -144,14 +141,10 @@ namespace MesnetMD.Classes.Tools
         {
             foreach (var pair in Global.Objects)
             {
-                switch (pair.Value.Type)
+                switch (pair.Value)
                 {
-                    case Global.ObjectType.Beam:
-
+                    case Beam beam:
                         var displacement = new double[6];
-
-                        var beam = pair.Value as Beam;
-
                         for (int i = 0; i < GlobalDofs.Count; i++)
                         {
                             foreach (var member in GlobalDofs[i].Members)
@@ -159,48 +152,15 @@ namespace MesnetMD.Classes.Tools
                                 if (Equals(beam, member.Beam))
                                 {
                                     int index = (int)member.Location;
-
                                     displacement[index] = GlobalDisplacementVector[i];
                                     break;
                                 }
                             }
-                        }
-
+                        } 
                         beam.UpdateDirectForceVector(displacement);
-
                         break;
                 }
             }
-            /*for (int j = 0; j < Global.Objects.; j++)
-            {
-                switch (Global.Objects[j].Type)
-                {
-                    case Global.ObjectType.Beam:
-
-                        var displacement = new double[6];
-
-                        var beam = Global.Objects[j] as Beam;
-
-                        for (int i = 0; i < GlobalDofs.Count; i++)
-                        {
-                            foreach (var member in GlobalDofs[i].Members)
-                            {
-                                if (Equals(beam, member.Beam))
-                                {
-                                    int index = (int)member.Location;
-
-                                    displacement[index] = GlobalDisplacementVector[i];
-                                    break;                                   
-                                }
-                            }
-                        }
-
-                        beam.UpdateDirectForceVector(displacement);
-
-                        break;
-                }
-            }*/
-            
         }
 
         public static int DofCount = 0;

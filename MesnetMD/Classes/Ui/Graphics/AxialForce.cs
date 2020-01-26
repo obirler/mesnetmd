@@ -12,7 +12,6 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public AxialForce(PiecewisePoly axialforceppoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Force;
             _beam = beam;
             _axialforceppoly = axialforceppoly;
 

@@ -7,35 +7,38 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using MesnetMD.Classes.IO;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Math;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Base;
 using MesnetMD.Classes.Ui.Graphics;
 using MoreLinq;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class Beam : SomItem, ISomItem
     {
-        public Beam()
-        {
-            InitializeComponent();
-        }
-
         public Beam(double length)
         {
+            BeamId = BeamCount++;
             InitializeComponent(length);
         }
 
         public Beam(Canvas canvas, double length)
         {
+            BeamId = BeamCount++;
             _canvas = canvas;
-
             InitializeComponent(length);
-
             AddTopLeft(_canvas, 10000, 10000);
         }
-        
+
+        public Beam(BeamManifest manifest) : base(manifest)
+        {
+            BeamId = manifest.BeamId;
+            InitializeComponent(manifest);
+        }
+
         static Beam()
         {
             if(File.Exists("stiffness.txt"))
@@ -44,48 +47,29 @@ namespace MesnetMD.Classes.Ui.Som
             }
         }
 
-        private void InitializeComponent(double length=1.0)
+        private void InitializeComponent(double length)
         {
-            _beamid = _beamcount++;
-            Name = "Beam " + _beamid;
-            Type = Global.ObjectType.Beam;
+            Name = "Beam " + BeamId;
             _length = length;
             Width = length * 100;
             Height = 0;
-
-            _core = new Rectangle();
-            _core.Height = 4;
-            _core.Width = Width;
-            _core.Fill = new SolidColorBrush(Colors.Black);
-            Children.Add(_core);
-
-            SetLeft(_core, 0);
-            SetBottom(_core, -2);
-
-            var arrow = new Polygon();
-            arrow.Points.Add(new Point(5, 50));
-            arrow.Points.Add(new Point(0, 40));
-            arrow.Points.Add(new Point(4, 40));
-            arrow.Points.Add(new Point(4, 0));
-            arrow.Points.Add(new Point(6, 0));
-            arrow.Points.Add(new Point(6, 4));
-            arrow.Points.Add(new Point(10, 40));
-
-            arrow.HorizontalAlignment = HorizontalAlignment.Center;
-            arrow.Height = 50;
-            arrow.Width = 10;
-            arrow.Fill = new SolidColorBrush(Colors.Red);
-
-            rotateTransform = new RotateTransform();
-            rotateTransform.CenterX = Width / 2;
-            rotateTransform.CenterY = Height / 2;
-            rotateTransform.Angle = 0;
-            RenderTransform = rotateTransform;
-
-            _connector = new BeamConnector(this);
-
+            createcore();
+            setrtransform();
             createarrow();
+            _connector = new BeamConnector(this);
+            BindEvents();
+        }
 
+        private void InitializeComponent(BeamManifest manifest)
+        {
+            Name = manifest.Name;
+            _length = manifest.Length;
+            Width = _length * 100;
+            Height = 0;
+            createcore();
+            setrtransform(manifest);
+            createarrow();
+            _connector = new BeamConnector(this);
             BindEvents();
         }
 
@@ -102,6 +86,35 @@ namespace MesnetMD.Classes.Ui.Som
             Canvas.SetLeft(_directionarrow, Width / 2 - _directionarrow.Width / 2);
 
             BindEvents();
+        }
+
+        private void createcore()
+        {
+            _core = new Rectangle();
+            _core.Height = 4;
+            _core.Width = Width;
+            _core.Fill = new SolidColorBrush(Colors.Black);
+            Children.Add(_core);
+            SetLeft(_core, 0);
+            SetBottom(_core, -2);
+        }
+
+        private void setrtransform()
+        {
+            rotateTransform = new RotateTransform();
+            rotateTransform.CenterX = Width / 2;
+            rotateTransform.CenterY = Height / 2;
+            rotateTransform.Angle = 0;
+            RenderTransform = rotateTransform;
+        }
+
+        private void setrtransform(BeamManifest manifest)
+        {
+            rotateTransform = new RotateTransform();
+            rotateTransform.CenterX = manifest.CenterX;
+            rotateTransform.CenterY = manifest.CenterY;
+            rotateTransform.Angle = manifest.Angle;
+            RenderTransform = rotateTransform;
         }
 
         private void createarrow()
@@ -132,9 +145,7 @@ namespace MesnetMD.Classes.Ui.Som
 
         #region internal variables
 
-        private static int _beamcount = 0;
-
-        private int _beamid;
+        public static int BeamCount = 0;
 
         private bool selected;
 
@@ -144,11 +155,7 @@ namespace MesnetMD.Classes.Ui.Som
 
         private double _azero;
 
-        private double _elasticity;    
-
-        private double _leftpos;
-
-        private double _toppos;
+        private double _elasticity;
 
         public RotateTransform rotateTransform;
 
@@ -398,21 +405,6 @@ namespace MesnetMD.Classes.Ui.Som
             }
         }
 
-        /// <summary>
-        /// A special add function that is used to add beam that is read from xml file.
-        /// </summary>
-        /// <param name="canvas">The canvas.</param>
-        public void AddFromXml(Canvas canvas, double length)
-        {
-            _canvas = canvas;
-            InitializeVariables(length);
-            canvas.Children.Add(this);
-            Canvas.SetZIndex(this, 1);
-            Canvas.SetLeft(this, _leftpos);
-            Canvas.SetTop(this, _toppos);
-
-        }
-
         public void AddTopLeft(Canvas canvas, double x, double y)
         {
             if (!canvas.Children.Contains(this))
@@ -431,11 +423,6 @@ namespace MesnetMD.Classes.Ui.Som
                 {
                     Canvas.SetTop(this, y - 7);
                 }
-
-                Global.BeamCount++;
-                _beamid = Global.BeamCount;
-                Name = "Beam " + Global.BeamCount;
-
                 SetTransformGeometry(canvas);
                 SetAngleCenter(0);
             }
@@ -463,11 +450,6 @@ namespace MesnetMD.Classes.Ui.Som
                 {
                     Canvas.SetTop(this, y);
                 }
-
-                Global.BeamCount++;
-                _beamid = Global.BeamCount;
-                Name = "Beam " + Global.BeamCount;
-
                 SetTransformGeometry(canvas);
             }
             else
@@ -803,66 +785,44 @@ namespace MesnetMD.Classes.Ui.Som
         {
             if (LeftSide != null)
             {
-                switch (LeftSide.Type)
+                switch (LeftSide)
                 {
-                    case Global.ObjectType.LeftFixedSupport:
-
-                        var ls = LeftSide as LeftFixedSupport;
+                    case LeftFixedSupport ls:
                         ls.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-                        var fs = LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.UpdatePosition(this);
-
                         break;
                 }
             }
 
             if (RightSide != null)
             {
-                switch (RightSide.Type)
+                switch (RightSide)
                 {
-                    case Global.ObjectType.RightFixedSupport:
-
-                        var rs = RightSide as RightFixedSupport;
+                    case RightFixedSupport rs:
                         rs.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         ss.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = RightSide as BasicSupport;
+                    case BasicSupport bs:
                         bs.UpdatePosition(this);
-
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-                        var fs = RightSide as FictionalSupport;
+                    case FictionalSupport fs:
                         fs.UpdatePosition(this);
-
                         break;
                 }
             }
@@ -959,11 +919,9 @@ namespace MesnetMD.Classes.Ui.Som
 
             if (LeftSide != null)
             {
-                switch (LeftSide.Type)
+                switch (LeftSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         if (bs.Members.Count > 1)
                         {
                             foreach (Member member in bs.Members)
@@ -979,9 +937,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         if (ss.Members.Count > 1)
                         {
                             foreach (Member member in ss.Members)
@@ -997,9 +953,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                         break;
 
-                    case Global.ObjectType.FictionalSupport:
-
-                        var fs = LeftSide as FictionalSupport;
+                    case FictionalSupport fs:
                         if (fs.Members.Count > 1)
                         {
                             foreach (var member in fs.Members)
@@ -1040,11 +994,9 @@ namespace MesnetMD.Classes.Ui.Som
 
             if (RightSide != null)
             {
-                switch (RightSide.Type)
+                switch (RightSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = RightSide as BasicSupport;
+                    case BasicSupport bs:
                         if (bs.Members.Count > 1)
                         {
                             foreach (Member member in bs.Members)
@@ -1060,9 +1012,7 @@ namespace MesnetMD.Classes.Ui.Som
 
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         if (ss.Members.Count > 1)
                         {
                             foreach (Member member in ss.Members)
@@ -1178,51 +1128,35 @@ namespace MesnetMD.Classes.Ui.Som
         #region Diagram functions
         public void RemoveDistributedLoad()
         {
-            DistributedLoad distload = null;
             foreach (var item in Children)
             {
-                if (item is GraphicItem)
+                switch (item)
                 {
-                    var load = item as GraphicItem;
-                    if (load.GraphicType == Global.GraphicType.DistibutedLoad)
-                    {
-                        distload = load as DistributedLoad;
-                    }
+                    case DistributedLoad distload:
+                        distload.RemoveLabels();
+                        Children.Remove(distload);
+                        _distributedloads = null;
+                        _maxdistload = Double.MinValue;
+                        _distloaddiagram = null;
+                        return;
                 }
-            }
-
-            if (distload != null)
-            {
-                distload.RemoveLabels();
-                Children.Remove(distload);
-                _distributedloads = null;
-                _maxdistload = Double.MinValue;
-                _distloaddiagram = null;
             }
         }
 
         public void RemoveConcentratedLoad()
         {
-            ConcentratedLoad concload = null;
             foreach (var item in Children)
             {
-                if (item is GraphicItem)
+                switch (item)
                 {
-                    var load = item as GraphicItem;
-                    if (load.GraphicType == Global.GraphicType.ConcentratedLoad)
-                    {
-                        concload = load as ConcentratedLoad;
-                    }
+                    case ConcentratedLoad concload:
+                        concload.RemoveLabels();
+                        Children.Remove(concload);
+                        _concentratedloads = null;
+                        _concloaddiagram = null;
+                        _maxconcload = double.MinValue;
+                        return;
                 }
-            }
-
-            if (concload != null)
-            {
-                concload.RemoveLabels();
-                Children.Remove(concload);
-                _concentratedloads = null;
-                _concloaddiagram = null;
-                _maxconcload = double.MinValue;
             }
         }
 
@@ -2509,86 +2443,68 @@ namespace MesnetMD.Classes.Ui.Som
         {
             #region cross support cases
 
-            switch (LeftSide.Type)
+            switch (LeftSide)
             {
-                case Global.ObjectType.LeftFixedSupport:
+                case LeftFixedSupport ls:
 
-                    switch (RightSide.Type)
+                    switch (RightSide)
                     {
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             MesnetMDDebug.WriteInformation(Name + " : ffsolver has been executed");
                             ffsolverclapeyron();
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
+                        case BasicSupport bs:
                             MesnetMDDebug.WriteInformation(Name + " : fbsolver has been executed");
                             fbsolver();
-
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
-
+                        case SlidingSupport ss:
                             MesnetMDDebug.WriteInformation(Name + " : fbsolver has been executed");
                             fbsolver();
-
                             break;
                     }
 
                     break;
 
-                case Global.ObjectType.BasicSupport:
+                case BasicSupport bs:
 
-                    switch (RightSide.Type)
+                    switch (RightSide)
                     {
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             MesnetMDDebug.WriteInformation(Name + " : bfsolver has been executed");
                             bfsolver();
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
+                        case BasicSupport bs1:
                             MesnetMDDebug.WriteInformation(Name + " : bbsolver has been executed");
                             bbsolver();
-
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
-
+                        case SlidingSupport ss:
                             MesnetMDDebug.WriteInformation(Name + " : bbsolver has been executed");
                             bbsolver();
-
                             break;
                     }
 
                     break;
 
-                case Global.ObjectType.SlidingSupport:
+                case SlidingSupport ss:
 
-                    switch (RightSide.Type)
+                    switch (RightSide)
                     {
-                        case Global.ObjectType.RightFixedSupport:
-
+                        case RightFixedSupport rs:
                             MesnetMDDebug.WriteInformation(Name + " : bfsolver has been executed");
                             bfsolver();
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
+                        case BasicSupport bs:
                             MesnetMDDebug.WriteInformation(Name + " : bbsolver has been executed");
                             bbsolver();
-
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
-
-                            MesnetMDDebug.WriteInformation(Name + " : bbsolver has been executed");
-                            bbsolver();
+                        case SlidingSupport ss1:
+                            MesnetMDDebug.WriteInformation(Name + " : bbsolver has been executed"); bbsolver();
 
                             break;
                     }
@@ -3541,11 +3457,7 @@ namespace MesnetMD.Classes.Ui.Som
             }
         }
 
-        public int BeamId
-        {
-            get { return _beamid; }
-            set { _beamid = value; }
-        }
+        public int BeamId { get; }
 
         public double ElasticityModulus
         {
@@ -3555,30 +3467,14 @@ namespace MesnetMD.Classes.Ui.Som
 
         public double LeftPos
         {
-            get
-            {
-                _leftpos = Canvas.GetLeft(this);
-                return _leftpos;
-            }
-            set
-            {
-                _leftpos = value;
-                Canvas.SetLeft(this, _leftpos);
-            }
+            get => Canvas.GetLeft(this);
+            set => Canvas.SetLeft(this, value);
         }
 
         public double TopPos
         {
-            get
-            {
-                _toppos = Canvas.GetTop(this);
-                return _toppos;
-            }
-            set
-            {
-                _toppos = value;
-                Canvas.SetTop(this, _toppos);
-            }
+            get => GetTop(this);
+            set => Canvas.SetTop(this, value);
         }
 
         public RotateTransform RotateTransform

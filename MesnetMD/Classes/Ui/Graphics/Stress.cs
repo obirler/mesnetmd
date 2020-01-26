@@ -12,11 +12,9 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public Stress(KeyValueCollection stresslist, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Stress;
             _beam = beam;
             _stress = stresslist;
             _labellist = new List<TextBlock>();
-
             Draw(c);
         }
 

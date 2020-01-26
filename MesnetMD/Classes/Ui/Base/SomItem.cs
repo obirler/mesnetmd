@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using MesnetMD.Classes.IO.Manifest;
 
 namespace MesnetMD.Classes.Ui.Base
 {
@@ -11,17 +12,22 @@ namespace MesnetMD.Classes.Ui.Base
         /// </summary>
         protected SomItem()
         {
-            ItemType = Global.ItemType.SomItem;
-            Id = count++;
+            Id = IdCount++;
+        }
+
+        protected SomItem(ManifestBase manifest)
+        {
+            Id = manifest.Id;
+            Name = manifest.Name;
         }
 
         public string Name;
 
-        public int Id;
-
-        private static int count = 0;
+        public static int IdCount = 0;
 
         protected double _angle;
+
+        public int Id { get; }
 
         public virtual void Move(Vector delta)
         {
@@ -37,7 +43,6 @@ namespace MesnetMD.Classes.Ui.Base
 
         public virtual void ResetSolution()
         {
-
         }
 
         public virtual void Select()

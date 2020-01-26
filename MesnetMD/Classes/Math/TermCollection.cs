@@ -28,7 +28,7 @@ namespace MesnetMD.Classes.Math
 
         #region Custom Enum Definition:
         /// <summary>
-        /// Array Sort Type
+        /// Array Sort ObjectType
         /// Values: ASC , DESC
         /// </summary>
         public enum SortType

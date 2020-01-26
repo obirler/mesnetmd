@@ -25,6 +25,10 @@ namespace MesnetMD.Classes.IO.Manifest
 {
     public class BeamManifest : ManifestBase
     {
+        public BeamManifest()
+        {
+        }
+
         public double Length { get; set; }
 
         public int BeamId { get; set; }

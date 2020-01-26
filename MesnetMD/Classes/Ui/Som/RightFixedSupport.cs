@@ -2,24 +2,29 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Ui.Base;
 using static MesnetMD.Classes.Global;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class RightFixedSupport : RealFixedSupportItem
     {
-        public RightFixedSupport() : base(ObjectType.RightFixedSupport)
+        public RightFixedSupport()
         {
             Name = "Right Fixed Support " + SupportId;
         }
 
-        public RightFixedSupport(Canvas canvas) : base(ObjectType.RightFixedSupport)
+        public RightFixedSupport(Canvas canvas)
         {
             canvas.Children.Add(this);
             AddObject(this);
             Name = "Right Fixed Support " + SupportId;
+        }
+
+        public RightFixedSupport(RightFixedSupportManifest manifest) : base(manifest)
+        {
         }
 
         protected override void createpolygons()

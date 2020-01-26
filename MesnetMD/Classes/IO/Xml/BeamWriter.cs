@@ -88,11 +88,13 @@ namespace MesnetMD.Classes.IO.Xml
 
             writeinertias();
 
+            writeareas();
+
             writeloads();
 
             if(_beam.PerformStressAnalysis)
             {
-                writestresproperties();
+                writestressproperties();
             }
 
             writeconnections();
@@ -107,6 +109,22 @@ namespace MesnetMD.Classes.IO.Xml
             foreach(Math.Poly poly in _beam.Inertia)
             {
                 _writer.WriteStartElement("Inertia");
+                _writer.WriteElementString("expression", poly.ToString());
+                _writer.WriteElementString("startpoint", poly.StartPoint.ToString());
+                _writer.WriteElementString("endpoint", poly.EndPoint.ToString());
+                _writer.WriteEndElement();
+            }
+
+            _writer.WriteEndElement();
+        }
+
+        private void writeareas()
+        {
+            _writer.WriteStartElement("Areas");
+
+            foreach (Math.Poly poly in _beam.Area)
+            {
+                _writer.WriteStartElement("Area");
                 _writer.WriteElementString("expression", poly.ToString());
                 _writer.WriteElementString("startpoint", poly.StartPoint.ToString());
                 _writer.WriteElementString("endpoint", poly.EndPoint.ToString());
@@ -150,7 +168,7 @@ namespace MesnetMD.Classes.IO.Xml
             _writer.WriteEndElement();
         }
 
-        private void writestresproperties()
+        private void writestressproperties()
         {
             _writer.WriteStartElement("EPolies");
 
@@ -187,24 +205,21 @@ namespace MesnetMD.Classes.IO.Xml
             {
                 _writer.WriteStartElement("LeftSide");
 
-                switch (_beam.LeftSide.Type)
+                switch (_beam.LeftSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-                        var bs = _beam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         _writer.WriteElementString("type", "BasicSupport");
                         _writer.WriteElementString("id", bs.Id.ToString());
                         _writer.WriteElementString("supportid", bs.SupportId.ToString());
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = _beam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         _writer.WriteElementString("type", "SlidingSupport");
                         _writer.WriteElementString("id", ss.Id.ToString());
                         _writer.WriteElementString("supportid", ss.SupportId.ToString());
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-                        var ls = _beam.LeftSide as LeftFixedSupport;
+                    case LeftFixedSupport ls:
                         _writer.WriteElementString("type", "LeftFixedSupport");
                         _writer.WriteElementString("id", ls.Id.ToString());
                         _writer.WriteElementString("supportid", ls.SupportId.ToString());
@@ -218,24 +233,22 @@ namespace MesnetMD.Classes.IO.Xml
             {
                 _writer.WriteStartElement("RightSide");
 
-                switch (_beam.RightSide.Type)
+                switch (_beam.RightSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-                        var bs = _beam.RightSide as BasicSupport;
+                    case BasicSupport bs:
+
                         _writer.WriteElementString("type", "BasicSupport");
                         _writer.WriteElementString("id", bs.Id.ToString());
                         _writer.WriteElementString("supportid", bs.SupportId.ToString());
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = _beam.RightSide as SlidingSupport;
+                    case SlidingSupport ss:
                         _writer.WriteElementString("type", "SlidingSupport");
                         _writer.WriteElementString("id", ss.Id.ToString());
                         _writer.WriteElementString("supportid", ss.SupportId.ToString());
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-                        var rs = _beam.RightSide as RightFixedSupport;
+                    case RightFixedSupport rs:
                         _writer.WriteElementString("type", "RightFixedSupport");
                         _writer.WriteElementString("id", rs.Id.ToString());
                         _writer.WriteElementString("supportid", rs.SupportId.ToString());

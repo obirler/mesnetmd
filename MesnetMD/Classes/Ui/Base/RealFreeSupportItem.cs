@@ -2,14 +2,22 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest;
+using MesnetMD.Classes.IO.Manifest.Base;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Base
 {
     public abstract class RealFreeSupportItem : FreeSupportItem, IRealSupportItem
     {
-        protected RealFreeSupportItem(Global.ObjectType type) : base(type)
+        protected RealFreeSupportItem()
+        {
+            InitializeComponent();
+        }
+
+        protected RealFreeSupportItem(FreeSupportManifest manifest) : base(manifest)
         {
             InitializeComponent();
         }

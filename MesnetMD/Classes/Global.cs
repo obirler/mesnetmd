@@ -42,11 +42,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.Inertia?.Count > 0)
                         {
@@ -67,11 +65,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.Area?.Count > 0)
                         {
@@ -92,11 +88,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.DistributedLoads?.Count > 0)
                         {
@@ -117,11 +111,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.ConcentratedLoads?.Count > 0)
                         {
@@ -142,12 +134,10 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
-                       
                         if (beam.FixedEndMoment?.Count > 0)
                         {
                             if (beam.MaxAbsMoment > MaxMoment)
@@ -167,11 +157,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.FixedEndForce?.Count > 0)
                         {
@@ -192,11 +180,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.AxialForce?.Count > 0)
                         {
@@ -217,11 +203,9 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.Stress?.Count > 0)
                         {
@@ -249,11 +233,10 @@ namespace MesnetMD.Classes
 
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.MaxInertia > MaxInertia)
                         {
                             MaxInertia = beam.MaxInertia;
@@ -313,11 +296,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.Inertia?.Count > 0)
                         {
                             return true;
@@ -333,11 +315,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.Area?.Count > 0)
                         {
                             return true;
@@ -353,11 +334,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.DistributedLoads?.Count > 0)
                         {
                             return true;
@@ -373,11 +353,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.ConcentratedLoads?.Count > 0)
                         {
                             return true;
@@ -393,11 +372,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.Stress?.Count > 0)
                         {
                             return true;
@@ -413,11 +391,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.FixedEndMoment?.Count > 0)
                         {
                             return true;
@@ -433,11 +410,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.FixedEndForce?.Count > 0)
                         {
                             return true;
@@ -453,11 +429,10 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
+                    case Beam beam:
 
-                        var beam = item.Value as Beam;
                         if (beam.AxialForce?.Count > 0)
                         {
                             return true;
@@ -554,11 +529,9 @@ namespace MesnetMD.Classes
         {
             foreach (var item in Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
 
                         if (beam.Name == Name)
                         {
@@ -616,49 +589,12 @@ namespace MesnetMD.Classes
             MultiThreaded
         }
 
-        public enum ObjectType
-        {
-            Beam,
-            LeftFixedSupport,
-            RightFixedSupport,
-            BasicSupport,
-            SlidingSupport,
-            FictionalSupport,
-            None
-        }
-
-        public enum GraphicType
-        {
-            ConcentratedLoad,
-            DistibutedLoad,
-            Inertia,
-            Area,
-            Force,
-            Moment,
-            Stress
-        }
-
         public enum DialogResult
         {
             None,
             Yes,
             No,
             Cancel
-        }
-
-        public enum ItemType
-        {
-            SomItem,
-            GraphicItem
-        }
-
-        public enum ManifestType
-        {
-            BeamManifest,
-            BasicSupportManifest,
-            SlidingSupportManifest,
-            LeftFixedSupportManifest,
-            RightFixedSupportManifest
         }
 
         public enum DOFType

@@ -2,16 +2,28 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Base;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class FictionalSupport : FreeSupportItem, IFictionalSupportItem
     {
-        public FictionalSupport(Canvas canvas): base(Global.ObjectType.FictionalSupport)
+        public FictionalSupport(Canvas canvas)
         {
             InitializeVariables(canvas);
+            InitializeComponent();
+        }
+
+        public FictionalSupport()
+        {
+            InitializeComponent();
+        }
+
+        public FictionalSupport(FictionalSupportManifest manifest) : base(manifest)
+        {
             InitializeComponent();
         }
 

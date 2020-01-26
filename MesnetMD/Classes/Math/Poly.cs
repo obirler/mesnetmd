@@ -942,7 +942,7 @@ namespace MesnetMD.Classes.Math
         #region Fields & Properties:
 
         /// <summary>
-        /// Terms Property, Type of TermCollection
+        /// Terms Property, ObjectType of TermCollection
         /// </summary>
         private TermCollection _Terms;
 

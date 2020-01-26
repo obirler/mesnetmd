@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using MesnetMD.Classes.IO.Manifest;
 
-namespace MesnetMD.Classes.IO.Manifest
+namespace MesnetMD.Classes.IO.Xml
 {
     public class RightFixedSupportReader
     {

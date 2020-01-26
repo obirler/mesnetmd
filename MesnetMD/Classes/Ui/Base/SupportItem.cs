@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using MesnetMD.Classes.IO.Manifest.Base;
 using MesnetMD.Classes.Tools;
+using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.Ui.Base
 {
@@ -10,39 +12,59 @@ namespace MesnetMD.Classes.Ui.Base
         /// Initializes a new instance of the <see cref="SupportItem"/> class.
         /// All types of supports are derived from this class
         /// </summary>
-        protected SupportItem(Global.ObjectType type)
+        protected SupportItem()
         {
-            Type = type;
-            if (type != Global.ObjectType.FictionalSupport)
-            {
-                SupportId = supportcount++;
-            }
+            SupportId = SupportCount++;
+            InitializeComponent();
+        }
 
-            switch (type)
+        protected SupportItem(SupportManifest manifest) : base(manifest)
+        {
+            SupportId = manifest.SupportId;
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            switch (this)
             {
-                case Global.ObjectType.BasicSupport:
+                case BasicSupport bs:
+
                     DOFCount = 1;
+
                     break;
-                case Global.ObjectType.SlidingSupport:
+
+                case SlidingSupport ss:
+
                     DOFCount = 2;
+
                     break;
-                case Global.ObjectType.FictionalSupport:
+
+                case FictionalSupport fs:
+
                     DOFCount = 3;
+
                     break;
-                case Global.ObjectType.RightFixedSupport:
+
+                case RightFixedSupport rs:
+
                     DOFCount = 0;
+
                     break;
-                case Global.ObjectType.LeftFixedSupport:
+
+                case LeftFixedSupport ls:
+
                     DOFCount = 0;
+
                     break;
             }
 
             DegreeOfFreedoms = new List<DOF>();
         }
 
-        public int SupportId=0;
+        public int SupportId { get; }
 
-        private static int supportcount = 1;
+        private static int SupportCount { get; set; }
 
         protected bool _selected;
 

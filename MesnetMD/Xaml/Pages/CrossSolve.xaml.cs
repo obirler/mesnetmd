@@ -82,9 +82,8 @@ namespace MesnetMD.Xaml.Pages
 
                         foreach (var item in Global.Objects)
                         {
-                            if (item.Value.Type is Global.ObjectType.Beam)
+                            if (item.Value is Beam beam)
                             {
-                                Beam beam = (Beam)item.Value;
                                 beam.Calculate();
                                 Dispatcher.BeginInvoke(new Action(() =>
                                 {
@@ -104,9 +103,8 @@ namespace MesnetMD.Xaml.Pages
 
                         foreach (var item in Global.Objects)
                         {
-                            if (item.Value.Type is Global.ObjectType.Beam)
+                            if (item.Value is Beam beam)
                             {
-                                Beam beam = (Beam)item.Value;
                                 QueueList.Add(beam);
                             }
                         }
@@ -129,11 +127,9 @@ namespace MesnetMD.Xaml.Pages
             {
                 foreach (var item in Global.Objects)
                 {
-                    switch (item.Value.Type)
+                    switch (item.Value)
                     {
-                        case Global.ObjectType.Beam:
-
-                            Beam beam = (Beam)item.Value;
+                        case Beam beam:
                             Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 calculated++;
@@ -143,7 +139,6 @@ namespace MesnetMD.Xaml.Pages
                             }));
                             beam.Calculate();
                             bwpostcalculate.RunWorkerAsync();
-
                             break;
                     }
                 }

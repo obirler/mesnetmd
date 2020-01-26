@@ -13,11 +13,9 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public DistributedLoad(PiecewisePoly ppoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.DistibutedLoad;
             _beam = beam;
             _loadppoly = ppoly;
             _length = beam.Length;
-
             Draw(c);            
         }
 

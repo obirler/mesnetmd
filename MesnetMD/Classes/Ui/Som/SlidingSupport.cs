@@ -2,32 +2,39 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Base;
 using static MesnetMD.Classes.Global;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class SlidingSupport : RealFreeSupportItem
     {
-        public SlidingSupport() : base(ObjectType.SlidingSupport)
+        public SlidingSupport()
         {
-            Name = "Sliding Support " + SupportId;
-            var hdof = new DOF(Global.DOFType.Horizontal);
-            var rdof = new DOF(Global.DOFType.Rotational);
-            DegreeOfFreedoms.Add(hdof);
-            DegreeOfFreedoms.Add(rdof);
+            InitializeComponent();
         }
 
-        public SlidingSupport(Canvas canvas) : base(ObjectType.SlidingSupport)
+        public SlidingSupport(Canvas canvas)
+        {
+            InitializeComponent();
+            canvas.Children.Add(this);
+            AddObject(this);
+        }
+
+        public SlidingSupport(SlidingSupportManifest manifest) : base(manifest)
+        {
+        }
+
+        private void InitializeComponent()
         {
             Name = "Sliding Support " + SupportId;
             var hdof = new DOF(Global.DOFType.Horizontal);
             var rdof = new DOF(Global.DOFType.Rotational);
             DegreeOfFreedoms.Add(hdof);
             DegreeOfFreedoms.Add(rdof);
-            canvas.Children.Add(this);
-            AddObject(this);
         }
 
         /// <summary>

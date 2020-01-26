@@ -31,9 +31,9 @@ using MesnetMD.Classes.Ui.Som;
 
 namespace MesnetMD.Classes.IO.Xml
 {
-    public class MesnetIO
+    public class MesnetMDIO
     {
-        public MesnetIO()
+        public MesnetMDIO()
         {           
         }
 
@@ -41,7 +41,7 @@ namespace MesnetMD.Classes.IO.Xml
 
         public void WriteXml(string path)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = ("\t");
             settings.OmitXmlDeclaration = false;
@@ -52,56 +52,37 @@ namespace MesnetMD.Classes.IO.Xml
 
                 foreach (KeyValuePair<int, SomItem> item in Global.Objects)
                 {
-                    switch (item.Value.Type)
+                    switch (item.Value)
                     {
-                        case Global.ObjectType.Beam:
-
-                            var beam = item.Value as Beam;
-
+                        case Beam beam:
                             var beamwriter = new BeamWriter(writer, beam);
-
                             beamwriter.Write();
-
                             break;
 
-                        case Global.ObjectType.BasicSupport:
-
-                            var bs = item.Value as BasicSupport;
-
+                        case BasicSupport bs:
                             var bswriter = new BasicSupportWriter(writer, bs);
-
                             bswriter.Write();
-
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
-
-                            var ss = item.Value as SlidingSupport;
-
+                        case SlidingSupport ss:
                             var sswriter = new SlidingSupportWriter(writer, ss);
-
                             sswriter.Write();
-
                             break;
 
-                        case Global.ObjectType.LeftFixedSupport:
-
-                            var ls = item.Value as LeftFixedSupport;
+                        case LeftFixedSupport ls:
 
                             var lswiter = new LeftFixedSupportWriter(writer, ls);
-
                             lswiter.Write();
-
                             break;
 
-                        case Global.ObjectType.RightFixedSupport:
-
-                            var rs = item.Value as RightFixedSupport;
-
+                        case RightFixedSupport rs:
                             var rswriter = new RightFixedSupportWriter(writer, rs);
-
                             rswriter.Write();
+                            break;
 
+                        case FictionalSupport fs:
+                            var fswriter = new FictionalSupportWriter(writer, fs);
+                            fswriter.Write();
                             break;
                     }
                 }
@@ -157,11 +138,17 @@ namespace MesnetMD.Classes.IO.Xml
                         var rsreader = new RightFixedSupportReader(element);
                         manifestlist.Add(rsreader.Read());
                         break;
+
+                    case "FictionalSupport":
+                        var fsreader = new FictionalSupportReader(element);
+                        manifestlist.Add(fsreader.Read());
+                        break;
                 }
             }
             setmaxvalues();
             
             Global.Objects.Clear();
+            _canvas.Children.Clear();
             addtocanvas();
             connectobjects();
             setvariables();
@@ -171,61 +158,44 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void addtocanvas()
         {
-            foreach(ManifestBase item in manifestlist)
+            foreach(ManifestBase item in 
+                manifestlist)
             {
-                switch (item.Type)
+                switch (item)
                 {
-                    case Global.ManifestType.BeamManifest:
-
-                        var beammanifest = item as BeamManifest;
+                    case BeamManifest beammanifest:
                         addbeam(beammanifest);
-
                         break;
 
-                    case Global.ManifestType.BasicSupportManifest:
-
-                        var bsmanifest = item as BasicSupportManifest;
+                    case BasicSupportManifest bsmanifest:
                         addbasicsupport(bsmanifest);
-
                         break;
 
-                    case Global.ManifestType.SlidingSupportManifest:
-
-                        var ssmanifest = item as SlidingSupportManifest;
+                    case SlidingSupportManifest ssmanifest:
                         addslidingsupport(ssmanifest);
-
                         break;
 
-                    case Global.ManifestType.LeftFixedSupportManifest:
-
-                        var lsmanifest = item as LeftFixedSupportManifest;
+                    case LeftFixedSupportManifest lsmanifest:
                         addleftfixedsupport(lsmanifest);
                         break;
 
-                    case Global.ManifestType.RightFixedSupportManifest:
-
-                        var rsmanifest = item as RightFixedSupportManifest;
+                    case RightFixedSupportManifest rsmanifest:
                         addrightfixedsupport(rsmanifest);
+                        break;
+
+                    case FictionalSupportManifest fsmanifest:
+                        addfictionalsupport(fsmanifest);
                         break;
                 }
 
             }
+            
             _canvas.UpdateLayout();
         }
 
         private void addbeam(BeamManifest beammanifest)
         {
-            var beam = new Beam();
-            beam.AddFromXml(_canvas, beammanifest.Length);
-            beam.Id = beammanifest.Id;
-            beam.Name = beammanifest.Name;
-            beam.BeamId = beammanifest.BeamId;
-            beam.SetTopLeft(beammanifest.TopPosition, beammanifest.LeftPosition);           
-            beam.RotateTransform.CenterX = beammanifest.CenterX;
-            beam.RotateTransform.CenterY = beammanifest.CenterY;
-            beam.RotateTransform.Angle = beammanifest.Angle;
-            beam.Angle = beam.RotateTransform.Angle;
-            beam.SetTransformGeometry(beammanifest.TopLeft, beammanifest.TopRight, beammanifest.BottomRight, beammanifest.BottomLeft, _canvas);
+            var beam = new Beam(beammanifest);
             beam.IZero = beammanifest.IZero;
             beam.AddElasticity(beammanifest.Elasticity);
             beam.PerformStressAnalysis = beammanifest.PerformStressAnalysis;
@@ -234,7 +204,11 @@ namespace MesnetMD.Classes.IO.Xml
                 beam.MaxAllowableStress = beammanifest.MaxAllowableStress;
             }
             beam.AddInertia(beammanifest.Inertias);
-            if(beammanifest.DistributedLoads != null)
+            beam.Add(_canvas);
+            beam.SetTopLeft(beammanifest.TopPosition, beammanifest.LeftPosition);
+            beam.SetTransformGeometry(beammanifest.TopLeft, beammanifest.TopRight, beammanifest.BottomRight, beammanifest.BottomLeft, _canvas);
+            //beam.AddArea(beammanifest.);
+            if (beammanifest.DistributedLoads != null)
             {
                 if(beammanifest.DistributedLoads.Count > 0)
                 {
@@ -262,77 +236,76 @@ namespace MesnetMD.Classes.IO.Xml
                     beam.AddD(beammanifest.DPolies);
                 }
             }
-            Global.AddObject(beam);
         }
 
         private void addbasicsupport(BasicSupportManifest supportmanifest)
         {
-            var bs = new BasicSupport();
+            var bs = new BasicSupport(supportmanifest);
             bs.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-            bs.Id = supportmanifest.Id;
-            bs.SupportId = supportmanifest.SupportId;
-            bs.Name = supportmanifest.Name;
             bs.SetAngle(supportmanifest.Angle);
             Global.AddObject(bs);
         }
 
         private void addslidingsupport(SlidingSupportManifest supportmanifest)
         {
-            var ss = new SlidingSupport();
+            var ss = new SlidingSupport(supportmanifest);
             ss.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-            ss.Id = supportmanifest.Id;
-            ss.SupportId = supportmanifest.SupportId;
-            ss.Name = supportmanifest.Name;
             ss.SetAngle(supportmanifest.Angle);
             Global.AddObject(ss);
         }
 
         private void addleftfixedsupport(LeftFixedSupportManifest supportmanifest)
         {
-            var ls = new LeftFixedSupport();
+            var ls = new LeftFixedSupport(supportmanifest);
             ls.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-            ls.Id = supportmanifest.Id;
-            ls.SupportId = supportmanifest.SupportId;
-            ls.Name = supportmanifest.Name;
             ls.SetAngle(supportmanifest.Angle);
             Global.AddObject(ls);
         }
 
         private void addrightfixedsupport(RightFixedSupportManifest supportmanifest)
         {
-            var rs = new RightFixedSupport();
+            var rs = new RightFixedSupport(supportmanifest);
             rs.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
-            rs.Id = supportmanifest.Id;
-            rs.SupportId = supportmanifest.SupportId;
-            rs.Name = supportmanifest.Name;
             rs.SetAngle(supportmanifest.Angle);
             Global.AddObject(rs);
+        }
+
+        private void addfictionalsupport(FictionalSupportManifest supportmanifest)
+        {
+            var fs = new FictionalSupport(supportmanifest);
+            fs.Add(_canvas, supportmanifest.LeftPosition, supportmanifest.TopPosition);
+            //fs.SetAngle(supportmanifest.Angle);
+            Global.AddObject(fs);
         }
 
         private void connectobjects()
         {
             foreach(KeyValuePair<int, SomItem> item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-                        connectbeam(item.Value as Beam);
+                    case Beam beam:
+                        connectbeam(beam);
                         break;
 
-                    case Global.ObjectType.BasicSupport:
-                        connectbasicsupport(item.Value as BasicSupport);
+                    case BasicSupport bs:
+                        connectbasicsupport(bs);
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        connectslidingsupport(item.Value as SlidingSupport);
+                    case SlidingSupport ss:
+                        connectslidingsupport(ss);
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-                        connectleftfixedsupport(item.Value as LeftFixedSupport);
+                    case LeftFixedSupport ls:
+                        connectleftfixedsupport(ls);
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-                        connectrightfixedsupport(item.Value as RightFixedSupport);
+                    case RightFixedSupport rs:
+                        connectrightfixedsupport(rs);
+                        break;
+
+                    case FictionalSupport fs:
+                        connectfictionalsupport(fs);
                         break;
                 }
             }
@@ -342,11 +315,9 @@ namespace MesnetMD.Classes.IO.Xml
         {
             foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.Type)
+                switch (manifestitem)
                 {
-                    case Global.ManifestType.BeamManifest:
-
-                        var beammanifest = manifestitem as BeamManifest;
+                    case BeamManifest beammanifest:
                         if (beam.Id == beammanifest.Id)
                         {
                             if (beammanifest.Connections.LeftSide != null)
@@ -357,7 +328,6 @@ namespace MesnetMD.Classes.IO.Xml
                             {
                                 beam.LeftSide = null;
                             }
-
                             if (beammanifest.Connections.RightSide != null)
                             {
                                 beam.RightSide = Global.GetObject(beammanifest.Connections.RightSide.Id) as SupportItem;                             
@@ -375,13 +345,11 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectbasicsupport(BasicSupport support)
         {
-            BasicSupportManifest manifest;
             foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.Type)
+                switch (manifestitem)
                 {
-                    case Global.ManifestType.BasicSupportManifest:
-                        manifest = manifestitem as BasicSupportManifest;
+                    case BasicSupportManifest manifest:
                         if (support.Id == manifest.Id)
                         {
                             foreach(Member item in manifest.Members)
@@ -391,7 +359,6 @@ namespace MesnetMD.Classes.IO.Xml
                                 member.Direction = item.Direction;
                                 support.Members.Add(member);
                             }
-                            
                             if (support.Members.Count > 1)
                             {
                                 foreach (var member in support.Members)
@@ -408,13 +375,11 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectslidingsupport(SlidingSupport support)
         {
-            SlidingSupportManifest manifest;
             foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.Type)
+                switch (manifestitem)
                 {
-                    case Global.ManifestType.SlidingSupportManifest:
-                        manifest = manifestitem as SlidingSupportManifest;
+                    case SlidingSupportManifest manifest:
                         if (support.Id == manifest.Id)
                         {
                             foreach (Member item in manifest.Members)
@@ -440,13 +405,11 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectleftfixedsupport(LeftFixedSupport support)
         {
-            LeftFixedSupportManifest manifest;
             foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.Type)
+                switch (manifestitem)
                 {
-                    case Global.ManifestType.LeftFixedSupportManifest:
-                        manifest = manifestitem as LeftFixedSupportManifest;
+                    case LeftFixedSupportManifest manifest:
                         if (support.Id == manifest.Id)
                         {
                             var member = new Tools.Member();
@@ -462,13 +425,11 @@ namespace MesnetMD.Classes.IO.Xml
 
         private void connectrightfixedsupport(RightFixedSupport support)
         {
-            RightFixedSupportManifest manifest;
             foreach (ManifestBase manifestitem in manifestlist)
             {
-                switch (manifestitem.Type)
+                switch (manifestitem)
                 {
-                    case Global.ManifestType.RightFixedSupportManifest:
-                        manifest = manifestitem as RightFixedSupportManifest;
+                    case RightFixedSupportManifest manifest:
                         if (support.Id == manifest.Id)
                         {
                             var member = new Tools.Member();
@@ -482,13 +443,45 @@ namespace MesnetMD.Classes.IO.Xml
             }
         }
 
+        private void connectfictionalsupport(FictionalSupport support)
+        {
+            foreach (ManifestBase manifestitem in manifestlist)
+            {
+                switch (manifestitem)
+                {
+                    case FictionalSupportManifest manifest:
+                        if (support.Id == manifest.Id)
+                        {
+                            foreach (Member item in manifest.Members)
+                            {
+                                var member = new Tools.Member();
+                                member.Beam = Global.GetObject(item.Id) as Beam;
+                                member.Direction = item.Direction;
+                                support.Members.Add(member);
+                            }
+                            return;
+                        }
+                        break;
+                }
+            }
+        }
+
         private void setvariables()
         {
             Global.BeamCount = 0;
             Global.SupportCount = 0;
             foreach (KeyValuePair<int, SomItem> item in Global.Objects)
             {
-                switch (item.Value.Type)
+                if (item.Value is Beam)
+                {
+                    Global.BeamCount++;
+                }
+                else if (item.Value is SupportItem)
+                {
+                    Global.SupportCount++;
+                }
+
+                /*switch (item.Value.ObjectType)
                 {
                     case Global.ObjectType.Beam:
                         Global.BeamCount++;
@@ -509,7 +502,7 @@ namespace MesnetMD.Classes.IO.Xml
                     case Global.ObjectType.RightFixedSupport:
                         Global.SupportCount++;
                         break;
-                }
+                }*/
             }
         }
 
@@ -522,11 +515,9 @@ namespace MesnetMD.Classes.IO.Xml
 
             for (int i = 0; i < manifestlist.Count; i++)
             {
-                switch (manifestlist[i].Type)
+                switch (manifestlist[i])
                 {
-                    case Global.ManifestType.BeamManifest:
-
-                        var beammanifest = manifestlist[i] as BeamManifest;
+                    case BeamManifest beammanifest:
                         if (beammanifest.Inertias.MaxAbs > Global.MaxInertia)
                         {
                             Global.MaxInertia = beammanifest.Inertias.MaxAbs;
@@ -545,7 +536,6 @@ namespace MesnetMD.Classes.IO.Xml
                                 Global.MaxConcLoad = beammanifest.ConcentratedLoads.YMaxAbs;
                             }
                         }
-
                         break;
                 }
             }

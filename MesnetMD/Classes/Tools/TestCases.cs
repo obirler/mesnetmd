@@ -742,7 +742,8 @@ namespace MesnetMD.Classes.Tools
                 var polies1 = new List<Poly>();
                 polies1.Add(new Poly("2", 0, beam1.Length));
                 beam1.AddInertia(new PiecewisePoly(polies1));
-                beam1.AddTopLeft(_mw.canvas, 10100, 9400);
+                beam1.AddArea(new PiecewisePoly("1", 0, beam1.Length));
+                beam1.AddTopLeft(_mw.canvas, 10100, 10500);
 
                 var leftfixedsupport = new LeftFixedSupport(_mw.canvas);
                 leftfixedsupport.AddBeam(beam1);
@@ -762,6 +763,7 @@ namespace MesnetMD.Classes.Tools
                 var polies2 = new List<Poly>();
                 polies2.Add(new Poly("2", 0, beam2.Length));
                 beam2.AddInertia(new PiecewisePoly(polies2));
+                beam2.AddArea(new PiecewisePoly("1", 0, beam2.Length));
                 beam2.Connect(Global.Direction.Left, beam1, Global.Direction.Right);
 
                 var slidingsupport2 = new SlidingSupport(_mw.canvas);
@@ -779,6 +781,7 @@ namespace MesnetMD.Classes.Tools
                 var polies3 = new List<Poly>();
                 polies3.Add(new Poly("4", 0, beam3.Length));
                 beam3.AddInertia(new PiecewisePoly(polies3));
+                beam3.AddArea(new PiecewisePoly("1", 0, beam3.Length));
                 beam3.Connect(Global.Direction.Left, beam2, Global.Direction.Right);
 
                 var slidingsupport3 = new SlidingSupport(_mw.canvas);
@@ -796,6 +799,7 @@ namespace MesnetMD.Classes.Tools
                 var polies4 = new List<Poly>();
                 polies4.Add(new Poly("6", 0, beam4.Length));
                 beam4.AddInertia(new PiecewisePoly(polies4));
+                beam4.AddArea(new PiecewisePoly("1", 0, beam4.Length));
                 beam4.Connect(Global.Direction.Left, beam3, Global.Direction.Right);
 
                 var slidingsupport4 = new SlidingSupport(_mw.canvas);
@@ -813,6 +817,7 @@ namespace MesnetMD.Classes.Tools
                 var polies5 = new List<Poly>();
                 polies5.Add(new Poly("5", 0, beam5.Length));
                 beam5.AddInertia(new PiecewisePoly(polies5));
+                beam5.AddArea(new PiecewisePoly("1", 0, beam5.Length));
                 beam5.Connect(Global.Direction.Left, beam4, Global.Direction.Right);
 
                 var slidingsupport5 = new SlidingSupport(_mw.canvas);

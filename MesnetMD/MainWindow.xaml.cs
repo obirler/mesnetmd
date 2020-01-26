@@ -829,8 +829,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.LeftSide != null && beam.LeftSide != null)
                                     {
-                                        if (assemblybeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport &&
-                                            beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                                        if (!(assemblybeam.LeftSide is LeftFixedSupport) &&
+                                            !(beam.LeftSide is LeftFixedSupport))
                                         {
                                             SetMouseHandlingMode("StartCircle_MouseDown",
                                                 MouseHandlingMode.CircularBeamConnection);
@@ -890,8 +890,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.RightSide != null && beam.LeftSide != null)
                                     {
-                                        if (assemblybeam.RightSide.Type != Global.ObjectType.RightFixedSupport &&
-                                            beam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                                        if (!(assemblybeam.RightSide is RightFixedSupport) &&
+                                            !(beam.LeftSide is LeftFixedSupport))
                                         {
                                             SetMouseHandlingMode("StartCircle_MouseDown",
                                                 MouseHandlingMode.CircularBeamConnection);
@@ -960,22 +960,22 @@ namespace MesnetMD
                 {
                     //Check if there is a fixed support bonded to beam's selected side. If there is, the user should not be able to put any support or beam to selected side, 
                     //so disable the fixed support button
-                    switch (beam.LeftSide.Type)
+                    switch (beam.LeftSide)
                     {
-                        case Global.ObjectType.LeftFixedSupport:
+                        case LeftFixedSupport ls:
                             btnonlybeammode();
                             break;
 
-                        case Global.ObjectType.BasicSupport:
+                        case BasicSupport bs:
                             btnbeamandnodalforcemode();
                             Notify("addbeam");
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
+                        case SlidingSupport ss:
                             btnbeamandnodalforcemode();
                             Notify("addbeam");
                             break;
-                        case Global.ObjectType.FictionalSupport:
+                        case FictionalSupport fs:
                             btnfictionalsupportmode();
                             Notify("addbeamorsupport");
                             break;
@@ -1012,8 +1012,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.LeftSide != null && beam.RightSide != null)
                                     {
-                                        if (assemblybeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport &&
-                                            beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                                        if (!(assemblybeam.LeftSide is LeftFixedSupport) &&
+                                            !(beam.RightSide is RightFixedSupport))
                                         {
                                             //Both beam is bound. This will be a circular beam system, so the user want to add beam between 
                                             //two selected beam instead of connecting them
@@ -1072,8 +1072,8 @@ namespace MesnetMD
                                 {
                                     if (assemblybeam.RightSide != null && beam.RightSide != null)
                                     {
-                                        if (assemblybeam.RightSide.Type != Global.ObjectType.RightFixedSupport &&
-                                            beam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                                        if (!(assemblybeam.RightSide is RightFixedSupport) &&
+                                            !(beam.RightSide is RightFixedSupport))
                                         {
                                             //Both beam is bound. This will be a circular beam system, so the user want to add beam between 
                                             //two selected beam instead of connecting them
@@ -1141,22 +1141,22 @@ namespace MesnetMD
                 {
                     //check if there is a fixed support bonded to beam's selected side. If there is the user should not put any support selected side, 
                     //so disable the fixed support button
-                    switch (beam.RightSide.Type)
+                    switch (beam.RightSide)
                     {
-                        case Global.ObjectType.RightFixedSupport:
+                        case RightFixedSupport rs:
                             btnonlybeammode();
                             break;
 
-                        case Global.ObjectType.BasicSupport:
+                        case BasicSupport bs:
                             btnbeamandnodalforcemode();
                             Notify("addbeam");
                             break;
 
-                        case Global.ObjectType.SlidingSupport:
+                        case SlidingSupport ss:
                             btnbeamandnodalforcemode();
                             Notify("addbeam");
                             break;
-                        case Global.ObjectType.FictionalSupport:
+                        case FictionalSupport fs:
                             btnfictionalsupportmode();
                             Notify("addbeamorsupport");
                             break;
@@ -1252,7 +1252,7 @@ namespace MesnetMD
         private void beambtn_Click(object sender, RoutedEventArgs e)
         {
             //Check if there are any beam in the canvas
-            if (Global.Objects.Any(x => x.Value.Type is Global.ObjectType.Beam))
+            if (Global.Objects.Any(x => x.Value is Beam))
             {
                 var beamdialog = new BeamPrompt();
                 beamdialog.maxstresstbx.Text = _maxstress.ToString();
@@ -1271,7 +1271,7 @@ namespace MesnetMD
 
                                 if (selectedbeam.LeftSide != null)
                                 {
-                                    if (selectedbeam.LeftSide.Type != Global.ObjectType.LeftFixedSupport)
+                                    if (!(selectedbeam.LeftSide is LeftFixedSupport))
                                     {
                                         beam.AddElasticity(beamdialog.beamelasticitymodulus);
                                         beam.AddInertia(beamdialog.InertiaPpoly);
@@ -1312,7 +1312,7 @@ namespace MesnetMD
 
                                 if (selectedbeam.RightSide != null)
                                 {
-                                    if (selectedbeam.RightSide.Type != Global.ObjectType.RightFixedSupport)
+                                    if (!(selectedbeam.RightSide is RightFixedSupport))
                                     {
                                         beam.AddElasticity(beamdialog.beamelasticitymodulus);
                                         beam.AddInertia(beamdialog.InertiaPpoly);
@@ -1501,9 +1501,8 @@ namespace MesnetMD
                 switch (selectedbeam.circledirection)
                 {
                     case Global.Direction.Left:
-                        if (selectedbeam.LeftSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.LeftSide is FictionalSupport fs)
                         {
-                            var fs = selectedbeam.LeftSide as FictionalSupport;
                             _treehandler.RemoveSupportTree(fs);
                             Global.RemoveObject(fs);
                             canvas.Children.Remove(fs);
@@ -1514,12 +1513,11 @@ namespace MesnetMD
                         break;
 
                     case Global.Direction.Right:
-                        if (selectedbeam.RightSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.RightSide is FictionalSupport fs1)
                         {
-                            var fs = selectedbeam.RightSide as FictionalSupport;
-                            _treehandler.RemoveSupportTree(fs);
-                            Global.RemoveObject(fs);
-                            canvas.Children.Remove(fs);
+                            _treehandler.RemoveSupportTree(fs1);
+                            Global.RemoveObject(fs1);
+                            canvas.Children.Remove(fs1);
                         }
                         var rightfixedsupport = new RightFixedSupport(canvas);
                         rightfixedsupport.AddBeam(selectedbeam);
@@ -1554,9 +1552,8 @@ namespace MesnetMD
                 {
                     case Global.Direction.Left:
 
-                        if (selectedbeam.LeftSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.LeftSide is FictionalSupport fs)
                         {
-                            var fs = selectedbeam.LeftSide as FictionalSupport;
                             foreach (var member in fs.Members)
                             {
                                 if (!basicsupport.Members.Contains(member))
@@ -1577,19 +1574,18 @@ namespace MesnetMD
 
                     case Global.Direction.Right:
 
-                        if (selectedbeam.RightSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.RightSide is FictionalSupport fs1)
                         {
-                            var fs = selectedbeam.RightSide as FictionalSupport;
-                            foreach (var member in fs.Members)
+                            foreach (var member in fs1.Members)
                             {
                                 if (!basicsupport.Members.Contains(member))
                                 {
                                     basicsupport.AddBeam(member.Beam, member.Direction);
                                 }
                             }
-                            _treehandler.RemoveSupportTree(fs);
-                            Global.RemoveObject(fs);
-                            canvas.Children.Remove(fs);
+                            _treehandler.RemoveSupportTree(fs1);
+                            Global.RemoveObject(fs1);
+                            canvas.Children.Remove(fs1);
                         }
                         else
                         {
@@ -1626,9 +1622,8 @@ namespace MesnetMD
                 {
                     case Global.Direction.Left:
 
-                        if (selectedbeam.LeftSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.LeftSide is FictionalSupport fs)
                         {
-                            var fs = selectedbeam.LeftSide as FictionalSupport;
                             foreach (var member in fs.Members)
                             {
                                 if (!slidingsupport.Members.Contains(member))
@@ -1649,19 +1644,18 @@ namespace MesnetMD
 
                     case Global.Direction.Right:
 
-                        if (selectedbeam.RightSide.Type is Global.ObjectType.FictionalSupport)
+                        if (selectedbeam.RightSide is FictionalSupport fs1)
                         {
-                            var fs = selectedbeam.RightSide as FictionalSupport;
-                            foreach (var member in fs.Members)
+                            foreach (var member in fs1.Members)
                             {
                                 if (!slidingsupport.Members.Contains(member))
                                 {
                                     slidingsupport.AddBeam(member.Beam, member.Direction);
                                 }
                             }
-                            _treehandler.RemoveSupportTree(fs);
-                            Global.RemoveObject(fs);
-                            canvas.Children.Remove(fs);
+                            _treehandler.RemoveSupportTree(fs1);
+                            Global.RemoveObject(fs1);
+                            canvas.Children.Remove(fs1);
                         }
                         else
                         {
@@ -1916,60 +1910,46 @@ namespace MesnetMD
 
             if (beam.LeftSide != null)
             {
-                switch (beam.LeftSide.Type)
+                switch (beam.LeftSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = beam.LeftSide as BasicSupport;
+                    case BasicSupport bs:
                         if (bs.Members.Count == 1)
                         {
                             return true;
                         }
-
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = beam.LeftSide as SlidingSupport;
+                    case SlidingSupport ss:
                         if (ss.Members.Count == 1)
                         {
                             return true;
                         }
-
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
-
+                    case LeftFixedSupport ls:
                         return true;
                 }
             }
 
             if (beam.RightSide != null)
             {
-                switch (beam.RightSide.Type)
+                switch (beam.RightSide)
                 {
-                    case Global.ObjectType.BasicSupport:
-
-                        var bs = beam.RightSide as BasicSupport;
-                        if (bs.Members.Count == 1)
+                    case BasicSupport bs1:
+                        if (bs1.Members.Count == 1)
                         {
                             return true;
                         }
-
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-
-                        var ss = beam.RightSide as SlidingSupport;
-                        if (ss.Members.Count == 1)
+                    case SlidingSupport ss1:
+                        if (ss1.Members.Count == 1)
                         {
                             return true;
                         }
-
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
-
+                    case RightFixedSupport rs:
                         return true;
                 }
             }
@@ -1997,11 +1977,10 @@ namespace MesnetMD
                     bool handled = false;
                     if (beam.RightSide != null)
                     {
-                        switch (beam.RightSide.Type)
+                        switch (beam.RightSide)
                         {
-                            case Global.ObjectType.BasicSupport:
+                            case BasicSupport bs:
                                 {
-                                    var bs = beam.RightSide as BasicSupport;
                                     if (bs.Members.Count == 1)
                                     {
                                         //The beam is free on the right side
@@ -2013,9 +1992,8 @@ namespace MesnetMD
                                 }
                                 break;
 
-                            case Global.ObjectType.SlidingSupport:
+                            case SlidingSupport ss:
                                 {
-                                    var ss = beam.RightSide as SlidingSupport;
                                     if (ss.Members.Count == 1)
                                     {
                                         //The beam is free on the right side
@@ -2027,7 +2005,7 @@ namespace MesnetMD
                                 }
                                 break;
 
-                            case Global.ObjectType.RightFixedSupport:
+                            case RightFixedSupport rs:
                                 {
                                     //The beam is free on the right side
                                     beam.SetAngleLeft(beamdialog.angle);
@@ -2043,11 +2021,10 @@ namespace MesnetMD
                     {
                         if (beam.LeftSide != null)
                         {
-                            switch (beam.LeftSide.Type)
+                            switch (beam.LeftSide)
                             {
-                                case Global.ObjectType.BasicSupport:
+                                case BasicSupport bs:
                                     {
-                                        var bs = beam.LeftSide as BasicSupport;
                                         if (bs.Members.Count == 1)
                                         {
                                             //The beam is free on the left side
@@ -2063,9 +2040,8 @@ namespace MesnetMD
                                     }
                                     break;
 
-                                case Global.ObjectType.SlidingSupport:
+                                case SlidingSupport ss:
                                     {
-                                        var ss = beam.LeftSide as SlidingSupport;
                                         if (ss.Members.Count == 1)
                                         {
                                             //The beam is free on the left side
@@ -2081,7 +2057,7 @@ namespace MesnetMD
                                     }
                                     break;
 
-                                case Global.ObjectType.LeftFixedSupport:
+                                case LeftFixedSupport ls:
                                     {
                                         //The beam is free on the left side
                                         beam.SetAngleRight(beamdialog.angle);
@@ -2175,10 +2151,9 @@ namespace MesnetMD
                 {
                     if (selectedbeam.RightSide != null)
                     {
-                        switch (selectedbeam.RightSide.Type)
+                        switch (selectedbeam.RightSide)
                         {
-                            case Global.ObjectType.BasicSupport:
-                                var bsr = selectedbeam.RightSide as BasicSupport;
+                            case BasicSupport bsr:
                                 if (bsr.Members.Count > 1)
                                 {
                                     bsr.RemoveBeam(selectedbeam);
@@ -2187,11 +2162,9 @@ namespace MesnetMD
                                 {
                                     deleteSupport(bsr);
                                 }
-
                                 break;
 
-                            case Global.ObjectType.SlidingSupport:
-                                var ssr = selectedbeam.RightSide as SlidingSupport;
+                            case SlidingSupport ssr:
                                 if (ssr.Members.Count > 1)
                                 {
                                     ssr.RemoveBeam(selectedbeam);
@@ -2200,24 +2173,19 @@ namespace MesnetMD
                                 {
                                     deleteSupport(ssr);
                                 }
-
                                 break;
 
-                            case Global.ObjectType.RightFixedSupport:
-
-                                var rs = selectedbeam.RightSide as RightFixedSupport;
+                            case RightFixedSupport rs:
                                 deleteSupport(rs);
-
                                 break;
                         }
                     }
 
                     if (selectedbeam.LeftSide != null)
                     {
-                        switch (selectedbeam.LeftSide.Type)
+                        switch (selectedbeam.LeftSide)
                         {
-                            case Global.ObjectType.BasicSupport:
-                                var bsl = selectedbeam.LeftSide as BasicSupport;
+                            case BasicSupport bsl:
                                 if (bsl.Members.Count > 1)
                                 {
                                     bsl.RemoveBeam(selectedbeam);
@@ -2226,11 +2194,9 @@ namespace MesnetMD
                                 {
                                     deleteSupport(bsl);
                                 }
-
                                 break;
 
-                            case Global.ObjectType.SlidingSupport:
-                                var ssl = selectedbeam.LeftSide as SlidingSupport;
+                            case SlidingSupport ssl:
                                 if (ssl.Members.Count > 1)
                                 {
                                     ssl.RemoveBeam(selectedbeam);
@@ -2239,14 +2205,10 @@ namespace MesnetMD
                                 {
                                     deleteSupport(ssl);
                                 }
-
                                 break;
 
-                            case Global.ObjectType.LeftFixedSupport:
-
-                                var ls = selectedbeam.LeftSide as RightFixedSupport;
+                            case LeftFixedSupport ls:
                                 deleteSupport(ls);
-
                                 break;
                         }
                     }
@@ -2266,10 +2228,9 @@ namespace MesnetMD
         {
             if (selectesupport != null)
             {
-                switch (selectesupport.Type)
+                switch (selectesupport)
                 {
-                    case Global.ObjectType.BasicSupport:
-                        var bs = selectesupport as BasicSupport;
+                    case BasicSupport bs:
                         if (bs.Members.Count == 1)
                         {
                             if (askfordelete("askforsupportdelete"))
@@ -2306,8 +2267,7 @@ namespace MesnetMD
 
                         break;
 
-                    case Global.ObjectType.SlidingSupport:
-                        var ss = selectesupport as SlidingSupport;
+                    case SlidingSupport ss:
                         if (ss.Members.Count == 1)
                         {
                             if (askfordelete("askforsupportdelete"))
@@ -2343,10 +2303,9 @@ namespace MesnetMD
                         }
                         break;
 
-                    case Global.ObjectType.LeftFixedSupport:
+                    case LeftFixedSupport ls:
                         if (askfordelete("askforsupportdelete"))
                         {
-                            var ls = selectesupport as LeftFixedSupport;
                             var beam = ls.Member.Beam;
                             switch (ls.Member.Direction)
                             {
@@ -2372,10 +2331,9 @@ namespace MesnetMD
                         }
                         break;
 
-                    case Global.ObjectType.RightFixedSupport:
+                    case RightFixedSupport rs:
                         if (askfordelete("askforsupportdelete"))
                         {
-                            var rs = selectesupport as RightFixedSupport;
                             var beam = rs.Member.Beam;
                             switch (rs.Member.Direction)
                             {
@@ -2908,7 +2866,7 @@ namespace MesnetMD
             if ((bool)crossdialog.ShowDialog())
             {
                 Notify("solved");
-                if (Global.BeamCount > 1)
+                if (Beam.BeamCount > 1)
                 {
                     UpdateBeams();
                 }
@@ -3059,7 +3017,7 @@ namespace MesnetMD
             /*System.Threading.Tasks.Parallel.ForEach(Global.Objects, (item) =>
             {
                 Global.SetDecimalSeperator();
-                switch (item.Value.Type)
+                switch (item.Value.ObjectType)
                 {
                     case Global.ObjectType.Beam:
 
@@ -3072,14 +3030,11 @@ namespace MesnetMD
             });*/
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.PostProcessUpdate();
                         MesnetMDDebug.WriteInformation(beam.Name + " has been updated");
-
                         break;
                 }
 
@@ -3102,11 +3057,9 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.PostClapeyronUpdate();
                         MesnetMDDebug.WriteInformation(beam.Name + " has been updated");
                         _uptoolbar.CollapseArea();
@@ -3117,7 +3070,6 @@ namespace MesnetMD
                         _uptoolbar.UpdateForceDiagrams();
                         _uptoolbar.UpdateAxialForceDiagrams();
                         _uptoolbar.UpdateStressDiagrams();
-
                         break;
                 }
             }
@@ -3810,38 +3762,22 @@ namespace MesnetMD
         private string SupportName(SupportItem support)
         {
             string name = null;
-            switch (support.Type)
+            switch (support)
             {
-                case Global.ObjectType.LeftFixedSupport:
-
-                    var ls = support as LeftFixedSupport;
-
+                case LeftFixedSupport ls:
                     name = ls.Name;
-
                     break;
 
-                case Global.ObjectType.RightFixedSupport:
-
-                    var rs = support as RightFixedSupport;
-
+                case RightFixedSupport rs:
                     name = rs.Name;
-
                     break;
 
-                case Global.ObjectType.BasicSupport:
-
-                    var bs = support as BasicSupport;
-
+                case BasicSupport bs:
                     name = bs.Name;
-
                     break;
 
-                case Global.ObjectType.SlidingSupport:
-
-                    var ss = support as SlidingSupport;
-
+                case SlidingSupport ss:
                     name = ss.Name;
-
                     break;
             }
             return name;
@@ -3906,7 +3842,7 @@ namespace MesnetMD
                         case Classes.Global.DialogResult.Yes:
                             {
                                 //the user has accepted to save
-                                var ioxml = new MesnetIO();
+                                var ioxml = new MesnetMDIO();
 
                                 if (_savefilepath != null)
                                 {
@@ -3989,7 +3925,7 @@ namespace MesnetMD
                         case Classes.Global.DialogResult.Yes:
                             {
                                 //the user has accepted to save
-                                var ioxml = new MesnetIO();
+                                var ioxml = new MesnetMDIO();
 
                                 if (_savefilepath != null)
                                 {
@@ -4056,7 +3992,7 @@ namespace MesnetMD
 
             resetsystem();
 
-            var openxmlio = new MesnetIO();
+            var openxmlio = new MesnetMDIO();
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = Global.GetString("filefilter");
             if (MesnetSettings.IsSettingExists("openpath", "mainwindow"))
@@ -4083,7 +4019,7 @@ namespace MesnetMD
 #if (DEBUG)
                         /*foreach (var item in Global.Objects)
                         {
-                            if (item.Value.Type is Global.ObjectType.Beam)
+                            if (item.Value.ObjectType is Global.ObjectType.Beam)
                             {
                                 var beam = item.Value as Beam;
 
@@ -4128,7 +4064,7 @@ namespace MesnetMD
         {
             if (Global.Objects.Count > 0)
             {
-                var ioxml = new MesnetIO();
+                var ioxml = new MesnetMDIO();
                 if (_savefilepath != null)
                 {
                     Notify("filesaving");
@@ -4179,7 +4115,7 @@ namespace MesnetMD
         {
             if (Global.Objects.Count > 0)
             {
-                var ioxml = new MesnetIO();
+                var ioxml = new MesnetMDIO();
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
                 saveFileDialog.Filter = Global.GetString("filefilter");
@@ -4231,7 +4167,7 @@ namespace MesnetMD
                             case Classes.Global.DialogResult.Yes:
                                 {
                                     //the user has accepted to save
-                                    var ioxml = new MesnetIO();
+                                    var ioxml = new MesnetMDIO();
                                     if (_savefilepath != null)
                                     {
                                         Notify("filesaving");
@@ -4316,7 +4252,7 @@ namespace MesnetMD
         private void open(string path)
         {
             Notify("filereading");
-            var openxmlio = new MesnetIO();
+            var openxmlio = new MesnetMDIO();
             openxmlio.ReadXml(canvas, path, this);
             _treehandler.UpdateAllBeamTree();
             _treehandler.UpdateAllSupportTree();
@@ -4359,7 +4295,7 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                if (item.Value.Type is Global.ObjectType.Beam)
+                if (item.Value is Beam)
                 {
                     var beam = item.Value as Beam;
                     beam.ShowCorners(5, 5);
@@ -4383,12 +4319,9 @@ namespace MesnetMD
             //check if there are any beam whose one of end is not bounded
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
-
+                    case Beam beam:
                         if (beam.LeftSide == null)
                         {
                             notify.Text = Global.GetString("systemnotsolvable");
@@ -4399,7 +4332,6 @@ namespace MesnetMD
                             notify.Text = Global.GetString("systemnotsolvable");
                             return false;
                         }
-
                         break;
                 }
             }
@@ -4408,12 +4340,9 @@ namespace MesnetMD
             var loaded = false;
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
-
+                    case Beam beam:
                         if (beam.ConcentratedLoads != null)
                         {
                             if (beam.ConcentratedLoads.Count > 0)
@@ -4428,7 +4357,6 @@ namespace MesnetMD
                                 loaded = true;
                             }
                         }
-
                         break;
                 }
             }
@@ -4468,16 +4396,13 @@ namespace MesnetMD
         {
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyFixedEndMomentDiagram();
                         beam.DestroyFixedEndForceDiagram();
                         beam.DestroyAxialForceDiagram();
                         beam.DestroyStressDiagram();
-
                         break;
                 }
             }

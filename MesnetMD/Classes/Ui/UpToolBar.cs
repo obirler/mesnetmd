@@ -276,11 +276,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item .Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawInertia((int)_mw.inertiaslider.Value);
                                 break;
                         }
@@ -304,11 +302,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawArea((int)_mw.areaslider.Value);
                                 break;
                         }
@@ -332,11 +328,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawDistLoad((int)_mw.distloadslider.Value);
                                 break;
                         }
@@ -364,11 +358,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawConcLoad((int)_mw.concloadslider.Value);
                                 break;
                         }
@@ -396,11 +388,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawMoment((int)_mw.momentslider.Value);
                                 break;
                         }
@@ -423,11 +413,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawForce((int)_mw.forceslider.Value);
                                 break;
                         }
@@ -450,11 +438,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawAxialForce((int)_mw.axialforceslider.Value);
                                 break;
                         }
@@ -477,11 +463,9 @@ namespace MesnetMD.Classes.Ui
                 {
                     foreach (var item in Global.Objects)
                     {
-                        switch (item.Value.Type)
+                        switch (item.Value)
                         {
-                            case Global.ObjectType.Beam:
-
-                                var beam = item.Value as Beam;
+                            case Beam beam:
                                 beam.ReDrawStress((int)_mw.stressslider.Value);
                                 break;
                         }
@@ -531,11 +515,9 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawInertia((int)_mw.inertiaslider.Value);
 
                         break;
@@ -549,13 +531,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyInertiaDiagram();
-
                         break;
                 }
             }
@@ -565,13 +544,10 @@ namespace MesnetMD.Classes.Ui
         {
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawInertia((int)e.NewValue);
-
                         break;
                 }
             }
@@ -583,13 +559,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawArea((int)_mw.areaslider.Value);
-
                         break;
                 }
             }
@@ -601,13 +574,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyAreaDiagram();
-
                         break;
                 }
             }
@@ -617,13 +587,10 @@ namespace MesnetMD.Classes.Ui
         {
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawArea((int)e.NewValue);
-
                         break;
                 }
             }
@@ -635,13 +602,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawDistLoad((int)_mw.distloadslider.Value);
-
                         break;
                 }
             }
@@ -653,13 +617,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyDistLoadDiagram();
-
                         break;
                 }
             }
@@ -670,11 +631,9 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         if (beam.DistributedLoads != null)
                         {
                             if (beam.DistributedLoads.Count > 0)
@@ -693,13 +652,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawConcLoad((int)_mw.concloadslider.Value);
-
                         break;
                 }
             }
@@ -711,13 +667,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyConcLoadDiagram();
-
                         break;
                 }
             }
@@ -728,11 +681,9 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("distloadslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         if (beam.ConcentratedLoads != null)
                         {
                             if (beam.ConcentratedLoads.Count > 0)
@@ -751,13 +702,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawMoment((int)_mw.momentslider.Value);
-
                         break;
                 }
             }
@@ -769,13 +717,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyFixedEndMomentDiagram();
-
                         break;
                 }
             }
@@ -786,13 +731,10 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("momentslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawMoment((int)e.NewValue);
-
                         break;
                 }
             }
@@ -804,13 +746,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawForce((int)_mw.forceslider.Value);
-
                         break;
                 }
             }
@@ -822,13 +761,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyFixedEndForceDiagram();
-
                         break;
                 }
             }
@@ -839,13 +775,10 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("forceslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawForce((int)e.NewValue);
-
                         break;
                 }
             }
@@ -857,13 +790,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawAxialForce((int)_mw.axialforceslider.Value);
-
                         break;
                 }
             }
@@ -875,13 +805,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyAxialForceDiagram();
-
                         break;
                 }
             }
@@ -892,13 +819,10 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("axialforceslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawAxialForce((int)e.NewValue);
-
                         break;
                 }
             }
@@ -910,13 +834,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawStress((int)_mw.stressslider.Value);
-
                         break;
                 }
             }
@@ -928,13 +849,10 @@ namespace MesnetMD.Classes.Ui
 
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        Beam beam = item.Value as Beam;
+                    case Beam beam:
                         beam.DestroyStressDiagram();
-
                         break;
                 }
             }
@@ -945,13 +863,10 @@ namespace MesnetMD.Classes.Ui
             MesnetMDDebug.WriteInformation("stressslider value changed : " + e.NewValue);
             foreach (var item in Global.Objects)
             {
-                switch (item.Value.Type)
+                switch (item.Value)
                 {
-                    case Global.ObjectType.Beam:
-
-                        var beam = item.Value as Beam;
+                    case Beam beam:
                         beam.ReDrawStress((int)e.NewValue);
-
                         break;
                 }
             }

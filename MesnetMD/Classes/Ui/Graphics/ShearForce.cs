@@ -12,10 +12,8 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public ShearForce(PiecewisePoly shearforceppoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Force;
             _beam = beam;
             _shearforceppoly = shearforceppoly;
-
             Draw(c);
         }
 

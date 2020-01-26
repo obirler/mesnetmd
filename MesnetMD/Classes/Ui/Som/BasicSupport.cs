@@ -4,28 +4,37 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Base;
 using static MesnetMD.Classes.Global;
+using Member = MesnetMD.Classes.Tools.Member;
 
 namespace MesnetMD.Classes.Ui.Som
 {
     public class BasicSupport : RealFreeSupportItem
     {
-        public BasicSupport() : base(ObjectType.BasicSupport)
+        public BasicSupport()
         {
-            Name = "Basic Support " + SupportId;
-            var rdof = new DOF(Global.DOFType.Rotational);
-            DegreeOfFreedoms.Add(rdof);
+            InitializeComponent();
         }
 
-        public BasicSupport(Canvas canvas) : base(ObjectType.BasicSupport)
+        public BasicSupport(Canvas canvas)
+        {
+            InitializeComponent();
+            canvas.Children.Add(this);           
+            AddObject(this);
+        }
+
+        public BasicSupport(BasicSupportManifest manifest) : base(manifest)
+        {
+        }
+
+        private void InitializeComponent()
         {
             Name = "Basic Support " + SupportId;
             var rdof = new DOF(Global.DOFType.Rotational);
             DegreeOfFreedoms.Add(rdof);
-            canvas.Children.Add(this);           
-            AddObject(this);
         }
 
         /// <summary>

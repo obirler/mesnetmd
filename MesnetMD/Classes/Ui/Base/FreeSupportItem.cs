@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MesnetMD.Classes.IO.Manifest.Base;
 using MesnetMD.Classes.Tools;
 using MesnetMD.Classes.Ui.Som;
 
@@ -10,11 +11,15 @@ namespace MesnetMD.Classes.Ui.Base
 {
     public abstract class FreeSupportItem : SupportItem
     {
-        protected FreeSupportItem(Global.ObjectType type) : base(type)
+        protected FreeSupportItem()
         {
             Members = new List<Member>();
         }
 
+        protected FreeSupportItem(FreeSupportManifest manifest) : base(manifest)
+        {
+            Members = new List<Member>();
+        }
 
         public List<Member> Members;
 

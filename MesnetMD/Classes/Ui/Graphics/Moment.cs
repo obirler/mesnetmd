@@ -12,7 +12,6 @@ namespace MesnetMD.Classes.Ui.Graphics
     {
         public Moment(PiecewisePoly momentppoly, Beam beam, int c = 200)
         {
-            GraphicType = Global.GraphicType.Moment;
             _beam = beam;
             _momentppoly = momentppoly;
             Draw(c);
