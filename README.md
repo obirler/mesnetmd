@@ -10,7 +10,16 @@ This program uses Matrix Displacement Method with some improvements to the frame
 
 For each beam element, when all displacements are zero, the forces that are required to create unit displacement for each degree of freedom are obtained and stored into a matrix, which is called the element stiffness matrix.
 
-<center>![Picture stiffness matrix](https://bitbucket.org/repo/dao7ay9/images/1717799172-Screen%20Shot%2004-22-20%20at%2002.50%20PM.PNG)</center>
+![Picture stiffness matrix](https://bitbucket.org/repo/dao7ay9/images/1717799172-Screen%20Shot%2004-22-20%20at%2002.50%20PM.PNG)
 
-re obtained and stored into a matrix, which is called the element stiffness matrix. For each beam element, the forces that are acting on beams are stored in element indirect force vector and the forces that are acting on nodes are stored in element direct force vector.
-All forces vectors and the stiffness matrix are express in terms of global axes by multiplying them with transformation matrix. After that, by using code numbers method, the element stiffness matrices are combined in a global stiffness matrix. Likewise, element force vectors are also combined in global force vector. The global system is then solved to find global displacement vector. After the global solution is done, the displacement vector is imposed in elements equations. The parts of displacement vector in elements are multiplied by element stiffness matrices and the results are summed with indirect force vector to get the force vector. Again, by using transformation matrix, the local force vectors are obtained. After the local force vector is known, bending moment distributions, shear force distributions, axial force distributions and stress distributions can be found.</p> 
+For each beam element, the forces that are acting on beams are stored in element indirect force vector and the forces that are acting on nodes are stored in element direct force vector. The final element equation will be like the picture below:
+
+![Picture beam equation](https://bitbucket.org/repo/dao7ay9/images/3273377571-Screen%20Shot%2004-22-20%20at%2003.04%20PM.PNG)
+
+This is of course the element equation. In order to solve the problem, it needs to be expressed in the global equation. All forces vectors and the stiffness matrix are express in terms of global axes by multiplying them with transformation matrix. The transformation matrix is:
+
+![Transformation matrix](https://bitbucket.org/repo/dao7ay9/images/4113690622-Screen%20Shot%2004-22-20%20at%2003.24%20PM.PNG)   ![Transformation matrix 2](https://bitbucket.org/repo/dao7ay9/images/2849042738-Screen%20Shot%2004-22-20%20at%2003.21%20PM%20001.PNG)  
+
+where β is the angle of the beam element. 
+
+After that, by using code numbers method, the element stiffness matrices are combined in a global stiffness matrix. Likewise, element force vectors are also combined in global force vector. The global system is then solved to find global displacement vector. After the global solution is done, the displacement vector is imposed in elements equations. The parts of displacement vector in elements are multiplied by element stiffness matrices and the results are summed with indirect force vector to get the force vector. Again, by using transformation matrix, the local force vectors are obtained. After the local force vector is known, bending moment distributions, shear force distributions, axial force distributions and stress distributions can be found.</p> 
