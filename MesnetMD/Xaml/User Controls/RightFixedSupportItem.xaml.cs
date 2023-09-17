@@ -7,15 +7,8 @@ namespace MesnetMD.Xaml.User_Controls
     /// <summary>
     /// Interaction logic for RightFixedSupportItem.xaml
     /// </summary>
-    public partial class RightFixedSupportItem : UserControl
+    public partial class RightFixedSupportItem : SupportItemBase
     {
-        public RightFixedSupportItem(RightFixedSupport support)
-        {
-            InitializeComponent();
-            Support = support;
-            supportheader.Text = Global.GetString("rightfixedsupport") + " " + Support.SupportId;
-        }
-
-        public RightFixedSupport Support;
+        
     }
 }
