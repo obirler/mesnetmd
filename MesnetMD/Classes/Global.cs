@@ -36,50 +36,29 @@ namespace MesnetMD.Classes
     {
         public static Dictionary<int, SomItem> Objects = new Dictionary<int, SomItem>();
 
-        public static void UpdateMaxInertia()
+        public static void UpdateMaxValue(ref double maxValue, Func<Beam, double> getValue)
         {
-            MaxInertia = Double.MinValue;
-
+            maxValue = Double.MinValue;
+        
             foreach (var item in Objects)
             {
-                switch (item.Value)
+                if (item.Value is Beam beam && getValue(beam) > maxValue)
                 {
-                    case Beam beam:
-
-                        if (beam.Inertia?.Count > 0)
-                        {
-                            if (beam.MaxInertia > MaxInertia)
-                            {
-                                MaxInertia = beam.MaxInertia;
-                            }
-                        }
-
-                        break;
+                    maxValue = getValue(beam);
                 }
             }
         }
+        
+        // Update the maximum inertia value
+        public static void UpdateMaxInertia()
+        {
+            UpdateMaxValue(ref MaxInertia, beam => beam.MaxInertia);
+        }
 
+        // Update the maximum area value
         public static void UpdateMaxArea()
         {
-            MaxArea = Double.MinValue;
-
-            foreach (var item in Objects)
-            {
-                switch (item.Value)
-                {
-                    case Beam beam:
-
-                        if (beam.Area?.Count > 0)
-                        {
-                            if (beam.MaxArea > MaxArea)
-                            {
-                                MaxArea = beam.MaxArea;
-                            }
-                        }
-
-                        break;
-                }
-            }
+            UpdateMaxValue(ref MaxArea, beam => beam.MaxArea);
         }
 
         public static void UpdateMaxDistLoad()
@@ -406,63 +385,41 @@ namespace MesnetMD.Classes
             return false;
         }
 
-        public static bool AnyForce()
+        // Delegate function for performing an operation on a Beam object
+        public delegate bool BeamOperation(Beam beam);
+
+        // Method for iterating over the Objects dictionary and performing an operation on the Beam objects
+        public static bool PerformOperationOnBeams(BeamOperation operation)
         {
             foreach (var item in Objects)
             {
                 switch (item.Value)
                 {
                     case Beam beam:
-
-                        if (beam.FixedEndForce?.Count > 0)
+                        if (operation(beam))
                         {
                             return true;
                         }
-
                         break;
                 }
             }
             return false;
+        }
+
+        public static bool AnyForce()
+        {
+            return PerformOperationOnBeams(beam => beam.FixedEndForce?.Count > 0);
         }
 
         public static bool AnyAxialForce()
         {
-            foreach (var item in Objects)
-            {
-                switch (item.Value)
-                {
-                    case Beam beam:
-
-                        if (beam.AxialForce?.Count > 0)
-                        {
-                            return true;
-                        }
-
-                        break;
-                }
-            }
-            return false;
+            return PerformOperationOnBeams(beam => beam.AxialForce?.Count > 0);
         }
 
-        /// <summary>
-        /// Sets the language of the application using system language.
-        /// </summary>
-        public static void SetLanguageDictionary()
+        public static Beam GetBeam(string Name)
         {
-            if (App.Current.Resources.MergedDictionaries.Count != 0)
-            {
-                App.Current.Resources.MergedDictionaries.RemoveAt(0);
-            }
-            ResourceDictionary dict = new ResourceDictionary();
-            switch (Thread.CurrentThread.CurrentCulture.ToString())
-            {
-                case "tr-TR":
-
-                    dict.Source = new Uri(@"..\Xaml\Resources\LanguageTr.xaml", UriKind.Relative);
-                    Settings.Default.language = "tr-TR";
-
-                    break;
-
+            return PerformOperationOnBeams(beam => beam.Name == Name);
+        }
                 default:
 
                     dict.Source = new Uri(@"..\Xaml\Resources\LanguageEn.xaml", UriKind.Relative);
@@ -604,66 +561,30 @@ namespace MesnetMD.Classes
             Rotational
         }
 
-        public enum DOFLocation
+        // Method for setting the language of the application
+        public static void SetLanguageDictionary(string lang = null)
         {
-            LeftHorizontal=0,
-            LeftVertical=1,
-            LeftRotational=2,
-            RightHorizontal=3,
-            RightVertical=4,
-            RightRotational=5
-        }
-
-        public enum SimpsonIntegrationType
-        {
-            First,
-            Second
-        }
-
-        public static void WritePPolytoConsole(string message, PiecewisePoly ppoly)
-        {
-            foreach (Poly poly in ppoly)
+            if (App.Current.Resources.MergedDictionaries.Count != 0)
             {
-                MesnetMDDebug.WriteInformation(message + " : " + poly.ToString() + " , " + poly.StartPoint + " <= x <= " + poly.EndPoint);
+                App.Current.Resources.MergedDictionaries.RemoveAt(0);
             }
+            ResourceDictionary dict = new ResourceDictionary();
+            switch (lang ?? Thread.CurrentThread.CurrentCulture.ToString())
+            {
+                case "tr-TR":
+
+                    dict.Source = new Uri(@"..\Xaml\Resources\LanguageTr.xaml", UriKind.Relative);
+                    Settings.Default.language = "tr-TR";
+
+                    break;
+
+                default:
+
+                    dict.Source = new Uri(@"..\Xaml\Resources\LanguageEn.xaml", UriKind.Relative);
+                    Settings.Default.language = "en-EN";
+
+                    break;
+            }
+            Settings.Default.Save();
+            App.Current.Resources.MergedDictionaries.Add(dict);
         }
-
-        public static int BeamCount = 0;
-
-        public static int SupportCount = 0;
-
-        public struct Func
-        {
-            public int id;
-            public double xposition;
-            public double yposition;
-        }
-
-        public static List<string> LogList = new List<string>();
-
-
-        #region Definitions
-
-        public static double MaxMoment = Double.MinValue;
-
-        public static double MaxForce = Double.MinValue;
-
-        public static double MaxAxialForce = Double.MinValue;
-
-        public static double MaxLoad = Double.MinValue;
-
-        public static double MaxDeflection = Double.MinValue;
-
-        public static double MaxStress = Double.MinValue;
-
-        public static double MaxInertia = Double.MinValue;
-
-        public static double MaxArea = Double.MinValue;
-
-        public static double MaxDistLoad = Double.MinValue;
-
-        public static double MaxConcLoad = Double.MinValue;
-
-        #endregion
-    }
-}
