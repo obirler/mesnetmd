@@ -32,11 +32,11 @@ using MesnetMD.Properties;
 
 namespace MesnetMD.Classes
 {
-    public static class Global
+    /// <summary>
     {
-        public static Dictionary<int, SomItem> Objects = new Dictionary<int, SomItem>();
+        /// <summary>
 
-        public static void UpdateMaxInertia()
+        /// <summary>
         {
             MaxInertia = Double.MinValue;
 
@@ -406,7 +406,7 @@ namespace MesnetMD.Classes
             return false;
         }
 
-        public static bool AnyForce()
+        /// <summary>
         {
             foreach (var item in Objects)
             {
@@ -425,7 +425,7 @@ namespace MesnetMD.Classes
             return false;
         }
 
-        public static bool AnyAxialForce()
+        /// <summary>
         {
             foreach (var item in Objects)
             {
@@ -559,7 +559,7 @@ namespace MesnetMD.Classes
 
         public static double Scale = 1;
 
-        public enum Direction
+        /// <summary>
         {
             Up,
             Down,
@@ -568,7 +568,7 @@ namespace MesnetMD.Classes
             None
         }
 
-        public enum FunctionType
+        /// <summary>
         {
             Fixed,
             Variable
