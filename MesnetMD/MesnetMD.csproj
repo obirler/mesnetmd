@@ -198,85 +198,85 @@
     <Compile Include="Xaml\Pages\SettingsPrompt.xaml.cs">
       <DependentUpon>SettingsPrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\BasicSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\BasicSupportItem.xaml.cs">
       <DependentUpon>BasicSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\BeamItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\BeamItem.xaml.cs">
       <DependentUpon>BeamItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\BeamSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\BeamSupportItem.xaml.cs">
       <DependentUpon>BeamSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ButtonItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\ButtonItem.xaml.cs">
       <DependentUpon>ButtonItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ConcentratedLoadFunction.xaml.cs">
+    <Compile Include="Xaml\UserControls\ConcentratedLoadFunction.xaml.cs">
       <DependentUpon>ConcentratedLoadFunction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ConcentratedLoadItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\ConcentratedLoadItem.xaml.cs">
       <DependentUpon>ConcentratedLoadItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\DirectLoadFunction.xaml.cs">
+    <Compile Include="Xaml\UserControls\DirectLoadFunction.xaml.cs">
       <DependentUpon>DirectLoadFunction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\DistributedLoadItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\DistributedLoadItem.xaml.cs">
       <DependentUpon>DistributedLoadItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ElasticityItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\ElasticityItem.xaml.cs">
       <DependentUpon>ElasticityItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\FictionalSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\FictionalSupportItem.xaml.cs">
       <DependentUpon>FictionalSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ForceExplorer.xaml.cs">
+    <Compile Include="Xaml\UserControls\ForceExplorer.xaml.cs">
       <DependentUpon>ForceExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\ForceItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\ForceItem.xaml.cs">
       <DependentUpon>ForceItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\InertiaFunction.xaml.cs">
+    <Compile Include="Xaml\UserControls\InertiaFunction.xaml.cs">
       <DependentUpon>InertiaFunction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\InertiaItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\InertiaItem.xaml.cs">
       <DependentUpon>InertiaItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\Information.xaml.cs">
+    <Compile Include="Xaml\UserControls\Information.xaml.cs">
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\LeftFixedSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\LeftFixedSupportItem.xaml.cs">
       <DependentUpon>LeftFixedSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\LengthItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\LengthItem.xaml.cs">
       <DependentUpon>LengthItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\LoadFunction.xaml.cs">
+    <Compile Include="Xaml\UserControls\LoadFunction.xaml.cs">
       <DependentUpon>LoadFunction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\LoadItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\LoadItem.xaml.cs">
       <DependentUpon>LoadItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\MomentExplorer.xaml.cs">
+    <Compile Include="Xaml\UserControls\MomentExplorer.xaml.cs">
       <DependentUpon>MomentExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\MomentItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\MomentItem.xaml.cs">
       <DependentUpon>MomentItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\RightFixedSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\RightFixedSupportItem.xaml.cs">
       <DependentUpon>RightFixedSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\SlidingSupportItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\SlidingSupportItem.xaml.cs">
       <DependentUpon>SlidingSupportItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\StressExplorer.xaml.cs">
+    <Compile Include="Xaml\UserControls\StressExplorer.xaml.cs">
       <DependentUpon>StressExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\StressItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\StressItem.xaml.cs">
       <DependentUpon>StressItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\SupportBeamItem.xaml.cs">
+    <Compile Include="Xaml\UserControls\SupportBeamItem.xaml.cs">
       <DependentUpon>SupportBeamItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\User Controls\Text.xaml.cs">
+    <Compile Include="Xaml\UserControls\Text.xaml.cs">
       <DependentUpon>Text.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -362,111 +362,111 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Xaml\User Controls\BasicSupportItem.xaml">
+    <Page Include="Xaml\UserControls\BasicSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\BeamItem.xaml">
+    <Page Include="Xaml\UserControls\BeamItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\BeamSupportItem.xaml">
+    <Page Include="Xaml\UserControls\BeamSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ButtonItem.xaml">
+    <Page Include="Xaml\UserControls\ButtonItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ConcentratedLoadFunction.xaml">
+    <Page Include="Xaml\UserControls\ConcentratedLoadFunction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ConcentratedLoadItem.xaml">
+    <Page Include="Xaml\UserControls\ConcentratedLoadItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\DirectLoadFunction.xaml">
+    <Page Include="Xaml\UserControls\DirectLoadFunction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\DistributedLoadItem.xaml">
+    <Page Include="Xaml\UserControls\DistributedLoadItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ElasticityItem.xaml">
+    <Page Include="Xaml\UserControls\ElasticityItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\FictionalSupportItem.xaml">
+    <Page Include="Xaml\UserControls\FictionalSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ForceExplorer.xaml">
+    <Page Include="Xaml\UserControls\ForceExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\ForceItem.xaml">
+    <Page Include="Xaml\UserControls\ForceItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\InertiaFunction.xaml">
+    <Page Include="Xaml\UserControls\InertiaFunction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\InertiaItem.xaml">
+    <Page Include="Xaml\UserControls\InertiaItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\Information.xaml">
+    <Page Include="Xaml\UserControls\Information.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\LeftFixedSupportItem.xaml">
+    <Page Include="Xaml\UserControls\LeftFixedSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\LengthItem.xaml">
+    <Page Include="Xaml\UserControls\LengthItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\LoadFunction.xaml">
+    <Page Include="Xaml\UserControls\LoadFunction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\LoadItem.xaml">
+    <Page Include="Xaml\UserControls\LoadItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\MomentExplorer.xaml">
+    <Page Include="Xaml\UserControls\MomentExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\MomentItem.xaml">
+    <Page Include="Xaml\UserControls\MomentItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\RightFixedSupportItem.xaml">
+    <Page Include="Xaml\UserControls\RightFixedSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\SlidingSupportItem.xaml">
+    <Page Include="Xaml\UserControls\SlidingSupportItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\StressExplorer.xaml">
+    <Page Include="Xaml\UserControls\StressExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\StressItem.xaml">
+    <Page Include="Xaml\UserControls\StressItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\SupportBeamItem.xaml">
+    <Page Include="Xaml\UserControls\SupportBeamItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Xaml\User Controls\Text.xaml">
+    <Page Include="Xaml\UserControls\Text.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
