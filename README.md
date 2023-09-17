@@ -1,3 +1,5 @@
+![Continuous Integration](https://github.com/Mesh-Engineering-Software-Co/FemBeamAnalzer/workflows/MD_CI/badge.svg)
+
 # MESNETMD: 2 DIMENSIONAL FRAME ANALYZER WITH MATRIX DISPLACEMENT METHOD #
 
 This is a frame analyzer program that is aimed to solve continuous 2 dimensional ship frames. Since preliminary design of ships in structural manner requires using practical structural analysis programs that do not require detailed information about the structure. Ship frames can be non-uniformed geometries that makes vsrying inertia distibutions on beams, wihch makes the problem even more challenging. The program is desired to have a well-designed graphical user interface to make it easy to use, to implement object oriented programming paradigms to keep the code structured and readable, to use a modern programming application interfaces to maximize utilization of computer resources in efficient way.
