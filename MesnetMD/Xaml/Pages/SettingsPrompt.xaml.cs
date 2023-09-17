@@ -19,6 +19,7 @@
 ========================================================================
 */
 
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using MesnetMD.Classes;
