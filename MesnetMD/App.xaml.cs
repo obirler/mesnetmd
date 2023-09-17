@@ -3,13 +3,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using MesnetMD.Classes.IO;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using MesnetMD.Classes.IO;
 using MesnetMD.Classes.Ui.Som;
-
-namespace MesnetMD
-{
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+using MesnetMD.Xaml.Pages;
     public partial class App : Application
     {
         private void Application_Exit(object sender, ExitEventArgs e)
@@ -20,7 +20,6 @@ namespace MesnetMD
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             string[] arguments = System.Environment.GetCommandLineArgs();
-
             if (arguments.GetLength(0) > 1)
             {
                 if (arguments[1].EndsWith(".mnt"))
@@ -29,6 +28,8 @@ namespace MesnetMD
                 }
             }
             Logger.InitializeLogger();
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
         }
 
         private void MinSize(TextBlock textBlock)
