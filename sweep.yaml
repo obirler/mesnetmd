@@ -11,7 +11,7 @@ gha_enabled: True
 #
 # Example:
 # description: sweepai/sweep is WPF project that is based on .Net Framework 4.6.  User interfaces are in Xaml folder. Classes are in Classes folder. Write code that adheres to dotnet-format.
-description: 'sweepai/sweep is WPF project that is based on .Net Framework 4.6.  User interfaces are in Xaml folder. Classes are in Classes folder. Write code that adheres to dotnet-format.'
+description: 'sweepai/sweep is WPF project that is based on .Net Framework 4.6. It's written in C#. It conducts structural analysis of 2 dimensional frames consist of beam. It uses finite element method for solution. User interfaces are in Xaml folder. Classes are in Classes folder. Write code that adheres to dotnet-format.'
  
 # This sets whether to create pull requests as drafts. If this is set to True, then all pull requests will be created as drafts and GitHub Actions will not be triggered.
 draft: False
